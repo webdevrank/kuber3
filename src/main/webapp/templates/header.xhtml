@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <p:layoutUnit id="top" position="north" size="74">
+        <p:growl id="growl" autoUpdate="true" showDetail="false"  />
+        <script>
+            $(document).ready(function () {
+                $(window).keydown(function (event) {
+                    if (event !== null)
+                        if (event !== 'undefined')
+                            if (event.keyCode === 13) {
+                                event.preventDefault();
+                                return false;
+                            }
+                });
+            });
+            $('input[readonly]').focus(function () {
+                this.blur();
+            });
+            $('input[readonly]').attr('unselectable', 'on');
+           
+        </script>
+          <div id="supertop"> 
+            <h:panelGroup layout="block" styleClass="top">
+                <h:panelGroup layout="block" styleClass="headernew">
+                    <h:panelGroup layout="block" styleClass="wrappernew">
+                        <h:panelGroup layout="block" styleClass="logo_area">
+                            
+                                <p:graphicImage url="/faces/resources/images/logo_t.jpg" style="height:70px;width: auto;"/>
+                             
+                        </h:panelGroup>
+                    </h:panelGroup>
+
+                    <h:panelGroup layout="block" styleClass="headerRight">
+                        <h:panelGroup layout="block" styleClass="headerRightOne">
+                            <h:form id="logOutForm" prependId="false">
+                                <ul>
+                                    <li>
+                                       
+                                    </li>
+                                    <li>
+                                        <p:commandLink id="logOutEmployee" action="#{employeeLoginComponent.showLogoutReasons()}" oncomplete="PF('reasonSelectDlg').show();"  update=":reasonSelectionForm" rendered="#{employeeLoginComponent.logoutRenderer}">
+                                            <p:graphicImage url="/faces/resources/images/logout.png" width="18" alt="logout" title="Logout" />
+                                        </p:commandLink>
+                                    </li>
+                                 </ul>
+                            </h:form>
+                        </h:panelGroup>
+
+                        <h:panelGroup layout="block" styleClass="headerRightTwo">
+                            <h:panelGroup layout="block" styleClass="logName">
+                                <p:outputLabel value='Welcome #{session.getAttribute("userFNameLName")}' rendered='#{session.getAttribute("loginstatus") == "true"}' />
+                            </h:panelGroup>
+                        </h:panelGroup>
+                    </h:panelGroup>
+                </h:panelGroup>
+            </h:panelGroup>
+        </div> 
+        <p:dialog id="reasonSelectDlgid" widgetVar="reasonSelectDlg" appendTo="@(body)"  modal="true" header="Select Logout Reason"  resizable="false" responsive="true" draggable="true"  dynamic="true" closeOnEscape="false" closable="false" style="max-width: 98%"> 
+
+            <h:form  id="reasonSelectionForm" style="padding:12px 12px 12px 12px;overflow:hidden"  >
+                <c:if test="#{employeeLoginComponent.reasonMstList.size() > 0}">
+                    <h:panelGroup layout="block" style="padding-bottom: 10px; " >
+                        <h:selectOneListbox id="rolemst_id" value="${employeeLoginComponent.selectedReasonId}" required="true" label="Logout Reason" style="width: 95%!important;border: 1px solid !important">
+                            <f:selectItems value="#{employeeLoginComponent.reasonMstList}" var="rsnMst" itemValue="#{rsnMst.id}" itemLabel="#{rsnMst.reasonDesc}(#{rsnMst.reasonCd})"/>
+                        </h:selectOneListbox>
+                    </h:panelGroup >
+                    <center>
+                        <p:commandButton icon="ui-icon-arrowthick-1-e" onclick="document.getElementById('inCallContainer').style.visibility = 'hidden';
+                                $('#spinner').show();PF('reasonSelectDlg').hide()" ajax="true" action="#{employeeLoginComponent.handleLogout(request)}" 
+                                         value="Logout"   >
+
+                        </p:commandButton> 
+                        <p:spacer width="5"/> 
+                        <p:commandButton  icon="ui-icon-close" type="button" ajax="true"  actionListener="#{employeeLoginComponent.cancelReasonList()}" value="Cancel" onclick="PF('reasonSelectDlg').hide();disconnectCall();document.getElementById('inCallContainer').style.visibility = 'visible'"  >
+                        </p:commandButton>
+                        <p:spacer width="5"/> 
+                    </center>
+                </c:if>
+                <c:if test="#{employeeLoginComponent.reasonMstList.size() == 0}">
+                    <center>
+                        <h:outputText value="ERROR! No Logout Reasons found!..." style="position: inherit" /> <br/><br/>
+                        <p:commandButton  icon="ui-icon-close" ajax="false" actionListener="#{employeeLoginComponent.cancelReasonList()}" immediate="true"
+                                          value="Ok" oncomplete="PF('reasonSelectDlg').hide();" update=":reasonSelectionForm" >
+
+                        </p:commandButton>
+
+                    </center>
+                </c:if>
+            </h:form>
+        </p:dialog>
+
+
+         <p:dialog id="helpdialog" widgetVar="help" 
+                  appendTo="@(body)"  modal="false" header="Video Screen Share Extensions"  resizable="false" 
+                  width="auto" draggable="false"  dynamic="true" position="center" closeOnEscape="false" closable="true"> 
+            <h:form  id="helpForm" style="overflow: hidden;">
+                <center>
+                    <div>
+                        <table style="border: none; color: black">
+                            
+                            <tr>
+                                <td style="text-align: center"><a target="_blank" alt="" title="Video Screen Share Extension Chrome" href="https://chrome.google.com/webstore/detail/vidyo-screen-share/fadjebjcpiiklefiadeicakcnkhgbaoo" style="text-decoration: underline">For Chrome</a></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center"><a target="_blank" alt="" title="Video Screen Share Extension Firefox" href="https://webrtc.prod.vidyo.io/web/installers/vidyo_webrtc_screen_share-1.0.0-fx.xpi" style="text-decoration: underline">For Firefox</a></td>
+                            </tr>
+                        </table>
+		    </div>
+                    <p:commandButton ajax="true"   value="Close" style="margin-left: 5px;"  onclick="PF('help').hide();" />
+                </center>
+            </h:form>
+        </p:dialog>  
+
+
+    </p:layoutUnit>
+</html>

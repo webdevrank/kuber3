@@ -1,0 +1,285 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="../../templates/layout.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <ui:define name="title">
+        Barge in  Call
+    </ui:define>
+
+    <ui:define name="content">
+        <h:head>
+            <script>
+                var socketHostPublic = "#{socketHostPublic}";
+                var contextUrl="#{request.contextPath}";
+            </script>
+             <script  src="#{request.contextPath}/resources/js/bowser.min.js"></script>
+            <link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/css/bootstrap.css" />
+            
+            <link rel="stylesheet" href="${request.contextPath}/resources/vidyo/hunter/VidyoConnector.css"/>
+            <link rel="stylesheet" href="${request.contextPath}/resources/vidyo/hunter/VidyoTextChat.css"/>
+            <script src="${request.contextPath}/resources/vidyo/hunter/VidyoConnectorBarge.js"></script>
+            <script src="${request.contextPath}/resources/vidyo/hunter/VidyoTextChat.js"></script>
+            <script src="${request.contextPath}/resources/js/script.js"></script>
+            <script src="${request.contextPath}/resources/js/vidyoConnect.js"></script>
+            
+            <script type="text/javascript" src="#{request.contextPath}/resources/js/socket.io.js" ></script>
+            
+            <link type="text/css" rel="stylesheet" href="#{request.contextPath}/resources/css/tabs.css"></link>
+            <script type="text/javascript" src="#{request.contextPath}/resources/js/chat.js"></script>
+            <script type="text/javascript" src="#{request.contextPath}/resources/js/tdi.tabs.js"></script>
+            <script type="text/javascript" src="#{request.contextPath}/resources/js/webrtcchat.js"></script>
+            <script src="${request.contextPath}/resources/js/conference.js"></script>
+            <link type="text/css" rel="stylesheet" href="${request.contextPath}/resources/css/bootstrap.css" />
+            <link type="text/css" rel="stylesheet" href="${request.contextPath}/resources/css/video.css" />
+          
+             <c:if test="#{bargeInCallComponent.barge}">
+                <script>
+                 $(document).ready(
+                        function() {
+                            $('#spinner').show();
+                            setTimeout(function() {
+                                $('#spinner').hide();
+                                joinViaBrowser();
+                                 }, 1000);
+                        });
+                 function disconnectCall(){
+                    leaveConference();
+                }     
+
+                </script>
+            </c:if>
+            <c:if test="#{!bargeInCallComponent.barge}">
+                 <script>
+                  $(document).ready(
+                        function() {
+                            $('#spinner').show();
+                             setTimeout(function() {
+                                $('#spinner').hide();
+                                document.getElementById('mutemic').style.display="";
+                                document.getElementById('mutevideo').style.display="";
+                                joinViaBrowser();
+                            }, 4000);
+
+                        });
+                  </script>
+            </c:if>
+         
+            <script>
+                var prototype = {};
+                prototype.string = {};
+                prototype.string.autolink = function (string, options) {
+                    if (!options)
+                        options = {};
+                    if (!options.limit)
+                        options.limit = 100;
+                    if (!options.tagFill)
+                        options.tagFill = '';
+
+                    var regex = /((http\:\/\/|https\:\/\/|ftp\:\/\/)|(www\.))+(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&amp;%@!\-\/]))?/gi;
+
+                    string = string.replace(regex, function (value) {
+                        value = value.toLowerCase();
+                        var m = value.match(/^([a-z]+:\/\/)/);
+                        var nice;
+                        var url;
+
+                        if (m)
+                        {
+                            nice = value.substring(0,value.indexOf('&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;'));
+                           
+                            url = nice;
+                        }
+                        else
+                        {
+                            nice = value.substring(0,value.indexOf('&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;'));
+                            
+                            url = 'http://' + nice;
+                        }
+
+                        return '&lt;a href="' + url + '"' + (options.tagFill !== '' ? (' ' + options.tagFill) : '') + ' style="color:blue;text-decoration:underline;" target="_blank"  &gt;' + prototype.string.autolinkLabel(nice, options.limit) + '&lt;/a&gt;';
+                    });
+                    return string;
+                };
+
+
+                prototype.string.autolinkLabel = function (text, limit) {
+
+                    if (!limit) {
+                        return text;
+                    }
+
+                    if (text.length > limit) {
+                        return text.substr(0, limit - 3) + '...';
+                    }
+
+                    return text;
+                }; 
+	
+            </script>
+             <style>
+                 #logOutEmployee{
+                     display:none !important;
+                 }
+             </style>
+          
+        </h:head>
+        <h:body>
+            <p:panel id="panel1" style="margin-top: 20px;height:30px;border:none;background: transparent;display:none "  styleClass="agent" >
+                  <table>
+                      <tr>  
+                          <td>
+                              <h:form id="burgeInForm"  prependId="false" style="display:none;"  >
+                                <p:commandButton id="back" value="Go Back"   action="#{bargeInCallComponent.backToList(bargeInCallComponent.burginPkId)}" ajax="true" style="width:95px;margin-left: 10px;" onclick="$('#spinner').show();"  immediate="true"  /> 
+                                <h:inputHidden id="burgInCallPkId" value="#{bargeInCallComponent.burginPkId}" rendered="false"/>
+                            </h:form> 
+                          </td>
+                          <td>        
+                              <h:form id="makevisibleForm"  style="display:none;">
+                                 <p:commandButton id="barge" value="Announce Yourself"   action="#{bargeInCallComponent.visibleRebargeRoom()}" ajax="true" style="width:150px;margin-left:115px;" rendered="#{bargeInCallComponent.barge}" onclick="$('#spinner').show();"  immediate="true"  /> 
+                            </h:form>
+                          </td>
+                        </tr>
+                  </table>
+                    <h:form id="conferenceForm" style="display:none;"  >
+                        <p:poll interval="5" listener="#{bargeInCallComponent.checkConferenceAlive(bargeInCallComponent.callId)}" update=":makevisibleForm" />
+                    </h:form>  
+            </p:panel>   
+            
+            <p:dialog  id="pdialoga1" widgetVar="bargeinend" resizable="false" closable="false"  width="auto" header="Notification" onShow="disconnectCall();" >
+                <h:form id="bargeendform"  style="overflow: hidden" >    
+                    <center>
+                        <br/>
+                        <h:outputText value="Conference Ended" />
+                        <br/><br/>
+                        <p:commandButton ajax="true" action="#{bargeInCallComponent.backToList()}"   value="OK" style="margin-left: 5px;"  onclick="PF('burgeInFormbargeinend').hide();"/>
+                    </center>
+                </h:form>
+            </p:dialog> 
+           
+           <div class="user_list" style="display:none;">
+                <h:form id="vidyoDashboardForm" prependId="false" style="display:none">
+                    <p:panel id="panel2"  >
+                            <p:inputText id="userName" value="ccmsSupervisor" />
+                            <p:inputText id="host" value="#{bargeInCallComponent.agentPortal}" />
+                            <p:inputText id="roomKey" value="#{bargeInCallComponent.roomKey}"  />
+                            <p:inputText id="displayName" value="CCMS~#{bargeInCallComponent.chatBargeInName}" />
+                            <p:inputText id="resourceId" placeholder="Conference Reference" value=""/>
+                            <p:inputText id="extData" placeholder="ExtData" value=""/>
+                            <p:inputText id="extDataType" placeholder="ExtDataType" value=""/>
+                    </p:panel>
+                    
+                    
+                </h:form>
+            </div>
+           
+             <div id="splash" class="container video_wrap" style="text-align: center;margin-top: 10%; overflow: hidden;display:none">
+                    <img src="${request.contextPath}/resources/images/logo-big.jpg"/>
+            </div> 
+            
+             <div id="incallcontainer" class="container video_wrap" style="display:none;">
+                <div class="row">
+                    <div id="participantDiv" class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="user_list" >
+                            <div class="user_head_wrap">
+                                <div class="user_head">
+                                    <div class="col-md-9 col-sm-9 col-xs-8">
+                                        <h2 class="private_chat">Click on participant name for private chat</h2>
+                                    </div>
+                                    <div class="col-md-2 col-sm-3 col-xs-4">
+                                         <div id="webcasting" title="Webcasting" class="toolbarButton" style="display:none"></div>
+                                         <div id="recorder" title="Record Status" class="toolbarButton"></div>   
+                                    </div>
+                                </div>
+                            </div>
+                             <div  id='participantList'>
+                                <div id="participantTabs" class="user_details" >
+                                    <h2></h2>
+                                </div>
+                            </div>
+                            <div id='participantLista' class="participantListCustom" style="display:none">
+				<div class="user_details">
+					<table id="participantTable" class="ParticipantTable">
+                                        </table>
+				</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-8 col-md-8 col-sm-6 col-xs-12">
+                        <div id="videoHead" class="video_head_wrap">
+                            <div class="video_head">
+                                <div class="col-md-7 col-sm-12 col-xs-12">
+                                    <button class="listing_btn" id="showParticipants" title="Go Back" onclick="document.getElementById('back').click();"><img src="#{request.contextPath}/resources/images/arrow_left.png" alt="" style="height:60px;"/></button>
+                                    <button class="listing_btn" id="fullscreenvid" onclick="makeFullScreen();" title="Full Screen"><img src="${request.contextPath}/resources/images/fullscreen.png" alt="" /></button>
+                                   
+                                </div>
+
+                                <div class="col-md-5 col-sm-12 col-xs-12">
+                                    <button class="video_icon_btn pull-right" id="mutemic" onclick="muteMic();" style="display:none;" title="Toggle Mute Microphone"><img src="${request.contextPath}/resources/images/mute_mic.png" alt="" /></button>
+                                    <button class="video_icon_btn pull-right" id="unmutemic" onclick="unmuteMic();" title="Toggle Mute Microphone" style="display:none;background:red;" ><img src="${request.contextPath}/resources/images/unmute_mic.png" alt="" /></button>
+                                    <button class="video_icon_btn pull-right" id="mutespeaker" onclick="muteSpeaker();" title="Toggle Mute Speaker"><img src="${request.contextPath}/resources/images/mute_speaker.png" alt="" /></button>
+                                    <button class="video_icon_btn pull-right" id="unmutespeaker" onclick="unmuteSpeaker();" title="Toggle Mute Speaker" style="display:none;background:red;"><img src="${request.contextPath}/resources/images/unmute_speaker.png" alt="" /></button>
+                                    <button class="video_icon_btn pull-right" id="mutevideo" onclick="muteVideo();" style="display:none;" title="Toggle Mute Video"><img src="${request.contextPath}/resources/images/mute_video.png" alt="" /></button>
+                                    <button class="video_icon_btn pull-right" id="unmutevideo" onclick="unmuteVideo();" title="Toggle Mute Video" style="display:none;background:red;"><img src="${request.contextPath}/resources/images/unmute_video.png" alt="" /></button>
+                                </div><!--col-md-5-->
+                            </div><!--video_head-->
+                        </div><!--video_head_wrap-->
+
+                       	<div id="vidyoConnector" style="height:60vh">
+                                                    <div id="inCallContainer">
+                                                        <div id="parentRenderer" style="height:60vh">
+                                                            <div id="renderer" class="pluginOverlay"></div>
+                                                        </div>
+                                                         <div id="toolbarRight" class="toolbar">
+                                                                <span id="connectionStatus">Initializing</span>
+                                                       </div>
+                                                       <div id="toolbarCenter" class="toolbar" style="display:none;">
+                                                               <button id="cameraButton" title="Camera Privacy" class="toolbarButton cameraOn"></button>			
+                                                               <button id="joinLeaveButton" title="Join Conference" class="toolbarButton callStart"></button>
+                                                               <button id="microphoneButton" title="Microphone Privacy" class="toolbarButton microphoneOn"></button>
+                                                               <button id="speakerButton" title="Speaker Privacy" class="toolbarButton speakerOn"></button>
+                                                       </div>
+                                                     </div>
+
+                         </div>
+                        <div id="addstatictabdiv" style="margin-top: 6px"> 
+                            <ul class="tabs" id="addstatictab">
+                                <li><button href="#collapse1" class="nav-toggle" style="background:transparent"><img src="#{request.contextPath}/resources/images/top.png" height="20px" width="28px" style="margin-top: -2px;margin-left: 1px;"></img></button></li>
+                                <li class="selected" id="lieveryone"><a href="#Everyone" id="_Everyone" onclick="setEvery();">Everyone<span id="_Everyonespan" style="width:20px;border-radius: 13px;text-align:center;margin-left: 2px;padding: 2px;"></span></a></li>
+                            </ul>
+                            <div id="collapse1" style="display:none;margin-top: -4px;">
+                                <div class="tabcontents" id="participant">
+                                    <div id="Everyone" ></div>
+                                </div>
+                                <div id="contentWrap">
+                                   <h:form prependId="false" id="sendSection"  >
+                                        <div id="chatWrap">
+                                         
+                                            <p:inputText id="msgToSend" value="#{bargeInCallComponent.chat}" style="width:80%" maxlength="250"/>   
+                                            <p:commandButton  id="send" value="Send"  onclick="sendMessageBargeIn();document.getElementById('msgToSend').value='';"  />
+                                        </div>
+                                      
+                                    </h:form>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!--col-lg-8-->
+                </div><!--row-->
+            </div><!--container-->
+            
+            <div id="custIdWrap" style="display:none">
+                <h:form  prependId="false" id="setCustId" >
+                    <p:inputText id="agentId" value="#{bargeInCallComponent.chatBargeInName}" label="agent socket" />
+                    <p:commandButton  id="custsubmit" ajax="true" value="submit"  onclick="connected();" />
+                 </h:form>
+            </div>
+            
+       </h:body>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="../../templates/layout.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <ui:define name="title">
+        Assign Skill
+    </ui:define>
+    <ui:define name="menu">
+        <c:if test="#{employeeLoginComponent.adminmenuRenderer }">
+            <ui:include src="../../templates/menu.xhtml" />
+        </c:if>
+    </ui:define>
+    <ui:define name="content">
+      
+        <script>
+
+            function selecttype(selection) {
+                document.getElementById("editEmpForm:next").click();
+          }
+
+        </script>
+<c:if test="#{employeeLoginComponent.adminmenuRenderer }">
+    <h:form id="editEmpForm" style="margin-top: 45px;padding:10px">
+            <c:if test="#{employeeProficiencyMapComponent.selectedEmp != null}">
+                <p:panel id="skilladd" header="Assign Skill" style="margin:10px; ">
+                    <h:panelGrid id="detail" columns="2" styleClass="noBorders"   columnClasses="label,value">
+                        <p:panel style="border: none !important;"><h:outputText value="Employee Id:" /></p:panel>
+                        <h:outputText value="#{employeeProficiencyMapComponent.employeeName}" style="font-weight: normal"/>
+
+                        <p:panel style="border: none !important;"><h:outputText value="Choose Type:" /></p:panel>
+                        <p:selectOneMenu id="type" value="#{employeeProficiencyMapComponent.languageTypeDto.type}" label="Select Type" required="true" onchange="selecttype(this.value);" style="width: 132px !important;" >
+                            <f:selectItem itemLabel="Select One" itemValue=""/>
+                            <f:selectItem itemLabel="Language" itemValue="Language"/>
+                            <f:selectItem itemLabel="Service" itemValue="Service"/>
+                        </p:selectOneMenu>
+
+                        <p:panel style="border: none !important;"><h:outputText value=" Skill:" /><font color='red'>*</font></p:panel>
+                        <p:selectOneMenu id="all"   label="Skill" rendered="#{employeeProficiencyMapComponent.noneFlag}" style="width: 132px !important;">
+                            <f:selectItem itemLabel="Select One" itemValue="" />
+                        </p:selectOneMenu>
+                        <p:selectOneMenu id="language"  value="#{employeeProficiencyMapComponent.languageId}" required="#{employeeProficiencyMapComponent.languageFlag}"  style="width: 132px !important;" label="Skill" rendered="#{employeeProficiencyMapComponent.languageFlag}">
+                            <f:selectItem itemLabel="Select One" itemValue="" />
+                            <f:selectItems value="#{employeeProficiencyMapComponent.listLanguageTypeDto}" var="add" itemLabel="#{add.name}" itemValue="#{add.id}" />
+                        </p:selectOneMenu>
+
+                        <p:selectOneMenu id="service"  value="#{employeeProficiencyMapComponent.serviceId}" required="#{employeeProficiencyMapComponent.serviceFlag}"  style="width: 132px !important;" label="Skill" rendered="#{employeeProficiencyMapComponent.serviceFlag}">
+                            <f:selectItem itemLabel="Select One" itemValue="" />
+                            <f:selectItems value="#{employeeProficiencyMapComponent.listServiceTypeDto}" var="add" itemLabel="#{add.name}" itemValue="#{add.id}" />
+                        </p:selectOneMenu>
+
+                        <p:selectOneMenu id="category"  value="#{employeeProficiencyMapComponent.categoryId}" required="#{employeeProficiencyMapComponent.categoryFlag}"  style="width: 132px !important;" label="Skill" rendered="#{employeeProficiencyMapComponent.categoryFlag}">
+                            <f:selectItem itemLabel="Select One" itemValue="" />
+                            <f:selectItems value="#{employeeProficiencyMapComponent.listCategoryTypeDto}" var="add" itemLabel="#{add.name}" itemValue="#{add.id}" />
+                        </p:selectOneMenu>
+
+                        <p:panel style="border: none !important;">
+                            <h:outputText value="Priority:" /><font color='red'>*</font></p:panel>
+                        <p:selectOneMenu  value="#{employeeProficiencyMapComponent.languageTypeDto.primaryOrSecondary}"  style="width: 132px!important;" label="Priority" required="#{employeeProficiencyMapComponent.priFlag}" >
+                            <f:selectItem itemLabel="Select One" itemValue=""/> 
+                            <f:selectItem itemLabel="Primary" itemValue="primary" />
+                            <f:selectItem itemLabel="Secondary" itemValue="secondary"/> 
+                        </p:selectOneMenu>
+
+                        <p:spacer/>
+                        <p:spacer/>
+                        <p:spacer/>
+
+                    </h:panelGrid>
+                    <h:panelGroup style="margin-left: 100px;" >
+                        <p:commandButton id="next" action="#{employeeProficiencyMapComponent.loadSkillAccordingToType()}" update="editEmpForm:detail" ajax="false"  value="Next"  style="display: none"  />
+                        <p:commandButton icon="ui-icon-disk" ajax="false" action="${employeeProficiencyMapComponent.saveEmployeeProficiency(request)}"  style="margin-right:20px;" value="Save" update=":editEmpForm"/>
+                        <p:commandButton icon="ui-icon-arrowreturn-1-w" immediate="true" ajax="false" action="${employeeProficiencyMapComponent.back()}" style="margin-right:20px;" value="Back" />
+                    </h:panelGroup>
+                </p:panel>
+
+
+            </c:if>
+
+            <c:if test="#{employeeProficiencyMapComponent.selectedEmp==null}">
+                <p:spacer width="10"/>
+                <br/><h:outputText value="No Records Selected" /> <br/><br/> <p:spacer width="25"/>
+            </c:if>
+
+        </h:form>
+ </c:if>
+    </ui:define>
+</ui:composition>

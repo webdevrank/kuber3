@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="../../templates/layout.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <ui:define name="title">
+        Edit Feedback Question
+    </ui:define>
+    <ui:define name="menu">
+
+        <c:if test="#{employeeLoginComponent.adminmenuRenderer }">
+            <ui:include src="../../templates/menu.xhtml" />
+        </c:if>
+    </ui:define>
+
+    <ui:define name="content">
+       
+        <c:if test="#{employeeLoginComponent.adminmenuRenderer }">
+            <h:form id="mainform" style="margin-top: 45px;padding: 10px" >
+                <p:growl id="msg" sticky="false" showDetail="false"/>  
+                <p:panel id="mainpanel"  >        
+                    <f:facet name="header" >
+                        Edit Feedback Questions
+                    </f:facet> 
+                    <p:panelGrid id="detail" columns="7"  styleClass="noBorders"   columnClasses="label,value" >
+                        <p:panel style="border: none !important;"><h:outputText value="Feedback Question"/><font color='red'>*</font></p:panel>
+                        <p:inputText id="reason_id" value="#{feedbackQueryComponent.feedbackQuestion}" label="Reason" maxlength="500"  style="width: 415px;">
+                        </p:inputText>
+                        <h:panelGroup style="margin-left: 8px;">
+                            <p:commandButton icon="ui-icon-disk"  value="Save" actionListener="#{feedbackQueryComponent.onsave()}" update="mainform"  />
+                            <p:commandButton id="cleartext" icon="ui-icon-arrowreturn-1-w"  value="Clear" actionListener="#{feedbackQueryComponent.clear()}" update="mainform" style="margin-left: 20px;" />
+
+                        </h:panelGroup>
+                    </p:panelGrid>
+                    <p:dataTable id="fbEditTable" value="#{feedbackQueryComponent.listFeedbackQueryDto}" selection="#{feedbackQueryComponent.selectFeedbackQuery}" rowKey="${fb.id}" var="fb" rows="10" filteredValue="#{feedbackQueryComponent.filterFeedbackQuery}" paginator="true" paginatorPosition="bottom" editable="true">
+                        <p:ajax event="rowEdit"  listener="#{feedbackQueryComponent.onEdit}" update="@this" />
+                        <p:ajax event="rowEditCancel"  listener="#{feedbackQueryComponent.onCancel}" update="@this" />
+
+                        <p:column headerText="ID" sortBy="#{fb.id}" width="10%">
+                            <h:outputText value="#{fb.id}" />
+                        </p:column>
+
+                        <p:column headerText="Question*" sortBy="#{fb.feedbackQuery}" width="70%"> 
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{fb.feedbackQuery}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText id="feedbackQuery" value="#{fb.feedbackQuery}" label="Question" onchange="this.value = this.value.trim()"  maxlength="500"  style="width: 100% !important;; "  required="true" requiredMessage="Question is required" >
+
+                                    </p:inputText>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column headerText="Select" style="width:14%">
+                            <p:commandButton icon="ui-icon-check" ajax="true" actionListener="#{feedbackQueryComponent.onCheckActiveDeactive(fb.id)}" value="Active" rendered="#{!fb.selectedFlg}" update=":mainform"/>   
+                            <p:commandButton icon="ui-icon-close" ajax="true" actionListener="#{feedbackQueryComponent.onCheckActiveDeactive(fb.id)}"  value="Deactive" rendered="#{fb.selectedFlg}" update=":mainform"/>   
+                        </p:column>
+                        <p:column headerText="Delete" style="width:6%"> 
+                            <p:commandButton title="Delete" icon="ui-icon-circle-close" immediate="true" actionListener="#{feedbackQueryComponent.deleteServiceToBean(fb)}" oncomplete="PF('serviceDeactiveDialog').show()"/>
+                        </p:column>      
+                        <p:column headerText="Edit" style="width:6%">  
+                            <p:rowEditor/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Active Status" />
+                            </f:facet>
+                            <p:inputSwitch disabled="true" onLabel="Active" offLabel="Disabled" style="opacity: unset !important"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+
+            <p:dialog id="DeactiveDialog" appendTo="@(body)" modal="true" header="Delete Feedback Question" widgetVar="serviceDeactiveDialog" resizable="false" width="27%" > 
+                <h:form  id="deactiveform" style="padding:12px 12px 12px 12px">
+                    <center>
+                        <h:outputText value="Do You Want To Delete" /> <br/><br/>
+                        <p:commandButton icon="ui-icon-check" ajax="false" action="#{feedbackQueryComponent.deactivateService(request)}" update=":subform:detailTable" value="Yes" oncomplete="PF('serviceDeactiveDialog').hide();"  /> <p:spacer width="5"/> 
+                        <p:commandButton value="No" type="button"  icon="ui-icon-close" onclick="PF('serviceDeactiveDialog').hide()" />  
+                    </center>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog id="ActiveDeatciveDialog" appendTo="@(body)" modal="true" header="Change Status" widgetVar="queryActiveDeactiveDialog" resizable="false" width="27%" > 
+                <h:form  id="activedeactiveform" style="padding:12px 12px 12px 12px">
+                    <center>
+                        <h:outputText value="Do You Want To Active/Deactive the Status"  /> <br/><br/>
+                        <p:commandButton icon="ui-icon-check" ajax="false" action="#{feedbackQueryComponent.activateDeactiveStatus(request)}" update=":mainform:detailTable" value="Yes" oncomplete="PF('queryActiveDeactiveDialog').hide()"  /> <p:spacer width="5"/> 
+                        <p:commandButton value="No" type="button"  icon="ui-icon-close" onclick="PF('queryActiveDeactiveDialog').hide()" />  
+                    </center>
+                </h:form>
+            </p:dialog>
+        </c:if>
+    </ui:define>
+</ui:composition>

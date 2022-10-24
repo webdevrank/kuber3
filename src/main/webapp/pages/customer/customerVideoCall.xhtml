@@ -1,0 +1,936 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="../../templates/layoutCustomer.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"                
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <ui:define name="title">
+        Call an Service Agent
+    </ui:define>
+
+    <ui:define name="content">
+        <h:head>
+            #{customerComponent.selectPromoVideo()} 
+            <script>
+                $(document).ready(
+                    function () {
+                     document.getElementById('custsubmit').click();
+
+                  });
+                function redirectHome() {
+                     location.href="#{request.contextPath}/customerHome";
+                }
+            
+                var socketHostPublic = "#{socketHostPublic}";
+                var contextUrl="#{request.contextPath}";
+            </script>
+            <script  src="#{request.contextPath}/resources/js/bowser.min.js"></script>
+            <link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/css/bootstrap.css" />
+                       
+            <link rel="stylesheet" href="${request.contextPath}/resources/vidyo/hunter/VidyoConnector.css"/>
+            <link rel="stylesheet" href="${request.contextPath}/resources/vidyo/hunter/VidyoTextChat.css"/>
+            <script src="${request.contextPath}/resources/vidyo/hunter/VidyoConnector.js"></script>
+            <script src="${request.contextPath}/resources/vidyo/hunter/VidyoTextChat.js"></script>
+            <script src="${request.contextPath}/resources/js/script.js"></script>
+            <script type="text/javascript" src="#{request.contextPath}/resources/js/vidyoConnect.js"></script>
+
+            <script type="text/javascript" src="#{request.contextPath}/resources/js/socket.io.js" ></script>
+
+            <link rel="stylesheet" href="#{request.contextPath}/resources/css/customerVideoCall.css"/> 
+            <link type="text/css" rel="stylesheet" href="#{request.contextPath}/resources/css/tabs.css"></link>
+            <script type="text/javascript" src="#{request.contextPath}/resources/js/chat.js"></script>
+            <script type="text/javascript" src="#{request.contextPath}/resources/js/tdi.tabs.js"></script>
+            <script type="text/javascript" src="#{request.contextPath}/resources/js/webrtcchat.js"></script>
+            
+             <script type="text/javascript" src="#{request.contextPath}/resources/js/snapshotcust.js"></script>
+            <link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/css/cropper.css"/>
+            <script type="text/javascript" src="#{request.contextPath}/resources/js/cropper.js"></script>
+            
+            <link rel="stylesheet" href="${request.contextPath}/resources/css/customerVideoCall.css"/>
+            <script  src="#{request.contextPath}/resources/js/customJs/customerVideoCall.js"></script>
+            <link href="${request.contextPath}/resources/css/feedback.css" rel="stylesheet"/>
+            <link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/css/bootstrap.css" />
+            <link type="text/css" rel="stylesheet" href="${request.contextPath}/resources/css/video.css" />
+            <link type="text/css" rel="stylesheet" href="${request.contextPath}/resources/css/responsive.css" />
+  
+            <script type="text/javascript">
+                        var prototype = {};
+                        prototype.string = {};
+                        prototype.string.autolink = function (string, options) {
+                        if (!options)
+                                options = {};
+                                if (!options.limit)
+                                options.limit = 100;
+                                if (!options.tagFill)
+                                options.tagFill = '';
+                                var regex = /((http\:\/\/|https\:\/\/|ftp\:\/\/)|(www\.))+(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&amp;%@!\-\/]))?/gi;
+                                string = string.replace(regex, function (value) {
+                                value = value.toLowerCase();
+                                        var m = value.match(/^([a-z]+:\/\/)/);
+                                        var nice;
+                                        var url;
+                                 if (m)
+                                    {
+                                        nice = value.substring(0,value.indexOf('&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;'));
+
+                                        url = nice;
+                                    }
+                                    else
+                                    {
+                                        nice = value.substring(0,value.indexOf('&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;'));
+
+                                        url = 'http://' + nice;
+                                    }
+
+                                    return '&lt;a href="' + url + '"' + (options.tagFill !== '' ? (' ' + options.tagFill) : '') + ' style="color:blue;text-decoration:underline;" target="_blank"  &gt;' + prototype.string.autolinkLabel(nice, options.limit) + '&lt;/a&gt;';
+                                });
+                                return string;
+                        };
+                        prototype.string.autolinkLabel = function (text, limit) {
+
+                        if (!limit) {
+                            return text;
+                        }
+
+                        if (text.length > limit) {
+                            return text.substr(0, limit - 3) + '...';
+                        }
+
+                            return text;
+                        };
+                      
+                var popUp;                           
+                function openDocumentsCustom(link, linkName) {
+                    var url=link, title=linkName, w=650, h=570;
+
+
+                    var dualScreenLeft = window.screenLeft != undefined ? window.screenLeft : window.screenX;
+                    var dualScreenTop = window.screenTop != undefined ? window.screenTop : window.screenY;
+
+                    var width = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : screen.width;
+                    var height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : screen.height;
+
+                    var left = ((width / 2) - (w / 2)) + dualScreenLeft;
+                    var top = ((height / 2) - (h / 2)) + dualScreenTop;
+                    popUp = window.open(url, title, 'scrollbars=yes,toolbar=no,resizable=no,fullscreen=no,width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
+
+                    if (popUp === null || typeof (popUp) === 'undefined') {
+                        alert('Please disable your pop-up blocker and click the "Open document" button again.');
+                    }
+                    else {
+                        popUp.focus();
+                    }
+                }
+         
+        
+                var chatWindowState=0;
+                
+        
+                function refreshEssentials(){
+                        hideVideoStream();
+                        document.getElementById('_Everyone').style.background='white' ;
+                        document.getElementById('_Everyonespan').style.display='none' ;
+                         if (document.getElementById('collapse1').style.display=='block') {
+                            document.getElementById('tbutton').click();
+                        } 
+                       
+                        $('#tbutton img').src='#{request.contextPath}/resources/images/top.png';
+                        $('#parentRenderer').css("height", "56vh");
+                        $(".frame video > video").css("height", "56vh");
+                        chatWindowState = 0   
+                        
+                        stopCounterTimer();
+                        $('#spinner').hide();
+                        removeObjectTag();
+                        unmuteSpeaker();
+                        unmuteMic();
+                        unmuteVideo();
+                        document.getElementById("timer").innerHTML='';
+                        var cnt=0;
+                        resetTabs();
+                        resetuserList();
+                        dynamicallyRemoveJs();
+                        resetVidyoConnectorValues();
+                        $('#addstatictab li').each(function (i) {
+                            cnt++;
+                            if(cnt &gt; 2){
+                                $(this).remove();
+                             }
+                       
+                        });
+                        var counter=0;
+                        document.getElementById('Everyone').innerHTML='';
+                         $('#participant div').each(function (i) {
+                            counter++;
+                            if(counter &gt; 1){
+                                $(this).remove();
+                             }
+                         });
+                        $('#participantList').empty();
+                        $('#renderer').empty();
+                        document.getElementById('mutevideo').style.display='block';
+                        document.getElementById('unmutevideo').style.display='block';
+                        if (popUp &amp;&amp; !popUp.closed) {
+                            popUp.close();
+                        }
+                    } 
+                    
+       
+                function openPdfInTab(fileName) {
+                    
+                    var hrefTest = '${request.contextPath}/CustomerFormPdfDownload';
+                    //if (fileName !== "") {
+                        var popUp = window.open(hrefTest, '_blank', 'width=1,height=1,toolbar=0,menubar=0,location=0,status=0,scrollbars=0,resizable=1,left=10,top=10,visible=none');
+
+                        if (popUp === null || typeof (popUp) === 'undefined') {
+                            alert('Please disable your pop-up blocker and click the "Download File" link again.');
+                        }
+                        else {
+                            setTimeout(function() {
+                                popUp.close();
+                            }, 3000);
+                            popUp.focus();
+                        }
+                 }
+                 
+                 window.onunload = function() {
+                    if (popUp &amp;&amp; !popUp.closed) {
+                        popUp.close();
+                    }
+                };
+                function closeAllWindows(){
+                    if (popUp &amp;&amp; !popUp.closed) {
+                        popUp.close();
+                    }
+                }
+               
+            </script>
+        </h:head>
+        <h:body style="background: #c9c9c9">
+            <audio id="myaudio" loop="loop"  controls="controls" style="display:none;">  
+                <source src="#{request.contextPath}/promotional/demo.mp3" type="audio/mpeg" />  
+            </audio>
+            
+            <h:panelGroup id="spinnerReplace" layout="block" styleClass="spinner off" style="z-index: 1003; -moz-opacity: 0.9; opacity:.90; filter: alpha(opacity=90); width: 100%; height: 99%; display: none;">
+                <center>
+                    <video id="spinnerReplacerVideo" class="fullscreen"  style="width: 75%; height:84%; overflow: hidden; margin-top: 2%;" loop="true" >
+                        <source id="promoVideoDynaId" src="#{customerComponent.videoFileUrl}" type="video/mp4" />
+                        Your browser does not support HTML5 video.
+                    </video>
+                </center>
+            </h:panelGroup>
+           
+           <p:dialog style="display: none"  id="snapshotDia" widgetVar="snapshotvar" resizable="false" modal="true" appendTo="@(body)" closable="true"  header="Snapshot" onHide="clearPic();" position="center">
+                <center>
+                    <div id="form_snapshot_div">
+                    </div>
+                    <h:form id="snapForm" prependId="false" style="overflow: hidden;">
+                        <p:panel style="background: transparent;border: none;">
+                            
+                            <p:panelGrid columns="1" style="background: transparent;border: none;" styleClass="noBorders" >
+                                <p:commandButton id="previewDownload" onclick="PF('snapshotvar').hide();" value="Preview" ajax="true"  style="width:95px;"  /> 
+                            </p:panelGrid>
+                          
+                        </p:panel>
+                     </h:form>
+                    
+                </center>
+            </p:dialog>
+            
+            <p:dialog style="display: none" id="notAllowedSnapshotDia" widgetVar="notAllowedSnapshotvar" resizable="false" modal="true" appendTo="@(body)" closable="true"  header="Snapshot" onHide="clearPic();" position="center">
+                <h:form id="notAllowedSnapForm" prependId="false" style="overflow: hidden;padding:10px">
+                <center>
+                        <br/>
+                        <h:outputText value="VideoFeed For SnapShot Not Available" />
+                        <br/><br/>
+                        <p:commandButton ajax="true"  value="OK" style="margin-left: 5px;"  onclick="PF('notAllowedSnapshotvar').hide();"  />
+                    </center>
+               </h:form>
+            </p:dialog>
+            
+            <p:dialog id="previewSnapshotDia" widgetVar="previewSnapshotvar" resizable="false" modal="true" appendTo="@(body)" closable="true" header="Snapshot" onHide="clearPic();" position="center">
+                <center>   
+                    <div id="preview_form_snapshot_div"> <img id="cropped_preview"></img></div>
+                    <h:form id="previewSnapForm" prependId="false" style="overflow: hidden;padding:10px;">
+                        <p:panel style="background: transparent;border: none;" >
+                            <p:inputText id="scanval" value="#{customerComponent.binaryImage}" style="display:none" />
+                            <a id="download1"  onclick="PF('previewSnapshotvar').hide();" style="cursor: pointer;padding: 5px;border: 1px solid;box-shadow: 1px 1px 1px 1px;border-radius: 5px">Download as JPG</a>
+                            <a id="download"  onclick="PF('previewSnapshotvar').hide();" style="cursor: pointer; margin-left: 12px;padding: 5px;border: 1px solid;box-shadow: 1px 1px 1px 1px;border-radius: 5px">Self Image Upload</a>
+                            <p:commandButton id="captureImgBtn"  actionListener="#{customerComponent.handleSaveFromSnap()}" style="display:none" />
+                        </p:panel>
+                      </h:form>
+                </center>
+            </p:dialog>
+
+             <p:dialog id="exitSysDiag" widgetVar="exitSysVar" width="auto" header="Please stay connected" style=" max-height: 640px;overflow: hidden; border: none; margin-top: -14px;" closable="false"  minimizable="false"  maximizable="false" resizable="false" draggable="false" position="center" onShow="startReceiveCheck();" >
+                <center>
+                    <h:form id="exitSysForm" prependId="false" style="overflow: hidden;">
+                        <p:panel style="background: transparent;border: none;">
+                            <p>&nbsp;</p>
+                            <c:if test="#{request.getSession(). getAttribute('ormCustomerName') !=null}">
+                                <span style="color: red;"><h5>You are going to meet #{customerComponent.agentName}....</h5></span>
+                            </c:if>
+                             <c:if test="#{request.getSession(). getAttribute('ormCustomerName') ==null}">
+                                 <span style="color: red;"><h5>Session Invalid or Finished</h5></span>
+                            </c:if>
+                            <p>&nbsp;</p>
+                        </p:panel>
+                    </h:form>
+                </center>
+            </p:dialog>
+   
+            <p:dialog id="doCancelDia" header="Cancel" widgetVar="doCancelDialog" width="40%" style="max-height: 640px;overflow: auto;border: none; margin-top: -14px;" closable="false"  minimizable="false"  maximizable="false" resizable="false" draggable="false" position="center"   >
+                <center>
+                    <h:form id="cancelForm" prependId="false">
+                        <p:panel style="background: transparent;border: none;">
+                            <h3 style="color: red;" >Sorry!.. All Agents are Busy. Please try after sometime.</h3>
+                            <p>&nbsp;</p>
+                            <p>
+                                <p:commandButton icon="ui-icon-cancel" id="cancelButn" value="OK " actionListener="#{videoCallComponent.cancelCall(request)}" ajax="false" style="width:95px; margin-left: 10px;" onclick="hideSpinner(); PF('doCancelDialog').hide()" immediate="true" update=":burgeInForm" /> 
+                            </p>
+                        </p:panel>
+                    </h:form>
+                </center>
+            </p:dialog>
+
+            <p:dialog id="agentmiss" header="Notification" widgetVar="missagent" width="25%" style="max-height: 640px;overflow: auto;border: none; margin-top: -14px;" closable="false"  minimizable="false"  maximizable="false" resizable="false" draggable="false" position="center"   >
+                <center>
+                    <h:form id="missform" prependId="false" style="overflow: hidden;">
+                        <p:panel style="background: transparent;border: none;">
+                            You missed a Service Agent call
+                            <p></p>
+                            
+                             <p>
+                                <p:commandButton  id="missok" value="OK " ajax="false" style="width:95px;" onclick="PF('missagent').hide();"  /> 
+                            </p>
+                        </p:panel>
+                    </h:form>
+                </center>
+            </p:dialog>
+            
+            <h:form id="fileDownloadForm" prependId="false" style="display:none">
+                <p:inputText id="filePathName" value="#{customerComponent.uploadedFilePath}" label="File Path Name" />
+                <p:inputText id="fileName" value="#{customerComponent.fileName}" label="File Name" />
+                <p:commandButton id="fileReceive" value="download" action="#{customerComponent.updateLink()}" />
+            </h:form>
+            
+            <h:form id="burgeInForm" prependId="false" style="display:none;">
+            	<p:messages showDetail="false" showSummary="true" autoUpdate="true" closable="true" redisplay="false"/>
+                <p:commandButton id="backBtnform" value="End Call" onclick="disconnectCall();closeAllWindows()" immediate="true" style="display:none" partialSubmit="false" disabled="#{customerComponent.diasableEndCallButton}"  actionListener="#{customerComponent.refreshWhenCallEnds(request)}" oncomplete="endConferenceOperation();" update=":holdmsg :burgeInForm"  />
+                               
+                <p:commandButton id="restoreVideoBtn" value="Restore Video" ajax="true" style="display:none" onclick="restoreVideoConfrnce();"  immediate="true"  />
+                <p:commandButton id="restoreVideoBtn1" value="video pause" ajax="true" style="display:none" onclick="hideSpinner();"  immediate="true"  /> 
+                <p:commandButton id="showSpinnerbutn" value="show spinnere" ajax="true" style="display:none" onclick="showSpinner();"  immediate="true"  /> 
+                
+                <p:poll  interval="3" listener="#{callStartedComponent.checkSessionCallMstForCustomer(request)}" />
+             
+                <h:inputHidden id="roomurlTextId" value="#{customerComponent.roomUrl}"/>
+                <h:inputHidden id="custNametextId" value="#{customerComponent.custName}"/>
+                
+                <p:commandButton id="backBtn" value="End Call" onclick="disconnectCall();closeAllWindows()" immediate="true" style="display:none" partialSubmit="false"  actionListener="#{customerComponent.refreshWhenCallEnds(request)}" oncomplete="endConferenceOperation();" update=":holdmsg :burgeInForm"  />
+                <p:commandButton id="holdBtn" action="#{customerComponent.executeHold(request)}" style="display:none;" update=":imgIworksForm"/>
+                <p:commandButton id="unholdBtn" action="#{customerComponent.executeUnhold(request)}" style="display:none;" update=":imgIworksForm" />
+                <p:commandButton id="agentFoundClickOk" value="OK" onclick="hideSpinner();" style="display:none"  actionListener="#{customerComponent.refreshWhenCallStarts()}"  ajax="true" update=":burgeInForm :imgIworksForm"/>
+                <p:commandButton id="endBtn" value="End Call" onclick="closeAllWindows()"  style="display:none" immediate="true" partialSubmit="false" actionListener="#{customerComponent.refreshWhenCallEnds1(request)}"  update=":imgIworksForm"  /> 
+                <p:commandButton id="fileUploadBtn" value="Upload File" actionListener="#{customerComponent.searchParticipant(request)}" style="display:none"/>
+                <p:commandButton id="fileUploadOptionBtn" value="Upload File Options" actionListener="#{customerComponent.fileUploadOptions(request)}" style="display:none"/>
+               
+                <p:commandButton id="accopen" value="Account Open" style="display:none" onclick="PF('accOpenWar').show();" />
+                <p:commandButton id="loanapp" value="Account Open" style="display:none" onclick="PF('loanAppWar').show();" />
+                <p:commandButton id="accountOpenId" value="Forms" ajax="true"  onclick="PF('accountDlgWid').show();" /> 
+                <p:commandButton id="sendLinkBtnId" value="Send Link" actionListener="#{customerComponent.openSendLink()}" ajax="true" immediate="true" partialSubmit="false" onclick="showLoaderSpinner();" oncomplete="hideLoaderSpinner();"/> 
+            </h:form> 
+            
+            <p:dialog  id="showSendLinkId" widgetVar="showSendLinkWidId" resizable="false" responsive="true" closable="true" header="Send Link To Guest" modal="true" appendTo="@(body)" style="max-width:98%">
+                <h:form id="showSendLinkFormId" prependId="false" style="overflow:hidden">
+                    <center>
+                        <br></br>
+                        <p:panelGrid columns="2" style="background: transparent;border: none;margin-bottom: 10px;" styleClass="noBorders">
+                                <p:panel style="border: none !important;margin-left: -13px;"><h:outputText value="Email:" /><font color='red'>*</font></p:panel>
+                                <p:inputText id="guest_email" value="#{customerComponent.guestEmail}" validatorMessage="Email: Validation Error:Invalid email format" requiredMessage="Email Id Required" required="true" maxlength="50" style="width: 220px;">
+                                	<f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$"/>
+                                    <p:ajax event="blur" listener="#{customerComponent.checkErrors()}" immediate="true" partialSubmit="false" async="true" update="@this" />
+                               </p:inputText>
+                       </p:panelGrid>
+                        <br></br>
+                        <p:commandButton ajax="true" value="Send" action="#{customerComponent.sendMultiWayCallEmailToGuest()}" onclick="PF('showSendLinkWidId').hide();showLoaderSpinner();" oncomplete="hideLoaderSpinner();" style="margin-right: 20px"/>
+                        <p:commandButton ajax="true" value="Close"  onclick="PF('showSendLinkWidId').hide();hideLoaderSpinner();"/>
+                    </center>
+                </h:form>
+              </p:dialog> 
+
+
+            <p:dialog  id="agenthangs" widgetVar="agenthangup" resizable="false" responsive="true" closable="false" header=" Notification" modal="true" appendTo="@(body)" onShow="restoreVideoConfrnce();"  style="max-width:98%">
+                <h:form id="agenthangid" style="overflow:hidden;">
+                    <center>
+                        <br/><br/>
+                        <h:outputText value="Your Call Ended" style="padding:10px"/>
+                        <br/><br/><br/>
+                    </center>
+                </h:form>
+            </p:dialog> 
+
+            <p:dialog  id="agentNotrec" widgetVar="agentNotReceived" onShow="clearReceiveCheck();" responsive="true" resizable="false" closable="false" header=" Notification" modal="true" appendTo="@(body)" style="max-width:98%" >
+                <h:form id="agentrecid" style="overflow:hidden;">
+                    <center>
+                        <br/><br/>
+                        <h:outputText value="Sorry! Agent did not receive the call" style="padding:10px"/>
+                        <br/><br/><br/>
+                    </center>
+                </h:form>
+            </p:dialog> 
+
+            <p:dialog  id="joinretry" widgetVar="retryjoin" resizable="false" responsive="true" closable="true"  header="Try again" style="max-width:98%" >
+                <h:form id="customerretryform" style="overflow:hidden;">
+                    <center>
+                        <br></br>
+                        <h:outputText id="dialjointext" value="Conference join failed " style="padding:10px"/><br></br><br></br>
+                        <p:commandButton ajax="true"   value="Retry" style="margin-left: 5px;"  onclick="joinConferenceOperation();" />
+                        <p:commandButton ajax="true" value="Cancel" style="margin-left: 5px;"  onclick="PF('retryjoin').hide(); document.getElementById('backBtn').click();" />
+                    </center>
+                </h:form>
+            </p:dialog>
+
+            
+            
+            <p:dialog  id="thankyou" widgetVar="thankyu" resizable="false" closable="false"  header="Logging out" style="max-width:98%" >
+                <h:form id="anotherloggeedinform" style="overflow: hidden;">
+                    <center>
+                        <br></br>
+                        <h:outputText id="info" value="Thank you for your interest. It was our pleasure to assist you !" /><br></br><br></br>
+
+                    </center>
+                </h:form>
+            </p:dialog>
+            <!-- Feedback panel -->
+     
+            <p:dialog id="feedbackDia" header="Please give your feedback" widgetVar="feedbackdialog" closable="false" closeOnEscape="false" draggable="true" resizable="false"  width="auto"  appendTo="@(body)" modal="true" position="center" onShow="PF('agenthangup').hide();PF('fileuploadvar').hide();restoreVideoConfrnce();document.getElementById('incallcontainer').style.display = 'none';removeObjectTag();setIcons();"  style="max-width: 768px;"  >
+            	
+                <h:form id="feedbackIdForm" prependId="false" style="overflow: hidden;">
+                    <p:growl id="messages" showDetail="false" />
+                    <div style="width:100%">
+                        <div id="messageDiv" style="width:36%;float:left;">
+                            <div id="messageHeading" style="background: linear-gradient(to right, #3c86c5 , #2633);padding: 40px;">
+                                <table style="border:none;">
+                                    <tr>
+                                        <td><img src="#{request.contextPath}/resources/images/feedback.png"  alt="" title=""/></td>
+                                        <td style="color:#fff;font-size: x-large;padding-left: 20px;">Customer Feedback</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div id="messageContent" style="padding: 25px;">
+                                <h:outputText value="Dear Customer," style="font-weight: bold;" /><br/>
+					
+                                <h:outputText value="Thank you for using our Service channel." style="color:#848484;line-height: 1.5;" />
+                                <br/> <br/>
+                                <h:outputText value="Please spare a moment to tell us about your experience on this platform." style="color:#848484;line-height: 1.5;"/>
+									
+				<h:outputText value="Your feedback is very important to us." style="color:#848484;line-height: 1.5;"/>
+                            </div>            
+                          
+                        </div>    
+                          <div id="ratingDiv" style="float:right;background: #fff;padding: 40px; width: 53%;">
+                             <div style="width:100%">
+                                  <div style="float:left;width:100%;">
+                                    <table style="border: none;">
+                                        <tr>
+                                            <td style="vertical-align: top;padding-right: 10px;">
+                                               <h:outputText value="1." style="color:#848484;line-height: 1.5;" />
+                                             </td>
+                                            <td>
+                                               <h:outputText value="#{customerComponent.qualityQuery}" style="color:#5d5d5d;line-height: 1.5;"/><font color="red">*</font>
+                                             </td>
+                                        </tr>
+                                    </table>
+                                  </div>
+                                  <div style="float:left">
+                                        <table style="border: none;">
+                                            <tr>       
+                                              <td style="padding-left: 25px">
+                                                  <p:rating id="custrating" value="#{customerComponent.quality}" stars="5" cancel="false"  required="true" requiredMessage="Please rate first question"/>
+                                             </td>
+                                            </tr> 
+                                     </table>
+                                  </div>
+                                 <table style="border: none;width:100%;">
+                                     <tr>
+                                         <td>
+                                            <div style="background: #f0f0f0;height:3px;margin-top:10px;margin-bottom: 10px; "></div>
+                                         </td>
+                                     </tr>
+                                 </table>   
+                              </div>
+                              
+                              <div style="width:100%">
+                                   <div style="float:left;width:100%;">
+                                    <table style="border: none;">
+                                     <tr>
+                                        <td style="vertical-align: top;padding-right: 10px;">
+                                           <h:outputText value="2." style="color:#5d5d5d;line-height: 1.5;"/>
+                                         </td>
+                                        <td>
+                                           <h:outputText value="#{customerComponent.abilityQuery}" style="color:#848484;line-height: 1.5;"/><font color="red">*</font>
+                                        </td>
+                                     </tr>
+                                    </table>
+                                  </div>
+                                   <div style="float:left">
+                                        <table style="border: none;">
+                                            <tr>
+                                                 <td style="padding-left: 25px">
+                                                    <p:rating value="#{customerComponent.ability}" stars="5" cancel="false" required="true" requiredMessage="Please rate second question"/>
+                                                </td>
+                                            </tr> 
+                                        </table>
+                                   </div>
+                                   <table style="border: none;width:100%;">
+                                     <tr>
+                                         <td>
+                                            <div style="background: #f0f0f0;height:3px;margin-top:10px;margin-bottom: 10px; "></div>
+                                         </td>
+                                     </tr>
+                                 </table>
+                               </div>     
+                                 
+                              <div style="width:100%">
+                                   <div style="float:left;width:100%;">
+                                        <table style="border: none;">
+                                           <tr>
+                                               <td style="vertical-align: top;padding-right: 10px;">
+                                                  <h:outputText value="3." style="color:#5d5d5d;line-height: 1.5;"/>
+                                                </td>
+                                               <td>
+                                                   <h:outputText value="#{customerComponent.recommendQuery}" style="color:#848484;line-height: 1.5;"/><font color="red">*</font>
+                                                </td>
+                                           </tr>
+                                        </table>
+                                  </div>
+                                   <div style="float:left">
+                                      <table>
+                                            <tr>
+                                                <td style="padding-left: 25px">
+                                                <p:rating value="#{customerComponent.recommend}" stars="5" cancel="false" required="true" requiredMessage="Please rate third question" />
+                                            </td>
+                                            </tr> 
+                                        </table>
+                                   </div>
+                                    <table style="border: none;width:100%;">
+                                     <tr>
+                                         <td>
+                                            <div style="background: #f0f0f0;height:3px;margin-top:10px;margin-bottom: 10px; "></div>
+                                         </td>
+                                     </tr>
+                                 </table>
+                              
+                              </div>
+                                
+                                <div style="width:100%">
+                                  <div style="float:left">   
+                                    <table style="border: none;">
+                                       <tr>
+                                            <td>
+                                               <h:panelGrid columns="1" id="feedbackSubmitPanelGrid" >
+                                                   <p:inputTextarea id="opinion_text" rows="3" autoResize="false"  maxlength="250" placeholder="Anything else,you would like to share?If yes please comment here...." value="#{customerComponent.feedback}" style="color:#848484;line-height: 1.5;font-weight: normal" />
+                                             </h:panelGrid>
+                                           </td>
+                                       </tr> 
+                                        <tr>
+                                            <td>
+                                                <h:panelGrid columns="2" id="feedbackend" style="margin-top: 4%;">
+                                                   <p:commandButton id="submitBtn"  ajax="true" value="Submit" style="margin-left: 15px;color: #fff;font-size: 20px;background: linear-gradient(to right, #3c86c5 , #2633);;font-weight: normal;width:200px;padding:10px;" actionListener="#{customerComponent.giveFeedBackOfCall(request)}" />
+                                                   <p:commandButton id="skipbtn" style="color: #fff;font-size: 20px;background: linear-gradient(to right, #3c86c5 , #2633);font-weight: normal;width:200px;padding:10px;" immediate="true" actionListener="#{customerComponent.resetDataRedirect()}" onclick="PF('feedbackdialog').hide();redirectHome()"  value="Skip" styleClass="btn-call" />
+                                                </h:panelGrid>
+                                            </td>
+                                       </tr>
+                                       </table>
+                                  </div>
+                               </div>    
+                         </div>               
+                    </div>		
+		</h:form>
+               
+            </p:dialog>
+            
+            <p:dialog id="scheduledCallDialogId"  widgetVar="scheduledCallDlg" resizable="false" responsive="true" closable="false" header="Notification" style="overflow: hidden;height: 90px !important;max-width: 98%" onShow="showSpinner();playAudio();scheduleCallReceiveCheck();" onHide="hideSpinner();stopAudio();" >
+                <h:form style="overflow:hidden; height:90px">
+                    <center>
+                        <p:panel style="background: transparent;border: none;">
+                            <h5 style="color: red;" >Schedule call from Service Agent.</h5>
+                            <p:spacer/><br/>
+                            <p:panelGrid columns="2" style="background: transparent;border: none;" styleClass="noBorders"  >
+                                <p:commandButton id="schedulecall" value="Accept" onclick="PF('scheduledCallDlg').hide(); disableCancelDia();clearScheduleCallReceiveCheck();" actionListener="#{customerComponent.refreshWhenCallStarts()}" oncomplete="joinConferenceOperationSchedule();"   ajax="true"  update=":imgIworksForm"/>
+                                <p:commandButton   value="Reject"  ajax="true"  onclick="PF('scheduledCallDlg').hide();clearScheduleCallReceiveCheck();" actionListener="#{customerComponent.rejectScheduledCall(request)}" />
+                            </p:panelGrid>
+                        </p:panel>
+                    </center>
+                </h:form>
+            </p:dialog>
+
+             <p:dialog  id="fileuploadsuccessDia" widgetVar="fileuploadsuccess" responsive="true" resizable="false" closable="true"  header="Notification" modal="true" appendTo="@(body)" style="max-width: 98%;" >
+                            <center>
+                                <br/><br/>
+                                <h:outputText id="fText" style="font-weight: bold;padding: 10px;" value="File sent successfully" />
+                                <br/><br/><br/>
+                            </center>
+             </p:dialog>
+            
+            <p:dialog id="fileUploadDlgId" widgetVar="fileuploadvar" width="500" resizable="false" responsive="true" closable="true" header="Document Sending..." modal="true" appendTo="@(body)" onShow="$('#spinner').hide()" onHide="document.getElementById('doRefresh').click();" position="20,center">
+                        <h:form id="fileUploadVarForm" prependId="false" style="overflow:hidden;">
+                               <p:panel id="fileTitlePanel" rendered="#{!customerComponent.fileCaptionRenderer}" style="margin-top:13%;margin-bottom:13%;font-size: small">
+                                    <p:panelGrid columns="3" styleClass="noBorders" >                                
+                                        <h:outputLabel value="Document Title:" style="white-space: nowrap"/>
+                                            <p:inputTextarea id="fileCaption" autoResize="false" value="#{customerComponent.docTitle}" placeholder="Document Title" required="true" label="Title" requiredMessage="Please enter document title" onchange="this.value = this.value.trim()" maxlength="120">
+                                            </p:inputTextarea>       
+                                            <p:commandButton value="Next" actionListener="#{customerComponent.setFileTitle(request)}" style="margin-left: 5px;" update=":fileUploadVarForm"/>                                
+                                    </p:panelGrid>     
+                                  <p:message for="fileCaption" id="messageFor" redisplay="false"/>
+                                </p:panel>
+                                
+                            <p:commandButton id="doRefresh" value="OK" style="display:none" immediate="true" action="#{customerComponent.resetbuttons()}" ajax="true" update=":fileUploadVarForm"/>
+                                <p:panel id="fileUploadPanel" rendered="#{customerComponent.fileCaptionRenderer}">
+                                    <p:panelGrid columns="1" columnClasses="ui-grid-col-12" layout="grid" style="margin-top: 10px;">
+                                        <p:fileUpload id="fileuploadbutton" widgetVar="" fileUploadListener="#{customerComponent.fileUploadListener}" mode="advanced" dragDropSupport="false" multiple="false" fileLimit="1" fileLimitMessage="You can send only one file at a time" update="@this fileUploadMessages :burgeInForm" sizeLimit="20000000" allowTypes="/(\.|\/)(gif|jpg|jpeg|png|bmp|tiff|webp|rif|exif|txt|docx|doc|xls|xlsx|rtf|pdf|ppt|pptx)$/"  />
+                                       <p:growl id="fileUploadMessages" showDetail="true" />
+				    </p:panelGrid>
+                                    <p:panel id="imagePanel" rendered="#{customerComponent.multipleParticipant}">
+                                        <p:dataTable id="imagePanelT" style="white-space: nowrap" var="callDtls" value="#{customerComponent.conferenceAgentsDtoListForParticipantCallDtls}" rows="5" paginator="true"  paginatorPosition="bottom"  selection="#{customerComponent.conferenceAgentsDtoListForParticipantCallDtlsSelection}" rowKey="#{callDtls.empId}" rowIndexVar="rfindex"  >                        
+                                        <f:facet name="header">
+                                             Select Participants
+                                         </f:facet>
+                                            <p:ajax event="toggleSelect" update="@this"/>
+                                             <p:ajax event="rowSelectCheckbox"  update="@this"></p:ajax>
+                                             <p:ajax event="rowUnselectCheckbox" update="@this"></p:ajax>
+                                             <p:column selectionMode="multiple" style="width:10%" />
+                                             <p:column headerText="Name" sortBy="#{callDtls.empFirstName}" >
+                                                 <h:outputText value="#{callDtls.empFirstName} #{callDtls.empMidName} #{callDtls.empLastName}"/>
+                                             </p:column>
+                                             <p:column headerText="Description">
+                                                <h:outputText value="#{callDtls.empTypeName}"/>
+                                             </p:column>
+                                       </p:dataTable>
+                                    </p:panel>
+                                    <p:message for="fileuploadbutton" id="messageUp" redisplay="false"/>
+                              </p:panel>
+                        </h:form>
+            </p:dialog>
+            
+            <p:dialog id="accountDlgId"  header="Select Form"  widgetVar="accountDlgWid" responsive="true" resizable="false"  closable="true" modal="true" appendTo="@(body)" onHide="document.getElementById('resetOptions').click()" style="max-width: 98%">
+                <center>
+                    <h:form id="accountDlgFrmId" prependId="false"  style="overflow:hidden;">          
+                        <h:panelGrid id="panelGridaccount" columns="1"  style="margin-top: 10px;margin-bottom: 5px;" >
+                                                    
+                            <p:selectOneRadio id="roll" value="#{customerComponent.docTobeOpen}" label="Select Form " layout="pageDirection" onclick="document.getElementById('openDocDtlId').click()" rendered="#{!vidyoAgent.existingCustomer}">       
+                                <f:selectItem itemLabel="CASA" itemValue="acc"  /> 
+                                <f:selectItem itemLabel="Loan" itemValue="loan"  /> 
+                                <f:selectItem itemLabel="Credit Card" itemValue="cc"  /> 
+                            </p:selectOneRadio>
+                            <p:selectOneRadio id="roll1" value="#{customerComponent.docTobeOpen}" label="Select Form " layout="pageDirection" onclick="document.getElementById('openDocDtlId').click()" rendered="#{vidyoAgent.existingCustomer}">       
+                                <f:selectItem itemLabel="Loan" itemValue="loan"  /> 
+                            </p:selectOneRadio>
+                        </h:panelGrid>
+                            <p:commandButton id="openDocDtlId"  ajax="true" action="#{customerComponent.openDocDtl(request)}"   value=" Open " style="width:100px;display: none"  oncomplete="PF('accountDlgWid').hide();"   />
+                            <p:commandButton id="resetOptions"  ajax="true" action="#{customerComponent.resetOptions()}"   value=" Reset " style="width:100px;display: none"  oncomplete="PF('accountDlgWid').hide();" update=":accountDlgFrmId"  />
+                    </h:form>
+                </center>
+            </p:dialog>
+            
+            <p:dialog id="idcardId"  widgetVar="idcardDlg" resizable="false"  header="Upload Identity Proof" responsive="true" style="max-width: 98%">
+                <h:form prependId="false" id="idform" enctype="multipart/form-data" style="overflow:hidden"   >
+                    <center>
+                        <p:panel id="idpanel" style="border: none;margin-top: 10px;" >
+                            <p:panelGrid columns="1" style="background: transparent;border: none;" styleClass="noBorders"  > 
+                                <h:outputText value="File Size Must Be Less than 2MB" />
+                                <p:fileUpload id="upidcard" uploadLabel="Send to Executive" fileLimit="1" fileUploadListener="#{customerComponent.handleNationalIdUpload}" mode="advanced" previewWidth="90" label="Select a File" sizeLimit="2097152" allowTypes="/(\.|\/)(gif|jpg|jpeg|png|bmp|tiff|webp|rif|exif|pdf)$/" invalidSizeMessage="File must be less than 2MB"    required="true" requiredMessage="Please select a file to upload."   update=":idcardId"/>
+                            </p:panelGrid>
+                        </p:panel> 
+                    </center>
+                </h:form>
+            </p:dialog>
+            
+            <p:dialog id="addressproofId"  widgetVar="addressproofDlg" resizable="false" responsive="true"  header="Upload Aadhaar offline XML" style="max-width: 98%">
+                <h:form prependId="false" id="addressform" enctype="multipart/form-data" style="overflow:hidden"   >
+                    <center>
+                        <p:panel id="addresspanel" style="border: none;margin-top: 10px;" >
+                            <p:panelGrid columns="1" style="background: transparent;border: none;" styleClass="noBorders"  > 
+                                <h:outputText value="File Size Must Be Less than 2MB" />
+                                <p:fileUpload id="upaddproof" uploadLabel="Send to Executive" fileLimit="1" fileUploadListener="#{customerComponent.handleAddressProofUpload}" mode="advanced" previewWidth="90" label="Select a File" sizeLimit="2097152" allowTypes="/(\.|\/)(xml)$/" invalidSizeMessage="File must be less than 2MB"    required="true" requiredMessage="Please select a file to upload."  update=":addressform"/>
+                            </p:panelGrid>
+                        </p:panel> 
+                    </center>
+                </h:form>
+            </p:dialog>
+            
+            <p:dialog  id="accOpendia" widgetVar="accOpenWar" resizable="false"  responsive="true" header=" Notification" modal="true" appendTo="@(body)" style="max-width: 98%" >
+                <h:form id="accopenform" style="overflow:hidden;">
+                    <center>
+                        <br/>
+                        <h:outputText value="Your Account has been verified Successfully." />
+                        <br/><br/>
+                    </center>
+                </h:form>
+            </p:dialog>
+            
+            <p:dialog  id="loanAppdia" widgetVar="loanAppWar" resizable="false" responsive="true" header=" Notification" modal="true" appendTo="@(body)" style="max-width: 98%">
+                <h:form id="loanappform" style="overflow:hidden;">
+                    <center>
+                        <br/>
+                        <h:outputText value="Your Loan has been Approved Successfully." />
+                        <br/><br/>
+                    </center>
+                </h:form>
+            </p:dialog>
+            
+            <select id="windowShares" style="display:none">
+                 <option value='0'>None</option>
+            </select>
+            
+            
+            <div class="user_list" style="display:none;" >
+                <h:form id="vidyowebrtcform" prependId="false">
+                    <div id="optionsParameters" >
+                        <li style="display:none;">
+                            <label for="host">Host</label>
+                            <p:inputText  id="host" value="#{customerComponent.portal}"/>
+                        </li>
+                        <li style="display:none;">
+                            <label for="displayName">Display Name</label>
+                            <p:inputText id="displayName" placeholder="Display Name" value="#{customerComponent.custName}"/>
+                        </li> 
+                        <li style="display:none;">
+                            <label for="roomKey">Room Key</label>
+                            <p:inputText id="roomKey" placeholder="room-key" value="#{customerComponent.roomUrl}"/>
+                        </li> 
+                        <li style="display:none;">
+                            <label for="resourceId">Resource ID</label>
+                            <p:inputText id="resourceId" placeholder="Conference Reference" value="#{customerComponent.roomName}"/>
+                        </li> 
+                     </div>
+                 </h:form>
+              </div> 
+                <p:dialog  id="sett" widgetVar="settingsDia" resizable="false" closable="true" header="Settings" modal="true" appendTo="@(body)" >
+                        <table style="border: none"> 
+                             <tr>
+                                 <td style="padding:10px"><label for="cameras">Cameras</label></td>
+                                 <td style="padding:10px">
+                                     <select id="cameras" style="width:195px">
+                                           <option value='0'>None</option>
+                                    </select>
+                                 </td>
+                             </tr>   
+                            <tr>
+                                <td style="padding:10px"><label for="microphones">Microphones</label></td>
+                                <td style="padding:10px">   
+                                    <select id="microphones" style="width:195px">
+                                       <option value='0'>None</option>
+                                     </select>
+                                </td>       
+                           </tr>    
+                            <tr>
+                                 <td style="padding:10px">     
+                                    <label for="speakers">Speakers</label>
+                                 </td>
+                                 <td style="padding:10px">
+                                    <select id="speakers" style="width:195px">
+                                        <option value='0'>None</option>
+                                    </select>
+                                 </td>
+                             </tr>
+                         </table>
+                 </p:dialog>   
+         
+
+         
+            
+           <div id="splash" class="container video_wrap" style="text-align: center;margin-top: 10%; overflow: hidden;display:none">
+                    <img src="${request.contextPath}/resources/images/logo-big.jpg"/>
+            </div> 
+           
+           <div id="incallcontainer" class="container video_wrap" style="display:none;">
+               <div class="row" style="margin-left: 15px;margin-top:15px">
+                    <div id="participantDiv" class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+			<div class="user_list" >
+                            <div class="user_head_wrap">
+                                <div class="user_head">
+                                    <div class="col-md-9 col-sm-9 col-xs-8">
+                                        <h2 class="private_chat">Click on participant name for private chat</h2>
+                                    </div>
+                                    <div class="col-md-2 col-sm-3 col-xs-4">
+                                       <div id="webcasting" title="Webcasting" class="toolbarButton" style="display:none"></div>
+                                       <div id="recorder" title="Record Status" class="toolbarButton"></div>  
+                                    </div>
+                                </div>
+                            </div>
+                            <div  id='participantList'>
+                                <div class="user_details" >
+                                    <h2></h2>
+                                </div>
+                            </div>
+                        </div>
+		    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-6 col-xs-12" style="max-height: 81vh;">
+			<div id="videoHead" class="video_head_wrap">
+			    <div class="video_head">
+				<div class="col-md-7 col-sm-7 col-xs-7">
+                                     <button class="listing_btn" id="endcallcust" onclick="document.getElementById('backBtn').click();" title="End call" >
+                                         <img src="#{request.contextPath}/resources/images/endcall.png" alt="" />
+                                     </button>
+                                    <button class="listing_btn" id="uploadFile" title="Upload File" onclick="$('#spinner').show();document.getElementById('fileUploadBtn').click();" >
+                                        <img src="#{request.contextPath}/resources/images/fileshare.jpg" alt="" />
+                                    </button>
+                                    
+				    <button id="stopshareScreen" class="listing_btn" onclick="stopShare()" title="Stop Share" style="display: none;">
+					<img src="${request.contextPath}/resources/images/stopshare.png" alt="" />
+				    </button>
+                                    <button id="shareScreen" class="listing_btn" title="Share"  onclick="startShare()" >
+ 					<img src="${request.contextPath}/resources/images/sharescreen.png" alt="" />
+                                    </button>
+                                  
+                                    <button class="listing_btn" id="fullscreenvid" onclick="makeFullScreen();" title="Full Screen">
+					<img src="${request.contextPath}/resources/images/fullscreen.png" alt="" />
+				    </button>
+                                    <button class="listing_btn" id="capture">
+                                        <img src="#{request.contextPath}/resources/images/snapshot.png" title="Snapshot" alt=""/>
+                                    </button>
+                                    <button class="listing_btn" id="setting1" onclick="PF('settingsDia').show();" title="Settings">
+                                        <img src="#{request.contextPath}/resources/images/settings.png" alt=""  />
+                                    </button>
+                                     <button class="listing_btn" id="cobrowseBtn" onclick="document.getElementById('accountOpenId').click();" title="Forms">
+                                         <img src="#{request.contextPath}/resources/images/cobrowse.png" alt="" />
+                                     </button>
+                   		</div>
+                                <div class="col-md-5 col-sm-5 col-xs-5" style="float:right">
+                                    <button class="video_icon_btn pull-right" id="mutemic" onclick="muteMic();" title="Mute/Un-Mute Microphone">
+					<img src="${request.contextPath}/resources/images/mute_mic.png" alt="" />
+                                    </button>
+                                    <button class="video_icon_btn pull-right" id="unmutemic" onclick="unmuteMic();" title="Mute/Un-Mute Microphone" style="display: none; background: red;">
+					<img src="${request.contextPath}/resources/images/unmute_mic.png" alt="" />
+                                    </button>
+                                    <button class="video_icon_btn pull-right" id="mutespeaker" onclick="muteSpeaker();" title="Mute/Un-Mute Speaker">
+                                        <img src="${request.contextPath}/resources/images/mute_speaker.png" alt="" />
+                                    </button>
+                                    <button class="video_icon_btn pull-right" id="unmutespeaker" onclick="unmuteSpeaker();" title="Mute/Un-Mute Speaker" style="display: none; background: red;">
+                                        <img src="${request.contextPath}/resources/images/unmute_speaker.png" alt="" />
+                                    </button>
+                                    <button class="video_icon_btn pull-right" id="mutevideo" onclick="muteVideo();" title="Show/Hide Video">
+                                        <img src="${request.contextPath}/resources/images/mute_video.png" alt="" />
+                                    </button>
+                                    <button class="video_icon_btn pull-right" id="unmutevideo" onclick="unmuteVideo();" title="Show/Hide Video" style="display: none;">
+                                        <img src="${request.contextPath}/resources/images/unmute_video.png" alt="" />
+                                    </button>
+                                   <div id="timer" style="color: red;float:right;font-size: small;padding-top: 10px"></div>
+                                    <a class="btn btn-inverse btn-block" href="#" title="Replace Video" id="inCallVideoReplaceButton" style="visibility: hidden;display:none" onclick="replaceVideoStrm();" ></a>
+                                    <a class="btn btn-inverse btn-block" href="#" title="new Video" id="inCallVideoReplaceButton1" style="visibility: hidden;display:none" onclick="showSpinner();" ></a>
+				</div>
+                	    </div>
+                       </div>
+                        <div id="videoHeadchat" style="width:40px">
+                            <button class="listing_btn" id="endcallcustchat" onclick="document.getElementById('backBtn').click();" title="End call">
+                                <img src="#{request.contextPath}/resources/images/endcall.png" alt="" />
+                            </button>
+                            <button class="listing_btn" id="uploadFilechat" title="Upload File" onclick="$('#spinner').show();document.getElementById('fileUploadBtn').click();"  >
+                                <img src="#{request.contextPath}/resources/images/fileshare.jpg" alt="" />
+                            </button>
+                            <button class="listing_btn" id="cobrowseBtnchat" onclick="document.getElementById('accountOpenId').click();" title="Forms">
+                                <img src="#{request.contextPath}/resources/images/cobrowse.png" alt="" />
+                            </button>
+                        </div>
+                        
+			<div id="vidyoConnector" style="height:60vh">
+                                <div id="inCallContainer">
+                                    <div id="parentRenderer" style="height:60vh">
+                                        <div id="renderer" class="pluginOverlay"></div>
+                                    </div>
+                                    <div id="toolbarLeft" class="toolbar">
+                                         <span id="participantStatus"></span>
+                                    </div>
+                                    <div id="toolbarRight" class="toolbar">
+                                        <span id="connectionStatus">Initializing</span>
+                                    </div>
+                                    <div id="toolbarCenter" class="toolbar" style="display:none" >
+                                        <div>
+                                            <button id="cameraButton" title="Camera Privacy" class="toolbarButton cameraOn"></button>
+                                            <button id="joinLeaveButton" title="Join Conference" class="toolbarButton callStart"></button>
+                                            <button id="microphoneButton" title="Microphone Privacy" class="toolbarButton microphoneOn"></button>
+                                            <button id="speakerButton" title="Speaker Privacy" class="toolbarButton speakerOn"></button>
+                                            <button id="chatButton" title="Toggle Chat" class="notification toolbarButton chaticon">
+                                                   <span class="badge hidden" id="new-message-notification"></span>
+                                            </button>
+                                        </div>
+	                            </div>
+                                </div>
+                         </div>
+					
+				
+                        <div id="addstatictabdiv"> 
+                            <ul class="tabs" id="addstatictab" style="margin-top:5px">
+                                <li><button href="#collapse1" id="tbutton" class="nav-toggle" style="background:transparent"><img src='#{request.contextPath}/resources/images/top.png' height='20px' width='28px' style="margin-top: -2px;margin-left: 1px;"></img></button></li>
+                                <li class="selected" id="lieveryone"><a href="#Everyone" id="_Everyone" onclick="setEvery();">Everyone<span id="_Everyonespan" style="width:20px;border-radius: 13px;text-align:center;margin-left: 2px;padding: 2px;"></span></a></li>
+                            </ul>
+                            <div id="collapse1" style="display:none;margin-top: -3px;">
+                                <div class="tabcontents" id="participant">
+                                    <div id="Everyone" ></div>
+                                </div>
+                                <div id="contentWrap">
+                                    <h:form prependId="false" id="sendSection" style="margin-top: 5px;" >
+                                           <div id="chatWrap">
+                                            <p:inputText id="msgToSend" value="" style="width:75%" maxlength="250"/>   
+                                            <p:commandButton  type="button" id="send" value="Send"    onclick="sendMessage();document.getElementById('msgToSend').value='';" style="margin-left:5px;"/>
+                                        </div>
+                                    </h:form>
+                                 </div>
+                            </div>
+                    </div>
+                </div><!--col-lg-8-->
+             </div><!--row-->
+        </div><!--container-->
+
+            <div id="custIdWrap" style="display:none">
+                <h:form  prependId="false" id="setCustId" >
+                    <p:inputText id="agentId" value="#{customerComponent.customerSocket}" label="customer socket" />
+                    <p:commandButton  id="custsubmit" ajax="true" value="submit"  onclick="connected();" />
+                </h:form>
+               
+                 <h:form id="inCallChatFormData"   prependId="false" >
+                      <p:inputTextarea id="inCallChatTextArea" value="#{vidyoAgent.chatText}"  rows="2" style="visibility: hidden"    />
+                      <p:inputTextarea id="inCallChatTabsArea" value="#{vidyoAgent.chatText1}"  rows="2" style="visibility: hidden"    />
+                      <p:commandButton id="chatsave" action="#{vidyoAgent.saveChat()}" value="Save" style="visibility: hidden" />
+                 </h:form>
+            </div>
+
+  <script>
+    
+       $(document).ready(
+            function () {
+                PF('exitSysVar').show();
+                document.getElementById('msgToSend').onkeydown = function(e){
+                    if (e.keyCode === 13){
+                          document.getElementById('send').click();
+                          document.getElementById('msgToSend').value = '';
+                    }
+                };
+                               
+             setInterval(function () {
+                    var cusid_ele = document.getElementsByClassName('chatMessage');
+                        for (var i = 0; i &lt; cusid_ele.length; ++i) {
+                              var item = cusid_ele[i];
+                              var elms = item.getElementsByTagName("a");
+                              if (elms.length === 0)
+                                 {
+                                    item.innerHTML = prototype.string.autolink(item.innerHTML, '');
+                        }
+                                   }
+                    }, 3000);
+             });
+                       
+         </script>
+       
+        </h:body>
+    </ui:define>
+    <ui:define name="right">
+     
+    </ui:define> 
+</ui:composition>

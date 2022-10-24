@@ -1,0 +1,338 @@
+<pretty-config xmlns="http://ocpsoft.org/schema/rewrite-config-prettyfaces"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://ocpsoft.org/schema/rewrite-config-prettyfaces
+                      http://ocpsoft.org/xml/ns/prettyfaces/rewrite-config-prettyfaces.xsd">
+
+
+    <url-mapping id="welcome1"> 
+        <pattern value="/welcome1" />
+        <view-id value="/faces/welcomeLinks.xhtml" />
+    </url-mapping>
+    <url-mapping id="login">
+        <pattern value="/login" />
+        <view-id value="/faces/loginEmployee.xhtml" />
+    </url-mapping>
+    <url-mapping id="welcome">
+        <pattern value="/welcome" />
+        <view-id value="/faces/index.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="loginCustomer"> 
+        <pattern value="/loginCustomer" />
+        <view-id value="/faces/loginCustomer.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="dashboard">
+        <pattern value="/dashboard" />
+        <view-id value="/faces/pages/employee/dashboard.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="addEmployee">
+        <pattern value="/addEmployee" />
+        <view-id value="/faces/pages/employee/createEmployee.xhtml" />
+    </url-mapping>
+
+    <url-mapping id="listEmployee">
+        <pattern value="/listEmployee" />
+        <view-id value="/faces/pages/employee/listEmployee.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="editEmployee">
+        <pattern value="/editEmployee" />
+        <view-id value="/faces/pages/employee/editEmployee.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="addEmployeeType">
+        <pattern value="/addEmployeeType" />
+        <view-id value="/faces/pages/employee/newEmployeeType.xhtml" />
+    </url-mapping>
+
+    <url-mapping id="listEmployeeType">
+        <pattern value="/listEmployeeType" />
+        <view-id value="/faces/pages/employee/listEmployeeType.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="editEmployeeType">
+        <pattern value="/editEmployeeType" />
+        <view-id value="/faces/pages/employee/editEmployeeType.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="addLanguage">
+        <pattern value="/addLanguage" />
+        <view-id value="/faces/pages/language/addNewLanguage.xhtml" />
+    </url-mapping>
+
+    <url-mapping id="listLanguage">
+        <pattern value="/listLanguage" />
+        <view-id value="/faces/pages/language/listLanguage.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="editLanguage">
+        <pattern value="/editLanguage" />
+        <view-id value="/faces/pages/language/editLanguage.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="addService">
+        <pattern value="/addService" />
+        <view-id value="/faces/pages/service/createService.xhtml" />
+    </url-mapping>
+
+    <url-mapping id="listService">
+        <pattern value="/listService" />
+        <view-id value="/faces/pages/service/listServices.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="editService">
+        <pattern value="/editService" />
+        <view-id value="/faces/pages/service/editService.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="inviteCustomer">
+        <pattern value="/inviteCustomer" />
+        <view-id value="/faces/pages/category/inviteCustomer.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="viewSkill">
+        <pattern value="/viewSkill" />
+        <view-id value="/faces/pages/language/deleteEmployeeLanguage.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="assignedSkillList">
+        <pattern value="/assignedSkillList" />
+        <view-id value="/faces/pages/language/employeeSkill.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="assignSkill">
+        <pattern value="/assignSkill" />
+        <view-id value="/faces/pages/language/addSkillToEmployee.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="addReason">
+        <pattern value="/addReason" />
+        <view-id value="/faces/pages/reason/addNewReason.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="editReason">
+        <pattern value="/editReason" />
+        <view-id value="/faces/pages/reason/editReason.xhtml" />
+    </url-mapping>
+
+    <url-mapping id="listReason">
+        <pattern value="/listReason" />
+        <view-id value="/faces/pages/reason/listReason.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="currentScheduleStatus">
+        <pattern value="/currentScheduleStatus" />
+        <view-id value="/faces/pages/schedule/currentScheduleCallStatus.xhtml" />
+    </url-mapping>
+        
+               
+    <url-mapping id="currentAgentStatus">
+        <pattern value="/currentAgentStatus" />
+        <view-id value="/faces/pages/employee/currentAgentStatusReport.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="bargeInCallList">
+        <pattern value="/bargeInCallList" />
+        <view-id value="/faces/pages/agent/bargeInCallReport.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="bargeInCall">
+        <pattern value="/bargeInCall" />
+        <view-id value="/faces/pages/agent/bargeInCall.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="viewPreviousChat">
+        <pattern value="/viewPreviousChat" />
+        <view-id value="/faces/pages/supervisor/viewPreviousChat.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="viewChat">
+        <pattern value="/viewChat" />
+        <view-id value="/faces/pages/supervisor/viewChat.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="dashboardAgent">
+        <pattern value="/dashboardAgent" />
+        <view-id value="/faces/pages/agent/agentDashboard.xhtml" />
+    </url-mapping>
+	
+   	
+    <url-mapping id="dashboardSpecialist">
+        <pattern value="/dashboardSpecialist" />
+        <view-id value="/faces/pages/agent/specialistDashboard.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="dashboardScheduledAgent">
+        <pattern value="/dashboardScheduledAgent" />
+        <view-id value="/faces/pages/agent/scheduledagentDashboard.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="dashboardSupervisor">
+        <pattern value="/dashboardSupervisor" />
+        <view-id value="/faces/pages/employee/supervisorDashboard.xhtml" />
+    </url-mapping>
+   
+    <url-mapping id="viewScheduledCallReport">
+        <pattern value="/viewScheduledCallReport" />
+        <view-id value="/faces/pages/reports/scheduledCallReport.xhtml" />
+    </url-mapping>
+
+    <url-mapping id="connectedCallReport">
+        <pattern value="/connectedCallReport" />
+        <view-id value="/faces/pages/reports/connectedCallsReport.xhtml" />
+    </url-mapping>
+
+    <url-mapping id="callTransferReport">
+        <pattern value="/callTransferReport" />
+        <view-id value="/faces/pages/reports/callTransferReport.xhtml" />
+    </url-mapping>
+
+    <url-mapping id="droppedCallReport">
+        <pattern value="/droppedCallReport" />
+        <view-id value="/faces/pages/reports/droppedCallReport.xhtml" />
+    </url-mapping>
+
+    <url-mapping id="missedCallReport">
+        <pattern value="/missedCallReport" />
+        <view-id value="/faces/pages/reports/abandonCallReport.xhtml" />
+    </url-mapping>
+
+    <url-mapping id="callRecordReport">
+        <pattern value="/callRecordReport" />
+        <view-id value="/faces/pages/supervisor/listCallRecords.xhtml" />
+    </url-mapping>
+
+    <url-mapping id="dashboardCustomer">
+        <pattern value="/dashboardCustomer" />
+        <view-id value="/faces/pages/customer/customerDashboard.xhtml" />
+    </url-mapping>
+    
+    <url-mapping id="listPromotionalVideo">
+        <pattern value="/listPromotionalVideo" />
+        <view-id value="/faces/pages/promotionalVideo/listPromotionVideo.xhtml" />
+    </url-mapping>
+  
+    <url-mapping id="ServiceTime">
+        <pattern value="/ServiceTime" />
+        <view-id value="/faces/pages/configuration/addOTPAndServiceTime.xhtml" />
+    </url-mapping>
+    <url-mapping id="downTime">
+        <pattern value="/downTime" />
+        <view-id value="/faces/pages/configuration/addDownTime.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="feedbackQuery">
+        <pattern value="/feedbackQuery" />
+        <view-id value="/faces/pages/configuration/addeditFeedbackQuery.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="auditTrails">
+        <pattern value="/auditTrails" />
+        <view-id value="/faces/pages/auditTrail/listAuditTrails.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="customerHome">
+        <pattern value="/customerHome" />
+        <view-id value="/faces/customerHome.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="customerInvite">
+        <pattern value="/customerInvite" />
+        <view-id value="/faces/customerInviteHome.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="videoCallCustomer">
+        <pattern value="/videoCallCustomer" />
+        <view-id value="/faces/pages/customer/customerVideoCall.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="fileDetails">
+        <pattern value="/fileDetails" />
+        <view-id value="/faces/pages/supervisor/fileReportForCallRecords.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="viewPreviousChat">
+        <pattern value="/viewPreviousChat" />
+        <view-id value="/faces/pages/supervisor/viewPreviousChat.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="viewChatHistory">
+        <pattern value="/viewChatHistory" />
+        <view-id value="/faces/pages/reports/viewChatHistory.xhtml" />
+    </url-mapping>
+        
+   
+ 
+    <url-mapping id="feedBackReport">
+        <pattern value="/feedBackReport" />
+        <view-id value="/faces/pages/reports/feedBackReport.xhtml" />
+    </url-mapping>
+   
+    <url-mapping id="customerWaitingStatus">
+        <pattern value="/customerWaitingStatus" />
+        <view-id value="/faces/pages/employee/customerWaitingReport.xhtml" />
+    </url-mapping>
+       
+    <url-mapping id="activityReport">
+        <pattern value="/activityReport" />
+        <view-id value="/faces/pages/reports/agentWiseActivityReport.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="downTimeReport">
+        <pattern value="/downTimeReport" />
+        <view-id value="/faces/pages/reports/downTimeReport.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="fileDetails">
+        <pattern value="/fileDetails" />
+        <view-id value="/faces/pages/supervisor/fileReportForCallRecords.xhtml" />
+    </url-mapping>
+        
+           
+    <url-mapping id="custSchedule">
+        <pattern value="/custSchedule" />
+        <view-id value="/faces/pages/customer/customerScheduleCall.xhtml" />
+    </url-mapping>
+	
+    <url-mapping id="custScheduleCheck">
+        <pattern value="/custScheduleCheck" />
+        <view-id value="/faces/pages/customer/customerScheduleCallCheck.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="guestCallCheck">
+        <pattern value="/guestCallCheck" />
+        <view-id value="/faces/pages/customer/guestCallCheck.xhtml" />
+    </url-mapping>
+    <url-mapping id="endGuestCall">
+        <pattern value="/endGuestCall" />
+        <view-id value="/faces/pages/customer/endGuest.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="guestCall">
+        <pattern value="/guestCall" />
+        <view-id value="/faces/pages/customer/guestCall.xhtml" />
+    </url-mapping>
+	
+    <url-mapping id="RMCustomerMap">
+        <pattern value="/RMCustomerMap" />
+        <view-id value="/faces/pages/maps/customerRMMap.xhtml" />
+    </url-mapping>
+	
+    <url-mapping id="SrmRmMap">
+        <pattern value="/SrmRmMap" />
+        <view-id value="/faces/pages/maps/rmSrmMap.xhtml" />
+    </url-mapping>
+    
+     <url-mapping id="formCustomer">
+        <pattern value="/formCustomer" />
+        <view-id value="/faces/pages/forms/viewCustomerFormAccount.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="formLoan">
+        <pattern value="/formLoan" />
+        <view-id value="/faces/pages/forms/viewCustomerFormLoan.xhtml" />
+    </url-mapping>
+
+</pretty-config>

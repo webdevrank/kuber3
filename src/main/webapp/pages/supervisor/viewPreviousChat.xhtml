@@ -1,0 +1,130 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="../../templates/layout.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="title">
+        View Previous Chat
+    </ui:define>
+
+
+    <ui:define name="content">
+        <h:head>
+           
+            <link type="text/css" rel="stylesheet" href="#{request.contextPath}/resources/css/tabs.css"></link>
+            <script type="text/javascript" src="#{request.contextPath}/resources/js/tdi.tabs.js"></script>
+            <script type="text/javascript" src="#{request.contextPath}/resources/js/webrtcchat.js"></script>
+            <script type="text/javascript" src="#{request.contextPath}/resources/js/download.js"></script>
+            <script>
+                 function setScrollToEndForEveryone(){
+//                    document.getElementById('_Everyone').click();
+                    var elms = document.getElementById('Everyone').getElementsByTagName("div");
+                    if(elms.length &gt; 0){
+                         var chatelement = elms[elms.length - 1];
+                         chatelement.scrollIntoView();
+                    }
+                             
+                }  
+                 $(document).ready(function () {
+                       $('li').removeClass("selected");
+                       $('a').removeClass("unselected").addClass("selected");
+                       $('ul > li > a').each(function() {
+                           $(this).removeAttr('style');
+                            var str=$(this).text();
+                            if (str.indexOf("Everyone") >= 0){
+                                $(this).text("Everyone");
+                            }
+                       });
+                       $('ul > li > a > span').each(function() {
+                            $(this).removeAttr('style');
+                            $(this).css("display","none");
+                       });
+                       $(".tabcontents > div").css("display","none");
+                       document.getElementById('_Everyone').click();
+
+                  });
+                  
+                  function callDownload(file,name,type){
+                    download(file,name,type);
+                 }
+                  
+                 
+
+            </script> 
+            <style>
+                .nav-toggle{
+                    display:none !important;
+                }
+                .tabcontents{
+                    margin-left: 3px !important;
+                }
+                .tip {
+                    width: 0px;
+                    height: 0px;
+                    position: absolute;
+                    background: transparent;
+                    border: 10px solid #B3C0CB;
+                }
+
+                .tip-up {
+                    top: -21px;
+                    left: 2px;
+                    border-right-color: transparent;
+                    border-left-color: transparent;
+                    border-top-color: transparent;
+                }
+                .dialogbox .body {
+                    position: relative;
+                    width: auto;
+                    height: auto;
+                    margin: 10px 5px;
+                    padding: 3px;
+                    background-color: #b8d6c7;
+                    border-radius: 3px;
+                    border: 1px solid #B3C0CB;
+                    color:black;
+                    min-width: 15px;
+                }
+
+                .body .message {
+                  border-radius: 3px;
+                  font-family: Arial;
+                  font-size: 14px;
+                  color: black;
+                  min-width: 15px;
+                }
+                .dialogbox{
+                    min-width: 15px;
+                }
+                ul.tabs{
+                    margin-bottom: 7px !important;
+                }
+                .headerRightTwo{
+                    display:none !important;
+                }
+                #participant{
+                    
+                    margin-top: 7px;
+                }
+            </style>
+        </h:head>
+
+        <h:body >     
+            <h:form style="margin-top: 20px;">
+                <h:panelGroup layout="block"  id="addstatictabdiv" >
+                    <h:outputText value="#{callRecordsComponent.chatHtml}" escape="false" />
+                </h:panelGroup>
+            </h:form>
+        </h:body>
+    </ui:define>
+    <script>
+        $('li').removeClass("selected");
+    </script>
+</ui:composition>

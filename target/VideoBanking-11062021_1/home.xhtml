@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <f:view contentType="text/html">
+    <h:head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <title>Video Banking</title>
+        <link rel="stylesheet" href="#{request.contextPath}/resources/css/home.css" type="text/css" />
+       <link rel="icon" type="image/png" href="#{request.contextPath}/resources/images/favicon.png" sizes="16x16"/>
+    </h:head>
+
+        <h:body styleClass="landing_body">
+        
+              <div class="landing_wrap">
+                <div class="left_landing">
+                    <h1>RankTech Presents</h1>
+                    <h2>Face to Face Video Banking</h2>
+                    <h3>Digital Banking Platform <br/>Blended With Video</h3>
+                    <a class="videoChat" href="${request.contextPath}/welcome"> Video Chat</a>                                  
+                </div>
+                <!--left_landing-->
+
+                <div class="right_landing">
+                    <img src="#{request.contextPath}/resources/images/conference-screen.png" alt="conference screen"/>
+                </div>
+                <!--right_landing-->
+            </div>
+            <!--landing_wrap-->
+    </h:body>
+         
+    </f:view>
+</html>

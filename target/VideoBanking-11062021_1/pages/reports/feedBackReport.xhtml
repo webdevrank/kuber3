@@ -1,0 +1,204 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns="http://www.w3.org/1999/xhtml"
+	template="../../templates/layout.xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+	<ui:define name="title">
+       Feedback Report
+</ui:define>
+
+	<ui:define name="menu">
+	
+	<c:if test="#{employeeLoginComponent.adminmenuRenderer }">
+            <ui:include src="../../templates/menu.xhtml" />
+        </c:if>
+
+        <c:if test="#{employeeLoginComponent.supervisormenuRenderer}">
+            <ui:include src="../../templates/menusupervisor.xhtml" />
+        </c:if>
+       
+	</ui:define>
+	<ui:define name="content">
+		<style type="text/css">
+                    div.ui-rating-star a, div.ui-rating-cancel a {
+                            background-image: url("#{request.contextPath}/resources/images/rating.png") !important;                       
+                    }
+                </style>
+            
+		<script type="text/javascript">
+            function openCSV() {
+                document.getElementById('headerform:downloadCSV').click();
+            }
+            function setLoadRender1() {
+                document.getElementById('headerform:empLoadTable').style.display = "";
+                document.getElementById('headerform:empTable').style.display = "none";
+                document.getElementById('headerform:pscroll').style.display = "none";
+            }
+            function setLoadRender2() {
+                document.getElementById('headerform:empLoadTable').style.display = "none";
+                document.getElementById('headerform:empTable').style.display = "";
+                document.getElementById('headerform:pscroll').style.display = "";
+            }
+        </script>
+<c:if test="#{employeeLoginComponent.adminmenuRenderer || employeeLoginComponent.supervisormenuRenderer }">
+	<h:form  id="mainform" style="margin-top: 45px">
+            <p:growl id="msg" sticky="false" showDetail="false"/> 
+            <p:panel id="agentactivitylistpanel" header="Feedback Report" style="margin:10px;">
+                <p:panelGrid id="detail" columns="8" styleClass="noBorders"  columnClasses="label,value">
+                    <p:panel style="border: none !important;margin-left: -13px;">
+                        <h:outputText value="Select Start Date:" /></p:panel>
+                    <p:calendar mode="popup" pattern ="dd.MM.yyyy" value="#{feedbackReportComponent.startTime}"  label="Start Time" maxdate="#{feedbackReportComponent.presentDate}" style="width: 155px;"/> 
+
+                    <p:panel style="border: none !important;margin-left: -13px;">
+                        <h:outputText value="Select End Date:" /></p:panel>
+                    <p:calendar mode="popup" pattern ="dd.MM.yyyy" value="#{feedbackReportComponent.endTime}"  label="End Time" maxdate="#{feedbackReportComponent.presentDate}" style="width: 155px;"/> 
+
+                    <p:commandButton icon="ui-icon-search"  value="Search" actionListener="#{feedbackReportComponent.loadFeedbackReportBySearch(feedbackReportComponent.startTime, feedbackReportComponent.endTime)}" onclick="setLoadRender1();" update=":headerform" />
+                    <p:commandButton icon="ui-icon-arrowreturn-1-w" update="agentactivitylistpanel :headerform" immediate="true"  ajax="true" actionListener="#{feedbackReportComponent.clear()}" style="margin-right:20px;" value="Clear" action="/pages/reports/feedBackReport.xhtml" />
+                </p:panelGrid>
+            </p:panel>
+        </h:form> 
+		
+	<h:form id="headerform" >	
+	   <p:panel id="empLoadTable"  style="display:none;">
+                <center>
+                    <p:graphicImage url="/resources/images/loadingTable.gif"  height="30 px;" alt="" title=""/>  
+                </center>
+            </p:panel>
+            <p:scrollPanel  mode="native" id="pscroll" > 
+                <p:panel id="mainpanel" style="width: 300%;">
+                    <f:facet name="header" >
+                        Feedback Report<span style="float: right;">Found : #{fn:length(feedbackReportComponent.finalList)} </span>
+                    </f:facet>
+                    	<p:dataTable id="empTable"  value="#{feedbackReportComponent.finalList}"    var="current" rows="10" paginator="true" paginatorPosition="bottom">
+                   
+                        <p:column sortBy="#{current.agentLoginId}"> 
+                            <f:facet name="header">
+                                <h:outputText value="Agent ID" />
+                            </f:facet>
+                            <h:outputText value="#{current.agentLoginId} "/>
+                        </p:column>
+                        <p:column sortBy="#{current.agentName}"> 
+                            <f:facet name="header">
+                                <h:outputText value="Agent Name" />
+                            </f:facet>
+                            <h:outputText value="#{current.agentName}"/>
+                        </p:column>
+                        <p:column sortBy="#{current.feedbackDate}"> 
+                            <f:facet name="header">
+                                <h:outputText value="Feedback Date" />
+                            </f:facet>
+                            <h:outputText value="#{current.feedbackDate}"/>
+                        </p:column> 
+                        <p:column sortBy="#{current.feedbackTime}"> 
+                            <f:facet name="header">
+                                <h:outputText value="Feedback Time" />
+                            </f:facet>
+                            <h:outputText value="#{current.feedbackTime}"/>
+                        </p:column>        
+                         <p:column sortBy="#{current.customerName}"> 
+                            <f:facet name="header">
+                                <h:outputText value="Customer Name" />
+                            </f:facet>
+                            <h:outputText value="#{current.customerName}"/>
+                        </p:column>
+                        <p:column sortBy="#{current.customerPhoneNo}"> 
+                            <f:facet name="header">
+                                <h:outputText value="Customer Mobile No" />
+                            </f:facet>
+                            <h:outputText value="#{current.customerPhoneNo} "/>
+                        </p:column>
+                        <p:column sortBy="#{current.customerEmail}"> 
+                            <f:facet name="header">
+                                <h:outputText value="Customer Email" />
+                            </f:facet>
+                            <h:outputText value="#{current.customerEmail} "/>
+                        </p:column>
+                        <p:column sortBy="#{current.qualityQuery}"> 
+                            <f:facet name="header">
+                                <h:outputText value="1.Query" />
+                            </f:facet>
+                            <h:outputText value="#{current.qualityQuery}"/>
+                        </p:column>
+                        <p:column exportable="false"> 
+                            <f:facet name="header">
+                                <h:outputText value="1.Rating" />
+                            </f:facet>
+                             <h:outputText value="#{current.qualityFeedback}" />
+                         </p:column>
+                        <p:column style="display: none;"> 
+                            <f:facet name="header">
+                                <h:outputText value="1.Rating" />
+                            </f:facet>
+                            <h:outputText value="#{current.quality}" />
+                        </p:column>
+                        <p:column sortBy="#{current.abilityQuery}"> 
+                            <f:facet name="header">
+                                <h:outputText value="2.Query" />
+                            </f:facet>
+                            <h:outputText value="#{current.abilityQuery}"/>
+                        </p:column>
+                        <p:column  exportable="false"> 
+                            <f:facet name="header">
+                                <h:outputText value="2.Rating" />
+                            </f:facet>
+                             <h:outputText value="#{current.abilityFeedback}" />
+                            <!--<p:rating value="{current.ability}" readonly="true"/>-->
+                        </p:column>
+                        <p:column  style="display: none;"> 
+                            <f:facet name="header">
+                                <h:outputText value="2.Rating" />
+                            </f:facet>
+                            <h:outputText value="#{current.ability}" />
+                        </p:column>
+                        <p:column sortBy="#{current.recommendQuery}"> 
+                            <f:facet name="header">
+                                <h:outputText value="3.Query" />
+                            </f:facet>
+                            <h:outputText value="#{current.recommendQuery}"/>
+                        </p:column>                       
+                        <p:column exportable="false"> 
+                            <f:facet name="header">
+                                <h:outputText value="3.Rating" />
+                            </f:facet>
+                            <h:outputText value="#{current.recommendFeedback}" />
+                        </p:column>
+                        <p:column style="display: none;"> 
+                            <f:facet name="header">
+                                <h:outputText value="3.Rating" />
+                            </f:facet>
+                            <h:outputText value="#{current.recommend}" />
+                        </p:column>
+                        <p:column> 
+                            <f:facet name="header">
+                                <h:outputText value="4.Anything else would you like to share?" />
+                            </f:facet>
+                            <h:outputText value="#{current.comments} "/>
+                        </p:column>
+                       </p:dataTable>
+                </p:panel>
+            </p:scrollPanel>
+  
+             <p:panel header="Export to PDF and Excel" rendered="#{feedbackReportComponent.exportToCsvBtnStatus1}">  
+                <p:commandLink id="pdf" ajax="false"  >  
+                    <p:graphicImage value="/resources/images/pdf.png" style="padding: 10px;"/>  
+                    <pe:exporter type="pdf" target="empTable" fileName="FeedbackReport" orientation="Landscape" datasetPadding="4" />  
+                </p:commandLink>  
+                <p:spacer width="20"/>  
+                <p:commandLink id="xls" ajax="false"  >  
+                    <p:graphicImage value="/resources/images/excel.png" style="padding: 10px;"/>  
+                    <pe:exporter type="xlsx" target="empTable" fileName="FeedbackReport" orientation="Landscape"/>  
+                </p:commandLink>  
+            </p:panel>  
+		
+	</h:form>
+    </c:if>
+
+	</ui:define>
+</ui:composition>

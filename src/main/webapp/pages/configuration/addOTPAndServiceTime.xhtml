@@ -1,0 +1,133 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="../../templates/layout.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="title">
+        Add Service Time
+    </ui:define>
+    
+    <ui:define name="menu">
+        <c:if test="#{employeeLoginComponent.adminmenuRenderer }">
+            <ui:include src="../../templates/menu.xhtml" />
+        </c:if>
+    </ui:define>
+    
+    <ui:define name="content">
+
+        <style type="text/css" >
+
+             .spinner {
+                position: absolute;
+                top: 0%;
+                left: 0%;
+                width: 100%;
+                height:134%;
+                background-color: black;
+                z-index:1001;
+                -moz-opacity: 0.8;
+                opacity:.80;
+                filter: alpha(opacity=80);
+            }
+        </style>
+        <c:if test="#{employeeLoginComponent.adminmenuRenderer }">
+            <h:form prependId="false" id="mainform" style="display:none;">
+                <p:panel header="OTP Facility" style=" margin: 10px;">
+                    <p:panelGrid id="detail" columns="3"  styleClass="noBorders"   columnClasses="label,value" > 
+                        <p:panel id="OtpAndTime" style="border: none !important ;margin-top: 10px"><h:outputText value="OTP Facility:" /><font color='red'>*</font></p:panel>
+                        <p:panel id="otpPanel" style="border: none !important">
+
+                            <p:selectOneRadio id="otp" value="#{callSettingsComponent.callSettingsDto.otpSelect}" label="OTP Facility" required="true" >
+                                <f:selectItem itemLabel="YES" itemValue="YES" />
+                                <f:selectItem itemLabel="NO" itemValue="NO" />
+                            </p:selectOneRadio>
+                        </p:panel>
+                        <p:commandButton icon="ui-icon-disk"  value="Save" onclick="$('#spinner').show();" oncomplete="$('#spinner').hide();" actionListener="#{callSettingsComponent.saveOTP()}" update=":mainform" style="width:80px;margin-top: 13px;" />
+                    </p:panelGrid>
+                </p:panel>
+
+            </h:form>
+
+            <h:form prependId="false" id="subform" style="margin-top: 45px;padding: 10px">
+                <p:growl id="msg" sticky="false" showDetail="false"/> 
+                <p:panel header="Service Time" >
+                    <p:panelGrid id="detail2" columns="1"  styleClass="noBorders"  columnClasses="label,value"  >
+                        <p:selectManyCheckbox id="custom" value="#{callSettingsComponent.selectedConsoles2}" label="Day" layout="grid" columns="7"  required="true" requiredMessage="Please choose atleast one day">
+                            <f:selectItems value="#{callSettingsComponent.dayList}" var="day" itemLabel="#{day}" itemValue="#{day}" />
+                        </p:selectManyCheckbox>
+                    </p:panelGrid>
+                    <p:panelGrid id="detail1" columns="5"  styleClass="noBorders"   columnClasses="label,value" >
+                        <p:panel style="border: none !important;"><h:outputText value="Service Start Time" /><font color='red'>*</font></p:panel>
+
+                        <p:calendar mode="popup" value="#{callSettingsComponent.startDate}" readonlyInput="true" pattern="HH:mm" timeOnly="true" label="Service Start Time" style="width: 165px;" required="true" requiredMessage="You have to enter start time">
+                        </p:calendar>
+
+                        <p:panel style="border: none !important;"><h:outputText value="Service End Time" /><font color='red'>*</font></p:panel>
+
+                        <p:calendar mode="popup" value="#{callSettingsComponent.endDate}" pattern="HH:mm" timeOnly="true" readonlyInput="true" label="Service End Time" style="width: 165px;" required="true" requiredMessage="You have to enter end time">
+                        </p:calendar>
+
+                        <h:panelGroup>
+                            <p:commandButton icon="ui-icon-disk"  onclick="$('#spinner').show();" oncomplete="$('#spinner').hide();" value="Save" actionListener="#{callSettingsComponent.save()}" update=":subform :mainform"  />
+                            <p:commandButton icon="ui-icon-arrowreturn-1-w" immediate="true" ajax="true" value="Clear" actionListener="#{callSettingsComponent.clear()}" update=":subform" style="margin-left: 20px;" action="/pages/configuration/addOTPAndServiceTime.xhtml" />
+                         </h:panelGroup>
+                    </p:panelGrid>
+
+
+                    <p:dataTable id="detailTable" value="#{callSettingsComponent.callSettingsDtoList}"  var="call" editable="true" style="margin-top: 15px">
+                        <p:ajax event="rowEdit"  listener="#{callSettingsComponent.onEdit}" update="@this :subform:msg" onstart="$('#spinner').show();" oncomplete="$('#spinner').hide();"/>
+                        <p:ajax event="rowEditCancel"  listener="#{callSettingsComponent.onCancel(event)}" update="@this :subform:msg" />
+                        <p:column headerText="Start Time" sortBy="#{call.serviceStartTime}"> 
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{call.serviceStartTime}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:calendar mode="popup" value="#{call.startDate}" readonlyInput="true" pattern="HH:mm" timeOnly="true" label="Service Start Time" style="width: 165px;" required="true" requiredMessage="You have to enter start time">
+                                    </p:calendar>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column headerText="End Time" sortBy="#{call.serviceEndTime}"> 
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{call.serviceEndTime}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:calendar mode="popup" value="#{call.endDate}" pattern="HH:mm" timeOnly="true" readonlyInput="true" label="Service End Time" style="width: 165px;" required="true" requiredMessage="You have to enter end time">
+                                    </p:calendar>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column > 
+                            <f:facet name="header">
+                                <h:outputText value="Day" />
+                            </f:facet>
+                            <h:outputText value="#{call.serviceDay} "/>
+                        </p:column>
+                        <p:column style="width:6%"> 
+                            <p:commandButton title="Delete" icon="ui-icon-circle-close" immediate="true" actionListener="#{callSettingsComponent.deleteServiceToBean(call)}" oncomplete="PF('serviceDeactiveDialog').show()"/>
+                        </p:column>
+                        <p:column style="width:6%">  
+                            <p:rowEditor/>
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+
+
+            </h:form>
+            <p:dialog id="DeactiveDialog" appendTo="@(body)" modal="true" header="Delete Service Time" widgetVar="serviceDeactiveDialog" resizable="false" width="27%" > 
+                <h:form  id="deactiveform" style="padding:12px 12px 12px 12px">
+                    <center>
+                        <h:outputText value="Do You Want To Delete" /> <br/><br/>
+                        <p:commandButton icon="ui-icon-check" ajax="false" action="#{callSettingsComponent.deactivateService(request)}" update=":subform:detailTable" value="Yes" oncomplete="PF('serviceDeactiveDialog').hide()"  /> <p:spacer width="5"/> 
+                        <p:commandButton value="No" type="button"  icon="ui-icon-close" onclick="PF('serviceDeactiveDialog').hide()" />  
+                    </center>
+                </h:form>
+            </p:dialog>
+        </c:if>
+    </ui:define>
+</ui:composition>

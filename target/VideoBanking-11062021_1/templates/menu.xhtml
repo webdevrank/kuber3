@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:form>
+        <p:menubar autoDisplay="true" widgetVar="menuBar">
+
+            <p:submenu  label="Employee" icon="ui-icon-person" >
+                <p:menuitem value="New" icon="ui-icon-plus" ajax="false" actionListener="#{employeeMstComponent.newEmployeeMstComponent()}" action="/pages/employee/createEmployee.xhtml?faces-redirect=true"/>
+                <p:menuitem value="List" icon="ui-icon-calculator" ajax="false"  actionListener="#{employeeMstComponent.loadEmployeeListMenu()}" style="white-space: nowrap;width: 8.5em;" action="/pages/employee/listEmployee.xhtml?faces-redirect=true"  />
+                <p:submenu label="Employee Type" icon="ui-icon-bookmark">
+                    <p:menuitem value="New"  icon="ui-icon-plus" ajax="false" actionListener="#{employeeTypeMasterComponent.newEmployeeTypeMstComponent()}" style="white-space: nowrap; width: 8.5em;" rendered="false" action="/pages/employee/newEmployeeType.xhtml?faces-redirect=true"/> 
+                    <p:menuitem value="List"  icon="ui-icon-calculator" ajax="false" actionListener="#{employeeTypeMasterComponent.loadEmployeeTypeMst()}" style="white-space: nowrap; width: 8.5em;" action="/pages/employee/listEmployeeType.xhtml?faces-redirect=true"/>
+                </p:submenu>
+            </p:submenu>
+            
+            <p:submenu label="Language" icon="ui-icon-cart">
+                <p:menuitem value="New"  icon="ui-icon-plus" ajax="false" actionListener="#{languageMasterComponent.newlanguageMasterComponent()}" style="white-space: nowrap; width: 8.5em;" action="/pages/language/addNewLanguage.xhtml?faces-redirect=true"/>
+                <p:menuitem value="List"  icon="ui-icon-calculator" ajax="false" actionListener="#{languageMasterComponent.loadLanguageMstMenu()}"  action="/pages/language/listLanguage.xhtml?faces-redirect=true"/>
+            </p:submenu>
+            
+            <p:submenu label="Service" icon="ui-icon-folder-open">
+                <p:menuitem value="New"  icon="ui-icon-plus" ajax="false" actionListener="#{serviceMstComponent.newServiceMstComponent()}" style="white-space: nowrap; width: 8.5em;" action="/pages/service/createService.xhtml?faces-redirect=true"/>
+                <p:menuitem value="List"  icon="ui-icon-calculator" ajax="false" actionListener="#{serviceMstComponent.loadServiceListMenu()}" style="white-space: nowrap; width: 8.5em;" action="/pages/service/listServices.xhtml?faces-redirect=true"/>
+            </p:submenu>
+            
+             <p:submenu label="Configuration" icon="ui-icon-gear">
+                <p:menuitem value="Service Time" icon="ui-icon-clock" ajax="false"  style="white-space: nowrap; width: 8.5em;" actionListener="#{callSettingsComponent.showAllCallSettings()}" action="/pages/configuration/addOTPAndServiceTime.xhtml?faces-redirect=true"/>
+                <p:menuitem value="Down Time"  icon="ui-icon-clock" ajax="false" style="white-space: nowrap; width: 8.5em;" actionListener="#{downTimeComponent.showAllDownTime()}" action="/pages/configuration/addDownTime.xhtml?faces-redirect=true"/>
+                <p:menuitem value="Feedback Query"  icon="ui-icon-clock" ajax="false" style="white-space: nowrap; width: 8.5em;" actionListener="#{feedbackQueryComponent.loadFeedbackQueryMst()}" action="/pages/configuration/addeditFeedbackQuery.xhtml?faces-redirect=true"/>
+            </p:submenu>
+            
+            <p:submenu label="Mapping" icon="ui-icon-flag">
+                <p:menuitem value="RM Customer" icon="ui-icon-pin-w" ajax="false"  style="white-space: nowrap; width: 8.5em;" actionListener="#{customerRMComponent.onLoad()}" action="/pages/maps/customerRMMap.xhtml?faces-redirect=true"/>
+                <p:menuitem value="SRM RM"  icon="ui-icon-pin-w" ajax="false" style="white-space: nowrap; width: 8.5em;" actionListener="#{rmSrmComponent.onLoad()}" action="/pages/maps/rmSrmMap.xhtml?faces-redirect=true"/>
+                <p:menuitem value="BM SRM"  icon="ui-icon-pin-w" ajax="false" style="white-space: nowrap; width: 8.5em;" actionListener="#{srmBmComponent.onLoad()}" action="/pages/maps/srmBmMap.xhtml?faces-redirect=true"/>
+            </p:submenu>
+            
+            <p:submenu label="Promotional Video" icon="ui-icon-video">
+                <p:menuitem value="List"  icon="ui-icon-calculator" ajax="false" actionListener="#{promotionalVideoComponent.listPromotionalVideo()}" style="white-space: nowrap; width: 8.5em;" action="/pages/promotionalVideo/listPromotionVideo.xhtml?faces-redirect=true"/>  
+            </p:submenu>
+            
+            <p:submenu label="Invite" icon="ui-icon-extlink">
+                <p:menuitem value="Prospect Customer"  icon="ui-icon-plus" ajax="false" actionListener="#{customerInviteComponent.newCustomerMstInviteComponent()}" style="white-space: nowrap; width: 8.5em;" action="/pages/category/inviteCustomer.xhtml?faces-redirect=true"/>
+            </p:submenu>
+
+            <p:submenu label="Skill" icon="ui-icon-pin-s">
+                <p:menuitem value="View/Delete"  icon="ui-icon-circlesmall-close" ajax="false"  actionListener="#{employeeProficiencyMapComponent.loadEmployeeProficiencyMapDto()}" action="/pages/language/deleteEmployeeLanguage.xhtml?faces-redirect=true" style="white-space: nowrap; width: 8.5em;" /> 
+                <p:menuitem value="Assign"  icon="ui-icon-arrow-4-diag" ajax="false" actionListener="#{employeeProficiencyMapComponent.loadEmployeeList()}" style="white-space: nowrap;" action="/pages/language/employeeSkill.xhtml?faces-redirect=true"/>
+            </p:submenu>
+
+            <p:submenu label="Reason" icon="ui-icon-help">
+                <p:menuitem value="New"  icon="ui-icon-plus" ajax="false" actionListener="#{reasonMstComponent.newReasonMst()}" style="white-space: nowrap; width: 8.5em;" action="/pages/reason/addNewReason.xhtml?faces-redirect=true"/>
+                <p:menuitem value="List"  icon="ui-icon-calculator" ajax="false" actionListener="#{reasonMstComponent.loadReasonMstMenu()}" style="white-space: nowrap; width: 8.5em;" action="/pages/reason/listReason.xhtml?faces-redirect=true"/>
+            </p:submenu>
+
+            <p:submenu label="Schedule" icon="ui-icon-clock">
+                <p:menuitem value="Call Status"  icon="ui-icon-lightbulb" ajax="false" actionListener="#{callSchedulerComponent.currentSchedulCallStatus()}"  style="white-space: nowrap; width: 8.5em;" action="/pages/schedule/currentScheduleCallStatus.xhtml?faces-redirect=true"  />
+            </p:submenu>
+            
+            <p:submenu label="Live Monitoring" icon="ui-icon-transfer-e-w">
+                <p:menuitem value="Agent Status" icon="ui-icon-arrow-1-w" ajax="false" style="white-space: nowrap;width: 8.5em;" actionListener="#{currentAgentStatusComponent.agentStatusReportWithQuery()}" action="/pages/employee/currentAgentStatusReport.xhtml?faces-redirect=true"/>
+                  <p:menuitem value="Barge In Calls"  icon="ui-icon-newwin" ajax="false" style="white-space: nowrap; width: 8.5em;" actionListener="#{bargeInCallComponent.bargeInCall()}"  action="/pages/agent/bargeInCallReport.xhtml?faces-redirect=true"/>
+            </p:submenu>
+            
+             <p:submenu label="Audit Trails" icon="ui-icon-transferthick-e-w">
+                <p:menuitem value="List"  icon="ui-icon-calculator" ajax="false" style="white-space: nowrap; width: 8.5em;" actionListener="#{auditTrailComponent.newAuditTrailComponent()}"  action="/pages/auditTrail/listAuditTrails.xhtml?faces-redirect=true"/>
+            </p:submenu>
+
+            <p:submenu label="Reports" icon="ui-icon-document">
+                <p:menuitem value="Scheduled Call"  icon="ui-icon-document" ajax="false" actionListener="#{callSchedulerReportComponent.newScheduledCallreport()}"  style="white-space: nowrap; width: 8.5em;" action="/pages/reports/scheduledCallReport.xhtml?faces-redirect=true" />
+                <p:menuitem value="Connected Call"  icon="ui-icon-document" ajax="false" actionListener="#{connectedCallsReportComponent.newConnectedCallsReport()}"  style="white-space: nowrap; width: 8.5em;" action="/pages/reports/connectedCallsReport.xhtml?faces-redirect=true" />
+                <p:menuitem value="Call Transfer"  icon="ui-icon-document" ajax="false" actionListener="#{callTransferComponent.newCallTransfer()}"  style="white-space: nowrap; width: 8.5em;" action="/pages/reports/callTransferReport.xhtml?faces-redirect=true" />
+                <p:menuitem value="Failed Call"  icon="ui-icon-document" ajax="false" actionListener="#{callDroppedComponent.newDropCall()}"  style="white-space: nowrap; width: 8.5em;" action="/pages/reports/droppedCallReport.xhtml?faces-redirect=true" />
+                <p:menuitem value="Abandoned"  icon="ui-icon-document" ajax="false" actionListener="#{abandonCallComponent.newAbandonCalls()}"  style="white-space: nowrap; width: 8.5em;" action="/pages/reports/abandonCallReport.xhtml?faces-redirect=true" />
+                <p:menuitem value="Call Record"  icon="ui-icon-document" ajax="false" style="white-space: nowrap; width: 8.5em;" actionListener="#{callRecordsComponent.newCallRecordsComponent()}"  action="/pages/supervisor/listCallRecords.xhtml?faces-redirect=true"/>
+                <p:menuitem value="Feedback"  icon="ui-icon-document" ajax="false" style="white-space: nowrap; width: 8.5em;" actionListener="#{feedbackReportComponent.newFeedbackReport()}"  action="/pages/reports/feedBackReport.xhtml?faces-redirect=true"/>
+                <p:menuitem value="Down Time"  icon="ui-icon-document" ajax="false" style="white-space: nowrap; width: 8.5em;" actionListener="#{downTimeComponent.init()}"  action="/pages/reports/downTimeReport.xhtml?faces-redirect=true"/>
+              </p:submenu>
+    
+        </p:menubar>
+    </h:form>
+</html>
+

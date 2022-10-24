@@ -1,0 +1,98 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="../../templates/layout.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <ui:define name="title">
+        Add Down Time
+    </ui:define>
+    <ui:define name="menu">
+        <c:if test="#{employeeLoginComponent.adminmenuRenderer }">
+            <ui:include src="../../templates/menu.xhtml" />
+        </c:if>
+    </ui:define>
+    <ui:define name="content">
+
+        <style type="text/css" >
+            .spinner {
+                position: absolute;
+                top: 0%;
+                left: 0%;
+                width: 100%;
+                height:134%;
+                background-color: black;
+                z-index:1001;
+                -moz-opacity: 0.8;
+                opacity:.80;
+                filter: alpha(opacity=80);
+            }
+        </style>
+        <c:if test="#{employeeLoginComponent.adminmenuRenderer }">
+            <h:form prependId="false" id="mainform" style="margin-top: 45px;padding:10px">
+                <p:growl id="msg" sticky="false" showDetail="false"/>  
+                <p:panel header="Down Time" style="margin-bottom:20px;">
+                    <p:panelGrid id="detail" columns="7"  styleClass="noBorders"   columnClasses="label,value" >
+                        <p:panel style="border: none !important;"><h:outputText value="Reason"/><font color='red'>*</font></p:panel>
+                        <p:inputText id="reason_id" value="#{downTimeComponent.reason}" label="Reason" required="true" requiredMessage="Reason is required" maxlength="500" onchange="this.value = this.value.trim()" >
+                            <p:ajax event="blur"  listener="#{downTimeComponent.checkErrors()}" immediate="true"   partialSubmit="true"  async="true" update="@this" />
+                        </p:inputText>
+                        <p:panel style="border: none !important;"><h:outputText value="Start Date Time" style="width:100px;"/><font color='red'>*</font></p:panel>
+                        <p:calendar mode="popup" value="#{downTimeComponent.startDate}" readonlyInput="true" pattern="dd.MM.yyyy HH:mm" label="Down Start Date" mindate="#{downTimeComponent.presentDate}" style="width: 165px;" required="true" requiredMessage="You have to enter start date">
+                        </p:calendar>
+                        <p:panel style="border: none !important;"><h:outputText value="End Date Time" style="width:100px;"/><font color='red'>*</font></p:panel>
+                        <p:calendar mode="popup" value="#{downTimeComponent.endDate}" readonlyInput="true" pattern="dd.MM.yyyy HH:mm" label="Down End Date" mindate="#{downTimeComponent.presentDate}" style="width: 165px;" required="true" requiredMessage="You have to enter end date">
+                        </p:calendar>                    
+                        <h:panelGroup style="margin-left: 8px;">
+                            <p:commandButton icon="ui-icon-disk"  value="Save" actionListener="#{downTimeComponent.save()}" update="mainform"  />
+                            <p:commandButton icon="ui-icon-arrowreturn-1-w" ajax="true" immediate="true" value="Clear" actionListener="#{downTimeComponent.clear()}" update="mainform" style="margin-left: 20px;" action="/pages/configuration/addDownTime.xhtml" />
+                         </h:panelGroup>
+                    </p:panelGrid>
+
+                    <p:dataTable id="detailTable" value="#{downTimeComponent.downTimeDtoList}"  var="call" editable="true">
+                        <p:ajax event="rowEdit"  listener="#{downTimeComponent.onEdit}" update="@this :mainform:msg" onstart="$('#spinner').show();" oncomplete="$('#spinner').hide();"/>
+                        <p:ajax event="rowEditCancel"  listener="#{downTimeComponent.onCancel(event)}" update="@this :mainform:msg" />
+                        <p:column headerText="Down Start Date and Time" width="20%" sortBy="#{call.downStartTime}"> 
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{call.downStartTime}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:calendar mode="popup" value="#{call.downStartDate}" pattern="dd-MM-yyyy HH:mm" label="Down Start Date" mindate="#{downTimeComponent.presentDate}" style="width: 165px;" required="true" requiredMessage="You have to enter start date" readonlyInput="true">
+                                    </p:calendar>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column headerText="Down End Date and Time" width="20%" sortBy="#{call.downEndTime}"> 
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{call.downEndTime}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:calendar mode="popup" value="#{call.downEndDate}" pattern="dd-MM-yyyy HH:mm" label="Down Start Date" mindate="#{downTimeComponent.presentDate}" style="width: 165px;" required="true" requiredMessage="You have to enter end date" readonlyInput="true">
+                                    </p:calendar>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column headerText="Reason" width="54%" sortBy="#{call.reason}"> 
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{call.reason}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText id="reason_id_edit" value="#{call.reason}" label="Reason" required="true" requiredMessage="Reason is required" maxlength="500" onchange="this.value = this.value.trim()" style="width: 155px;">
+                                        <p:ajax event="blur"  listener="#{downTimeComponent.checkErrors()}" immediate="true"   partialSubmit="true"  async="true" update="@this" />
+                                    </p:inputText>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column style="width:6%">  
+                            <p:rowEditor rendered="#{call.renderEdit}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>           
+            </h:form>
+        </c:if>
+    </ui:define>
+</ui:composition>

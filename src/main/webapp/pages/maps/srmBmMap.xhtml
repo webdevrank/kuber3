@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="../../templates/layout.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+
+    <ui:define name="title">
+        BM SRM Map
+    </ui:define>
+    
+    <ui:define name="menu">
+        <c:if test="#{employeeLoginComponent.adminmenuRenderer }">
+            <ui:include src="../../templates/menu.xhtml" />
+        </c:if>
+    </ui:define>
+    <ui:define name="content">        
+       
+        <c:if test="#{employeeLoginComponent.adminmenuRenderer }">
+            <h:form prependId="false" id="mainform" style="margin-top: 45px;padding: 10px" >
+                <p:growl autoUpdate="true" showDetail="true" showSummary="false" />
+                <p:panel id="tablePanel" header="BM-SRM Details">
+
+                    <p:dataTable id="srmBmMapTable" value="#{srmBmComponent.srmBmMapDtoList}" var="row" rows="10" paginator="true" paginatorPosition="bottom" rowKey="#{row.bmId}"  selection="#{srmBmComponent.selectedSrmBmMapDto}">
+                        <f:facet name="header">
+                            BM-SRM Map List
+                            <span style="float: right;">Record(s) Found :#{fn:length(srmBmComponent.srmBmMapDtoList)} </span>
+                        </f:facet>
+
+                        <p:column rendered="false"> 
+                            <f:facet name="header">
+                                <h:outputText value="ID" />
+                            </f:facet>
+                            #{row.bmId}
+                        </p:column>
+
+                        <p:column filterBy="#{row.bmName}" filterMatchMode="contains"> 
+                            <f:facet name="header">
+                                <h:outputText value="Branch Manager" />
+                            </f:facet>
+                            #{row.bmName}
+                        </p:column>
+
+                        <p:column > 
+                            <f:facet name="header">
+                                <h:outputText value="Mapped Senior Realtionship Manager" />
+                            </f:facet>
+                            #{row.mappedSrm}
+                        </p:column>
+
+                        <p:column style="text-align:center" >
+                            <f:facet name="header">
+                                <h:outputText value="Edit Map List" />
+                            </f:facet>
+                            <p:commandButton value="EDIT" rendered="true" actionListener="#{srmBmComponent.onBeforeEditTypeMapList(row.bmId)}" update=":mainform :editForm" icon="ui-icon-pencil" >
+                                <p:resetInput target="editForm"/>
+                            </p:commandButton>  
+                        </p:column>
+
+                    </p:dataTable>
+
+                    <p:blockUI block="srmBmMapTable" trigger="srmBmMapTable" styleClass="cust-blockUI">
+                        LOADING
+                    </p:blockUI>
+                </p:panel>
+            </h:form>  
+
+            <!--EDIT DIALOG-->  
+            <p:dialog id="editSrmBmMapDialog"  header="Edit BM-SRM Map" widgetVar="editSrmBmMapDialogVar" modal="true" appendTo="@(body)" resizable="false" closable="true" responsive="true" position="center center">
+                <h:form id="editForm" style="overflow: hidden">
+                    <p:panel id="editSrmBmMapPanel" style="border: none">
+                        <p:panelGrid id="editAccessDialogPanelGrid" columns="3" styleClass="noBorders" style="margin-bottom: 10px">
+                            <p:outputLabel id="viewRoleNameId" for="nameView" value="Branch Manager" />
+                            <p:outputLabel for="nameView" value=":" />
+                            <h:outputText id="nameView" value="#{srmBmComponent.bmName}"/>
+                        </p:panelGrid>
+                        <p:pickList value="#{srmBmComponent.srms}"  
+                                    var="xx"  effect="bounce"  
+                                    itemLabel="#{xx.srmName}"  
+                                    itemValue="#{xx}" converter="pickListConverter"  
+                                    showSourceControls="true" showTargetControls="true"  widgetVar="pickListWV">  
+                            <f:facet name="sourceCaption">Available SRM</f:facet>  
+                            <f:facet name="targetCaption">Mapped SRM</f:facet>  
+
+                        </p:pickList>  
+                        <f:facet name="footer">
+                            <p:commandButton value="Save" actionListener="#{srmBmComponent.save()}" widgetVar="saveBtn" onclick="showLoaderSpinner();" oncomplete="if (args &amp;&amp; !args.validationFailed) PF('editSrmBmMapDialogVar').hide(); hideLoaderSpinner();" icon="ui-icon-disk" update=":mainform :editForm"/>
+                        </f:facet>
+                    </p:panel>
+                </h:form>
+            </p:dialog>
+        </c:if>
+    </ui:define>
+</ui:composition>

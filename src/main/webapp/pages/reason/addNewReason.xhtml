@@ -1,0 +1,60 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="../../templates/layout.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="title">
+        Add Reason
+    </ui:define>
+    <ui:define name="menu">
+        <c:if test="#{employeeLoginComponent.adminmenuRenderer }">
+            <ui:include src="../../templates/menu.xhtml" />
+        </c:if>
+    </ui:define>
+    <ui:define name="content">
+       
+        <c:if test="#{employeeLoginComponent.adminmenuRenderer }">
+            <h:form prependId="false" id="mainform" style="margin-top: 45px;padding:10px" >
+
+            <p:panel header="Add Reason" >
+                <h:panelGrid id="detail" columns="2" styleClass="noBorders"   columnClasses="label,value">
+                    <p:panel style="border: none !important;"><h:outputText value="Code:" /><font color='red'>*</font></p:panel>
+
+                    <p:inputText id="reason_code" value="#{reasonMstComponent.reasonMst.reasonCd}" label="Code" required="true" maxlength="5" size="7" validator="#{reasonMstComponent.checkDuplicateReasonCode}" >
+                        <p:ajax event="blur"  listener="#{reasonMstComponent.checkErrors()}" immediate="true"   partialSubmit="true"  async="true" update="@this" />
+                    </p:inputText>
+                    <p:panel style="border: none !important;"><h:outputText value="Type:" /><font color='red'>*</font></p:panel>
+                    <p:selectOneMenu id="type" value="#{reasonMstComponent.reasonMst.type}" label="Select Type" required="true" style="width: 132px;" validatorMessage="Reason Type Required">
+                        <f:selectItem itemLabel="Select One" itemValue=""/>
+                        <f:selectItem itemLabel="Call Started" itemValue="Call Started"/>
+                        <f:selectItem itemLabel="Hang Up" itemValue="Hang Up"/>
+                        <f:selectItem itemLabel="Logout" itemValue="Logout"/>
+                        <f:selectItem itemLabel="Not Ready" itemValue="Not Ready"/>
+                        <f:selectItem itemLabel="Schedule" itemValue="Schedule"/>
+                    </p:selectOneMenu>
+
+                    <p:panel style="border: none !important;"><h:outputText value="Description:" /><font color='red'>*</font></p:panel>
+                    <p:inputTextarea id="reason_description" value="#{reasonMstComponent.reasonMst.reasonDesc}" label="Description"  maxlength="150" validator="#{reasonMstComponent.checkDescription}"  style="height:50px;width: 147px;" required="true" >
+                         <p:ajax event="blur"  listener="#{reasonMstComponent.checkErrors()}" immediate="true"   partialSubmit="true"  async="true" update="@this" />
+                    </p:inputTextarea>
+
+                    <p:spacer width="4"></p:spacer>
+                    <p:spacer width="4"></p:spacer>
+
+                    <p:spacer/>
+                    <p:spacer/>
+                    <p:spacer/>
+
+                </h:panelGrid>
+                <h:panelGroup style="margin-left: 88px;" >
+                    <p:commandButton icon="ui-icon-disk" action="#{reasonMstComponent.save(request)}"  style="margin-right:20px;" value="Save" actionListener="#{reasonMstComponent.checkErrors()}" update=":mainform"/>
+                    <p:commandButton icon="ui-icon-arrowreturn-1-w" immediate="true" ajax="false" action="#{reasonMstComponent.back()}" style="margin-right:20px;" value="Back" />
+                </h:panelGroup>
+
+            </p:panel>
+        </h:form>
+        </c:if>
+    </ui:define>
+</ui:composition>

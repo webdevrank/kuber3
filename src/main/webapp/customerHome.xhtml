@@ -1,0 +1,536 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/templates/customerHomeTemplate.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+      <ui:define name="title">
+        <h:outputText value="Customer Home" /> 
+     </ui:define> 
+    <ui:define name="content" id="customerContent">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"></meta>
+        <script  src="#{request.contextPath}/resources/js/bowser.min.js"></script>
+        <script type="text/javascript" src="#{request.contextPath}/resources/js/jstz-1.0.4.min.js"></script>
+        <script type="text/javascript" src="#{request.contextPath}/resources/js/moment.min.js"></script>
+        <script type="text/javascript" src="#{request.contextPath}/resources/js/moment-timezone.js"></script>
+        <script type="text/javascript" src="#{request.contextPath}/resources/js/moment-timezone-data.js"></script>
+        <script src="${request.contextPath}/resources/js/DetectRTC.js"></script>
+        <link rel="stylesheet" type="text/css" href="${request.contextPath}/resources/css/customerHome.css" />
+        
+         #{customerComponent.selectPromoVideo()} 
+         #{customerComponent.resetOnLoad()} 
+        <script>
+            function redirect() {
+               window.location="#{request.contextPath}/videoCallCustomer";
+            }
+            
+            function hideConfirm(){
+                    setTimeout(function () {
+                    PF('confirmscheduleDlg').hide();
+                    PF('doScheduleDialog').show();
+                    }, 3000);
+            }
+            
+            function hideConfirm1(){
+                    setTimeout(function () {
+                   PF(' successscheduleDlg').hide();
+                    
+                    }, 3000);
+            }
+            
+            function getLocation() {
+                    $.get("https://freegeoip.app/json/" ,
+                            function (data, textStatus, jqXHR) {
+                               document.getElementById('ecity').value=data.city;
+                               document.getElementById('estate').value=data.region_name;
+                               document.getElementById('ecountry').value=data.country_name;
+                               document.getElementById('latitude').value=data.latitude;
+                               document.getElementById('longitude').value=data.longitude;
+                            
+                               
+                            }, "json").fail(function (jqXHR, textStatus, errorThrown) {
+
+                    });
+                }
+                
+           $(document).ready(function() {
+                var tz = jstz.determine();
+                var timezone = tz.name();
+                document.getElementById('timeZone').value=timezone;
+                getLocation();
+         
+            });
+            
+            var tmvar;
+            var retryCount=0;
+            
+            function startRetryTimer(){
+                    retryCount++;
+                    console.log("retry count "+retryCount)
+                    clearTimer();
+                    if(retryCount &lt; 7){
+                        tmvar=setTimeout(function(){ document.getElementById('retrybuttonid').click() }, 30000);
+                    }
+                    else{
+                        clearTimer();
+                    }
+            }
+            
+            function clearTimer(){
+                clearTimeout(tmvar);
+            }
+            
+            function closeAllDialog() {
+                for (var propertyName in PrimeFaces.widgets) {
+
+                    if (PrimeFaces.widgets[propertyName] instanceof PrimeFaces.widget.Dialog ||
+                            PrimeFaces.widgets[propertyName] instanceof PrimeFaces.widget.LightBox) {
+
+                        PrimeFaces.widgets[propertyName].hide();
+
+                    }
+                }
+            }
+            
+            function showSpinner() {
+                     $('#spinnerReplace').show();
+                     document.getElementById("spinnerReplace").style.display = 'block';
+                     document.getElementById("spinnerReplacerVideo").play();
+            }
+                
+            function hideSpinner() {
+                     $('#spinner').hide();
+                     document.getElementById("spinnerReplacerVideo").pause();
+                     $('#spinnerReplace').hide();
+                     document.getElementById("spinnerReplace").style.display = 'none';
+            }
+            
+            function afterJoincall(){
+                  clearTimer();
+                  if (document.getElementById("spinnerReplace").style.display == 'block') {
+                                PF('initialCallCancelDlg').hide();
+                                redirect();
+                    }
+
+            }
+           
+            function checkDialog(){
+                    if (document.getElementById("spinnerReplace").style.display == 'block') {
+                        hideSpinner();
+                        PF('callNotInitialisedDialog').show();
+                    }
+            }
+
+            function checkDialog1(){
+                    if (document.getElementById("spinnerReplace").style.display == 'block') {
+                        hideSpinner();
+                        PF('agentnotAvailableDlg').show();
+                    }
+            }
+                
+            function existcustomer(){
+                    document.getElementById('existingcustyes').click();
+            }
+               
+            function valueassign(){
+                     var name1=document.getElementById('VName').value;
+                     var terms1='Dear '+name1+',';
+                    var terms2='Please note that services offered vide Service facility(‘facility’) are subject to governing policies as may be adopted by CCMS and as may be permitted by local regulation.';
+                    document.getElementById('termscon1').innerHTML=terms1; 
+                    document.getElementById('termscon2').innerHTML=terms2; 
+            }
+                
+            function serviceassign(val){
+                    document.getElementById('vservice').value=val;
+                    $( ".sec_four" ).hide();
+                    $( ".sec_one" ).hide();
+                    $( ".sec_two" ).hide();
+                    $( ".sec_three" ).hide();
+                     PF('callTypeSelectDlg').show();
+            }
+            function calltypeassign(val){
+                    document.getElementById('vcalltype').value=val;
+                    $( ".sec_four" ).show();
+                    $( ".sec_one" ).hide();
+                    $( ".sec_two" ).hide();
+                    $( ".sec_three" ).hide();
+             }
+                
+            function submitone(){
+                    
+                     
+                     if(document.getElementById("iagreebtn").checked==false)
+                     {
+                        PF('sconfirmDlg').show();
+                        setTimeout(function(){ PF('sconfirmDlg').hide() }, 3000);
+//                         alert('Please accept terms and conditions');
+                     }
+                     else{
+                        $( ".sec_four" ).hide();
+                        $( ".sec_one" ).hide();
+                        $( ".sec_two" ).hide();
+                        $( ".sec_three" ).hide();
+                        document.getElementById('btnStart').click(); 
+                    }
+            }
+                
+
+           function resetCounter(){
+               retryCount=0;
+           }
+ 
+            function handleComplete() {
+              
+                    if ($("#VidyoClientPlugIn").length){
+                        checkViaPlugin();
+                    }else{
+                        checkWebRTC();
+                    }
+            }
+ 
+            function onPluginLoaded() {
+                    console.log('In onPluginLoaded');
+                    console.log('before execute');
+                    document.getElementById("checkingClosePlug").click(); 
+            }
+
+        function checkViaPlugin(){
+            PF('hardwarecheck').show();  
+            setTimeout(function(){ 
+                    console.log('Plugin exist!');
+                    if(cameraGlo.length &amp;&amp; microphoneGlo.length){
+                        PF('hardwarecheck').hide();  
+                        PF('hardwaresuccess').show(); 
+ 
+                        setTimeout(function(){ 
+                            PF('hardwaresuccess').hide();  
+                            showSpinner();
+                            PF('initialCallCancelDlg').show();
+                            document.getElementById('go').click();
+
+                    }, 5000);  
+                    }else{
+                        PF('hardwarecheck').hide(); 
+                        PF('hardwarefail').show();  
+                    }
+                }, 10000);
+        }
+        
+         function checkWebRTC(){
+             DetectRTC.load(function () {
+                    PF('hardwarecheck').show(),  DetectRTC.load(onDetectRTCLoaded), DetectRTC.MediaDevices[0] &amp;&amp; "Please invoke getUserMedia once." === DetectRTC.MediaDevices[0].label &amp;&amp; navigator.mediaDevices.getUserMedia({
+                        audio: !0,
+                        video: !0
+                    }).then().catch(reloadDetectRTC)
+                })
+         
+            }
+                
+        function reloadDetectRTC() {
+                 setTimeout(function(){ DetectRTC.load(onDetectRTCLoaded); }, 10000);
+        }
+            
+        function onDetectRTCLoaded() {
+               if(DetectRTC.hasWebcam===false||DetectRTC.hasMicrophone===false){
+                   PF('hardwarecheck').hide(); 
+                   PF('hardwarefail').show();  
+               }else{
+                   PF('hardwarecheck').hide(); 
+                   PF('hardwaresuccess').show();  
+                   setTimeout(function(){ PF('hardwaresuccess').hide(); 
+                   showSpinner();
+                   PF('initialCallCancelDlg').show();
+                   document.getElementById('go').click();
+                   }, 5000);
+                }
+           }
+        
+    </script>
+          <style>
+                .ui-dialog-titlebar{
+                    background: transparent !important;
+                    display:none;
+                }
+                
+                .ui-widget-header{
+                   background: transparent !important;
+                   display:none;
+                }
+                
+                .noBorders tr, .noBorders td {
+                    background: none !important;
+                    border: none !important;
+                }
+                 .spinner {
+                    position: absolute;
+                    top: 0%;
+                    left: 0%;
+                    width: 100%;
+                    height: 100%;
+                    background-color: black;
+                    z-index: 988;
+                    -moz-opacity: 0.6;
+                    opacity:.60;
+                    filter: alpha(opacity=60);
+                }
+            </style>
+
+       
+        <div id="parent"> 
+             <div id="spinnerReplace" class="off" style="-moz-opacity: 0.9; opacity:.90; filter: alpha(opacity=90);position: fixed; background: #4582c6; display: none;">
+                <center>
+                    <video id="spinnerReplacerVideo" class="fullscreen"  style="height: 100vh;width:100vw" loop="true" >
+                        <source src="#{customerComponent.videoFileUrl}" type="video/mp4" />
+                        Your browser does not support HTML5 video.
+
+                    </video>
+                </center>
+            </div>
+         
+        <div class="vdo_call_wrap">
+            <div class="sec_one" id="sec_one">			
+		<h:form id="yesno">
+                    <h1>Are You Existing Customer?</h1>
+			<div>
+                            <input type="radio" id="check_yes" name="check" onclick="existcustomer();" value="Yes"></input>
+                            <label for="check_yes">Yes</label>
+
+                            <input type="radio" id="check_no" name="check" value="No"></input>
+                            <label for="check_no" id="check_no_label">No</label>
+              
+                            <a id="existingcustyes" href="${request.contextPath}/loginCustomer" style="visibility: hidden"></a>
+                        
+                        </div>
+		</h:form>
+	</div><!--sec_one-->
+
+	<div class="sec_two" id="sec_two">			
+            <h:form id="selform" prependId="false">
+                <h2>What Product You Are Interested ?</h2>
+		    <div class="account_category">
+			<ul>
+                            <h:selectOneRadio id="service"  value="#{customerComponent.selectedServiceName}" valueChangeListener="#{customerComponent.initiateCall()}" onclick="serviceassign(this.value);" required="true" requiredMessage="Please Select Service"  style="width: 100%;padding: 3px;margin-top: 5px;border-radius: 5px;color: #fff;" label="Service" class="cleck_product" >
+                                <f:selectItems value="#{customerComponent.loadServiceMst()}" var="lan" itemLabel="#{lan.serviceName}" itemValue="#{lan.id}" />
+                            </h:selectOneRadio>
+			</ul>
+		     </div>
+	     </h:form>
+
+		<button class="back_btn" id="back_one"><img src="resources/images/left_arrow.png" alt="back"/></button>
+			
+	</div><!--sec_two-->
+
+	<div class="sec_three">
+            <div class="login_body">
+               <div class="guest_wrap">
+                <div class="left_login">
+                    <img src="resources/images/first-logo.png" alt="logo"/>
+                    <h1>Digital Customer Experience Platform</h1>                  
+                </div>
+                <!--left_login-->
+
+                <div class="right_login right_login2">
+                    <div class="login_panel">
+                      
+                       <h:form id="custform" prependId="false" >
+                                    <h:inputHidden value="#{customerComponent.timeZone}" id="timeZone" />
+                                    <h:inputHidden id="latitude" value="#{customerComponent.latitude}" />
+                                    <h:inputHidden id="longitude"  value="#{customerComponent.longitude}" />
+                                    <h:inputHidden id="ecountry"  value="#{customerComponent.countryLocation}" />
+                                    <h:inputHidden id="ecity"  value="#{customerComponent.cityLocation}" />
+                                    <h:inputHidden id="estate"  value="#{customerComponent.stateLocation}" />
+                                    <h:inputHidden id="vservice" value="#{customerComponent.selectedServiceName}"/>
+                                    <h:inputHidden id="vcalltype" value="#{customerComponent.callType}"/>
+                            <div class="form_input">
+                                 <p:inputText id="VName" styleClass="inputclass"  required="true" value="#{customerComponent.customerName}" label="Name" title="Enter Name" requiredMessage="Name is required" validatorMessage="Name: Only characters allowed and in between spaces allowed" maxlength="100" placeholder="Name">
+                                         <f:validateRegex pattern="^[a-zA-Z]+( [a-zA-Z]+)*$" /> 
+                                 </p:inputText>
+                            </div>
+                            <div class="form_input">
+                                <p:inputText id="Email" styleClass="inputclass"  required="true" value="#{customerComponent.customerEmail}" label="Email" validatorMessage="Email:Invalid email format" title="Enter Email" requiredMessage="Email is required" placeholder="Email" maxlength="100">
+                                        <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+                                </p:inputText>
+                            </div>
+                            <div class="form_input">
+                                <p:inputText id="txtMobId" styleClass="inputclass"  required="true" value="#{customerComponent.customerPhoneNumber}" label="Mobile" onkeypress="if(event.which &lt; 48 || event.which &gt; 57) return false;" title="Mobile Number" requiredMessage="Mobile Number is required" validatorMessage="Mobile Number:Only numeric value with minimum 10 digits allowed" maxlength="12" placeholder="Mobile Number">
+                                    <f:validateRegex pattern="^((\+[0-9]{0,2}|0)?\d{10,12})$" />
+                                </p:inputText>  
+                            </div>
+                            <div class="form_input">
+                                <p:inputText id="VNationality" styleClass="inputclass"  required="true" value="#{customerComponent.nationality}" label="Nationality" title="Enter Nationality" requiredMessage="Nationality is required" validatorMessage="Nationality: Only characters allowed and in between spaces allowed" maxlength="100" placeholder="Nationality">
+                                    <f:validateRegex pattern="^[a-zA-Z]+( [a-zA-Z]+)*$" /> 
+                                </p:inputText>
+                            </div>
+                                     <div class="form_input">
+                                    </div>
+                            <div class="form_button">
+                                 <p:commandButton  value="Next"  id="termsgo" ajax="true" action="#{customerComponent.initiateNextCall()}"/>  
+                                 <p:commandButton  value="Start Chat" id="btnStart" ajax="true" action="#{customerComponent.callCustomer(request)}" onclick="$('#spinner').show();"   oncomplete="$('#spinner').hide();" style="display:none;" update=":custform"/>
+                                 <p:commandButton id="go"  ajax="true" action="#{customerComponent.registerCustomer(request)}" value="go" style="display:none"/>
+                                 <p:commandButton id="start"  ajax="true" action="#{customerComponent.unregisterCustomerCall(request)}" value="start" style="display:none"/>
+	                    </div>
+                       </h:form>
+                    </div>
+                    
+                </div>
+                <!--right_login-->
+            </div>
+            <!--login_wrap-->
+        </div>
+		 
+    </div><!--sec_three-->
+
+        <div class="sec_four" id='sectionfour'>
+		<div class="sec_four_wrap">
+				<h2>Terms Of Use</h2>
+                                <h1 id="termscon1" style="text-align: left;font-weight: 200;font-size: 1rem;margin-bottom: 5px;">Dear customer,</h1>
+				<p id="termscon2">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text</p>
+                                <label style="float: left;margin-bottom: 20px;">I Agree :</label><input style="float: left;margin-top: 2.4px;margin-left: 5px;" id="iagreebtn" type="checkbox" />
+				<button class="back_btn" id="back_three"><img src="resources/images/left_arrow.png" alt="back"/></button>
+                                <button class="btn_nxt btn_submit" id="callsubmit" onclick="submitone();">Submit</button>
+ 		</div><!--sec_four_wrap-->
+ 	</div><!--sec_four-->
+     </div><!--vdo_call_wrap-->
+        
+         <p:dialog id="callTypeSelect"  widgetVar="callTypeSelectDlg"  resizable="false" closable="false" maximizable="false" position="center,center"  header="Call Type"  style=" border: none;background: transparent;box-shadow: none;max-width: 95%;" modal="false">
+             <h:form id="calltypeform" prependId="false">
+                 <h2 style="font-weight: 200;margin: 0 0 2rem 0;font-size: 2rem;">Select Mode of Communication ?</h2>
+                        <div class="account_category">
+                            <ul>
+                            <h:selectOneRadio id="calltype"  value="#{customerComponent.callType}" layout="grid" onchange="document.getElementById('callterm').click();" onclick="calltypeassign(this.value);document.getElementById('sectionfour').style.display='block'" required="true" requiredMessage="Please Select Call Type"  style="width: 100%;padding: 3px;margin-top: 5px;border-radius: 5px;color: #fff;" label="Call Type" class="cleck_product" >
+                               <f:selectItem itemLabel="Video" itemValue="video" />
+                               <f:selectItem itemLabel="Audio" itemValue="audio" />
+                               <f:selectItem itemLabel="Chat" itemValue="chat" />
+                           </h:selectOneRadio>
+                            <p:commandButton id="callterm"  ajax="true" action="#{customerComponent.afterInitiateCall()}" onclick="PF('callTypeSelectDlg').hide()" value="Start Call" style="display:none" />
+                          </ul>
+                      </div>
+                 </h:form>
+         </p:dialog>
+            
+        <p:dialog id="initialCallCancelDlgId"  widgetVar="initialCallCancelDlg" onShow="document.getElementById('sectionfour').style.display='none'"  resizable="false" closable="false" maximizable="false" position="center,center"  header="Connecting"  style=" border: none;background: transparent;box-shadow: none;max-width: 95%;" modal="false">
+                <h:form id="initialCallCancelDlgformid" prependId="false" style="overflow:hidden;background: #yellow;border:1px solid;padding:10px;color:#000" >
+                       <center>
+                           <h:outputText value="Your call is being connected with available Service Agent...Please wait!"  style="color: #000;font-size: 24px;font-weight: bold;"/>
+                        </center>
+                </h:form>
+        </p:dialog>
+    
+        <p:dialog  id="downtimedialogid" widgetVar="downtimeDlg"  resizable="false" closable="false"  header="DOWNTIME" modal="true" appendTo="@(body)" style="background: transparent;box-shadow: none" position="center,center" onShow="clearTimer()" >
+                <h:form id="downtimedialogidform" >
+                    <center>
+                        <br/>
+                        <h:outputText value="#{customerComponent.downMessage}" style="color: red;font-size: large;font-weight: bold;"/>
+                        <br/>
+                       
+                    </center>
+                </h:form>
+        </p:dialog> 
+        
+        <p:dialog id="callNotInitialisedDialogid"  widgetVar="callNotInitialisedDialog" onShow="PF('initialCallCancelDlg').hide();startRetryTimer();"  resizable="false" closable="false" maximizable="false" draggable="false" position="center,center"  header="Information"   style="border: none; background: transparent;box-shadow: none;max-width: 95%; ">
+                <center>
+                    <h:form id="retryForm" prependId="false" style="overflow:hidden;">
+                        <p:panel style="background: transparent;border: none;" styleClass="form_button">
+                            <h5 style="color: #000;font-size: 24px;font-weight: bold;" >Sorry! No Service Agent Available</h5>
+                            <p:spacer/><br/>
+                            <br/><br/><br/>
+                            <p:panelGrid columns="3" style="background: transparent;border: none;" styleClass="noBorders"  >
+                                <p:commandButton icon="ui-icon-circle-close" id="cancelschedulebtnid" value="Cancel"  ajax="true" action="#{customerComponent.resetDataCancelRedirect()}" style="width:100px; margin-left: 10px;font-size: 15px;height: 34px;" onclick="resetCounter();PF('callNotInitialisedDialog').hide(); hideSpinner();" immediate="true"  update=":retryForm" async="false"/> 
+                                <!--<p:commandButton icon="ui-icon-clock" id="doSchdlBtn" value="Schedule" actionListener="{customerComponent.convertTimeZone()}"  ajax="true" style="width:135px; margin-left: 10px;" onclick="hideSpinner(); callNotInitialisedDialog.hide(); doScheduleDialog.show(); "  immediate="true"  update=":retryForm " async="false" />--> 
+                                <p:commandButton icon="ui-icon-arrowrefresh-1-w" id="retrybuttonid" value="Retry"  ajax="true" style="width:100px; margin-left: 10px;font-size: 15px;height: 34px;" onclick="PF('callNotInitialisedDialog').hide();document.getElementById('start').click();showSpinner();PF('initialCallCancelDlg').show();" immediate="true"  actionListener="#{customerComponent.retryCall1(request)}"    update=":retryForm" async="false"/> 
+                            </p:panelGrid>
+                        </p:panel>
+                    </h:form>
+                </center>
+         </p:dialog>
+        
+         <p:dialog  id="agentNotAvailablediaId" widgetVar="agentnotAvailableDlg" onShow="hideSpinner();PF('initialCallCancelDlg').hide();clearTimer();"  resizable="false" closable="false"  header=" Notification" modal="false" appendTo="@(body)" style="border: none; background: transparent;box-shadow: none;max-width: 95%; " >
+                <h:form id="agentnotAvailableformId" style="overflow:hidden;">
+                    <center>
+                        <div class="form_button">
+                        <h:outputText value="Sorry! No Service Agent Available." style="color:#000" />
+                        <br/><br/>
+                        <p:commandButton action="#{customerComponent.resetAndRedirect()}" onclick="resetCounter();PF('agentnotAvailableDlg').hide(); hideSpinner();"  ajax="true" value="OK" style="font-size: 12px;"/>
+                        </div>
+                    </center>
+                </h:form>
+         </p:dialog> 
+            
+         <p:dialog id="hardware"  widgetVar="hardwarecheck" onShow="document.getElementById('sectionfour').style.display='none'"  resizable="false" closable="false" maximizable="false" position="center,center"  header="Hardware Check"  style=" border: none;background: transparent;box-shadow: none;max-width: 95%;" modal="false">
+                <h:form id="hardwarecheckform" prependId="false" style="overflow:hidden;" >
+                       <center>
+                           <h:outputText value="Checking Your Devices are suitable for Video Call or not..."  style="color: white;font-size: 24px;font-weight: bold;color:#000"/>
+                        </center>
+                </h:form>
+          </p:dialog>
+            
+          <p:dialog id="hardwares"  widgetVar="hardwaresuccess" onShow="document.getElementById('sectionfour').style.display='none'"  resizable="false" closable="false" maximizable="false" position="center,center"  header="Hardware Success"  style=" border: none;background: transparent;box-shadow: none;max-width: 95%;" modal="false">
+                <h:form id="hardwaresuccessform" prependId="false" style="overflow:hidden;" >
+                       <center>
+                           <h:outputText value="Device checking was successful..."  style="color: white;font-size: 24px;font-weight: bold;color:#000"/>
+                        </center>
+                </h:form>
+            </p:dialog>
+        
+            <p:dialog id="hardwaref"  widgetVar="hardwarefail" onShow="document.getElementById('sectionfour').style.display='none'"  resizable="false" closable="false" maximizable="false" position="center,center"  header="Hardware Fail"  style=" border: none;background: transparent;box-shadow: none;max-width: 95%;" modal="false">
+                <h:form id="hardwarefailform" prependId="false" style="overflow:hidden;" >
+                       <center>
+                           <h:outputText value="Hardware checking failed..."  style="color: red;font-size: large;font-weight: bold;"/><br/><br/><br/>
+                           <p:commandButton onclick="PF('hardwarefail').hide();handleComplete()"  ajax="true" value="Recheck" style="font-size: 12px;"/>    
+                       </center>
+                </h:form>
+            </p:dialog>
+                                   
+            <p:dialog id="doScheduleDia" header="Schedule a Call" widgetVar="doScheduleDialog" width="55%" style=" max-height: 640px;overflow: auto;border: none;margin-top: -14px;height:100px !important;" closable="false"  minimizable="false"  maximizable="false" resizable="false" draggable="false" position="center"  >
+                    <center>
+                        <h:form id="schedulingForm" prependId="false" style="overflow:hidden;">
+                            <p:panel id="schDateTimePickerPanel" style="background: transparent;border: none;height:100px !important;color:#000">
+                                <span>
+                                    <label style="font-weight: bold;">Select Date and time to Schedule </label>
+                                    <p:calendar id="inlineSchDateTime" label="Schedule" value="#{customerComponent.schDateTime}" pattern="dd-MMM-yyyy HH:mm" showOn="button" timeOnly="false" timeZone="#{customerComponent.timeZone}" tabindex="5" required="true" mindate="#{customerComponent.presentDate}" requiredMessage="Please select a date to schedule" />
+                                    <p:commandButton id="thanksSchedule" value="Schedule Now" action="#{customerComponent.makeScheduleCallFromWeb(request)}" style="width:175px;margin-left: 10px;" ajax="true" icon="ui-icon-check" tabindex="1"  update=":confirmscheduleform :successscheduleform :custform" /> 
+                                    <p:commandButton id="ignoreSchedule" value="Cancel" actionListener="#{customerComponent.doScheduleCancel()}" ajax="true" style="width:175px; margin-left: 10px;" onclick="PF('doScheduleDialog').hide();"  icon="ui-icon-cancel" tabindex="2" /> 
+                                </span>
+                            </p:panel>
+                        </h:form>
+                    </center>
+            </p:dialog>
+        
+            <p:dialog  id="confirmschedule"  widgetVar="confirmscheduleDlg" height="90" onShow="hideConfirm();"  resizable="false" closable="false" width="25%"  header=" Notification" modal="true" appendTo="@(body)" >
+                <h:form id="confirmscheduleform" style="overflow:hidden;">
+                    <center>
+                        <br/>
+                             <h:outputText value="#{customerComponent.scheduleText}" style="color:#000" />
+                        <br/>
+                    </center>
+                </h:form>
+             </p:dialog>
+        
+            <p:dialog  id="successschedule"  widgetVar="successscheduleDlg" height="90" onShow="hideConfirm1();"  resizable="false" closable="false" width="25%"  header=" Notification" modal="true" appendTo="@(body)" >
+                <h:form id="successscheduleform" style="overflow:hidden;">
+                    <center>
+                        <br/>
+                            <h:outputText value="#{customerComponent.scheduleText}" style='color:#000' />
+                        <br/>
+                    </center>
+                </h:form>
+            </p:dialog>
+            
+        <p:dialog  id="sconfirm"  widgetVar="sconfirmDlg" height="65"  resizable="false" closable="false" width="25%"  header=" Notification" modal="true" appendTo="@(body)" >
+                <h:form id="sconfirmform" style="overflow:hidden;">
+                    <center>
+                        <br/>
+                            <h:outputText value="Please accept terms of use" style='color:#000' />
+                        <br/>
+                    </center>
+                </h:form>
+            </p:dialog>
+        </div>
+                     
+ </ui:define>
+
+</ui:composition>

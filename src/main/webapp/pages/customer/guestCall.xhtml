@@ -1,0 +1,435 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="../../templates/layoutCustomerGuest.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"                
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+     <ui:define name="title">
+        Guest Video Conference
+    </ui:define>
+    <ui:define name="content">
+        <h:head>
+             #{customerComponent.selectPromoVideo()}
+           
+            <script>
+                var socketHostPublic = "#{socketHostPublic}";
+                var contextUrl = "#{request.contextPath}";
+                var cust_uin;
+                var isFullScreen = !1;
+                var chatWindowState = 0;
+                var myVar;
+                $(document).ready(function () {
+
+                    $("#page-title-emp").addClass("hide-components");
+                    $("#page-title-cust").addClass("hide-components");
+                   
+                    var url = window.location.href;
+                    checkUrl(url);
+                    if (cust_uin !== "") {
+                       
+                        document.getElementById('urlLink').value = url;
+                         document.getElementById('setUrlValBtnId').click();
+                    } else {
+                        document.getElementById('invalidUrlBtn').click();
+                    }
+                });
+
+                function endPage() {
+                     location.href=contextUrl+"/endGuestCall";
+                }
+                
+                function checkUrl(url) {
+                    try {
+                        if (url.includes("=")) {
+                            cust_uin = url.substring(url.lastIndexOf('param=') + 6);
+                        } else {
+                            cust_uin = "";
+                        }
+                    } catch (e) {
+                        console.error(e);
+                    }
+                }
+
+                function redirectToGuestCall() {
+                    document.getElementById("redirectToGuestId").click();
+                }
+
+                function refreshEssentials(){
+                        hideVideoStream();
+                        document.getElementById('_Everyone').style.background='white' ;
+                        document.getElementById('_Everyonespan').style.display='none' ;
+                         if (document.getElementById('collapse1').style.display==='block') {
+                            document.getElementById('tbutton').click();
+                        } 
+                       
+                        $('#tbutton img').src='#{request.contextPath}/resources/images/top.png';
+                        $('#parentRenderer').css("height", "56vh");
+                        $(".frame video > video").css("height", "56vh");
+                        chatWindowState = 0;   
+                        
+                        stopCounterTimer();
+                        $('#spinner').hide();
+                        removeObjectTag();
+                        unmuteSpeaker();
+                        unmuteMic();
+                        unmuteVideo();
+                        document.getElementById("timer").innerHTML='';
+                        var cnt=0;
+                        resetTabs();
+                        resetuserList();
+                        dynamicallyRemoveJs();
+                        resetVidyoConnectorValues();
+                        $('#addstatictab li').each(function (i) {
+                            cnt++;
+                            if(cnt &gt; 2){
+                                $(this).remove();
+                            }
+                        });
+                         var counter=0;
+                        document.getElementById('Everyone').innerHTML='';
+                         $('#participant div').each(function (i) {
+                            counter++;
+                            if(counter &gt; 1){
+                                $(this).remove();
+                            }
+                        });
+                        $('#participantList').empty();
+                        $('#renderer').empty();
+                        document.getElementById('mutevideo').style.display='block';
+                        document.getElementById('unmutevideo').style.display='block';
+                    } 
+                    
+       
+                function openPdfInTab(fileName) {
+                     var hrefTest = '${request.contextPath}/CustomerFormPdfDownload';
+                        var popUp = window.open(hrefTest, '_blank', 'width=1,height=1,toolbar=0,menubar=0,location=0,status=0,scrollbars=0,resizable=1,left=10,top=10,visible=none');
+
+                        if (popUp === null || typeof (popUp) === 'undefined') {
+                            alert('Please disable your pop-up blocker and click the "Download File" link again.');
+                        }
+                        else {
+                            setTimeout(function() {
+                                popUp.close();
+                            }, 3000);
+                            popUp.focus();
+                        }
+                }
+                
+                function openDocumentsCustom(link, linkName) {
+                    var url = link, title = linkName, w = 750, h = 570;
+
+
+                    var dualScreenLeft = window.screenLeft != undefined ? window.screenLeft : window.screenX;
+                    var dualScreenTop = window.screenTop != undefined ? window.screenTop : window.screenY;
+
+                    var width = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : screen.width;
+                    var height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : screen.height;
+
+                    var left = ((width / 2) - (w / 2)) + dualScreenLeft;
+                    var top = ((height / 2) - (h / 2)) + dualScreenTop;
+                    var popUp = window.open(url, title, 'scrollbars=yes,toolbar=no,resizable=no,fullscreen=no,width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
+
+                    if (popUp === null || typeof (popUp) === 'undefined') {
+                        alert('Please disable your pop-up blocker and click the "Open document" button again.');
+                    }
+                    else {
+                        popUp.focus();
+                    }
+                }
+
+
+                function redirectHome() {
+                    location.href = "#{request.contextPath}/customerHome";
+                }
+                
+                function joinAudio(){
+                 myVar = setInterval(myTimer, 1000);
+                }
+
+            </script>
+            <script  src="#{request.contextPath}/resources/js/bowser.min.js"></script>
+            <link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/css/bootstrap.css" />
+          
+            
+            <link rel="stylesheet" href="${request.contextPath}/resources/vidyo/hunter/VidyoConnector.css"/>
+            <link rel="stylesheet" href="${request.contextPath}/resources/vidyo/hunter/VidyoTextChat.css"/>
+            <script src="${request.contextPath}/resources/vidyo/hunter/VidyoConnector.js"></script>
+            <script src="${request.contextPath}/resources/vidyo/hunter/VidyoTextChat.js"></script>
+            <script src="${request.contextPath}/resources/js/script.js"></script>
+            <script type="text/javascript" src="#{request.contextPath}/resources/js/vidyoConnect.js"></script>
+
+            <script type="text/javascript" src="#{request.contextPath}/resources/js/socket.io.js" ></script>
+
+            <link rel="stylesheet" href="#{request.contextPath}/resources/css/customerVideoCall.css"/> 
+            <link type="text/css" rel="stylesheet" href="#{request.contextPath}/resources/css/tabs.css"></link>
+            <script type="text/javascript" src="#{request.contextPath}/resources/js/chat.js"></script>
+            <script type="text/javascript" src="#{request.contextPath}/resources/js/tdi.tabs.js"></script>
+            <script type="text/javascript" src="#{request.contextPath}/resources/js/webrtcchat.js"></script>
+            
+            <link rel="stylesheet" href="${request.contextPath}/resources/css/customerVideoCall.css"/>
+            <script  src="#{request.contextPath}/resources/js/customJs/customerVideoCall.js"></script>
+            <link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/css/bootstrap.css" />
+            <link type="text/css" rel="stylesheet" href="${request.contextPath}/resources/css/video.css" />
+            <link type="text/css" rel="stylesheet" href="${request.contextPath}/resources/css/responsive.css" />
+            <script>var displayName = "#{customerComponent.customerSocket}";</script>
+            <style>
+                .drop_down_panel{
+                    display:none !important;
+                }
+            </style>
+        </h:head>
+        
+        <h:body class="landing_body">
+            <h:form id="hdnFrmId" prependId="false" style="display: none;">
+                <p:inputText id="urlLink" value="#{customerComponent.urlLink}"/>
+                <p:commandButton id="invalidUrlBtn" actionListener="#{customerComponent.showInvalidUrl()}"/>
+                <p:commandButton id="setUrlValBtnId" actionListener="#{customerComponent.guestURLValidationOnVC()}"/>
+                <p:commandButton id="redirectToGuestId" actionListener="#{customerComponent.redirectToGuestCall()}"/>
+            </h:form>
+
+           <h:form id="burgeInForm" prependId="false" style="display:none;">
+                <p:messages showDetail="false" showSummary="true" autoUpdate="true" closable="true" redisplay="false"/>
+                <p:commandButton id="backBtn" value="End Call" onclick="disconnectCall();" immediate="true" style="display:none" partialSubmit="false" action="#{customerComponent.redirectToGuestHome()}"   />
+                <p:commandButton id="restoreVideoBtn" value="Restore Video" ajax="true" style="display:none" onclick="restoreVideoConfrnce();"  immediate="true"  />
+                <p:commandButton id="restoreVideoBtn1" value="video pause" ajax="true" style="display:none" onclick="hideSpinner();"  immediate="true"  /> 
+                <p:commandButton id="showSpinnerbutn" value="show spinnere" ajax="true" style="display:none" onclick="showSpinner();"  immediate="true"  /> 
+
+                <p:poll  interval="4" listener="#{customerComponent.checkGuestCallEnded(request)}" />
+
+                <h:inputHidden id="roomurlTextId" value="#{customerComponent.roomUrl}"/>
+                <h:inputHidden id="custNametextId" value="#{customerComponent.custName}"/>
+                <p:commandButton id="endBtn" value="End Call" style="display:none" immediate="true" partialSubmit="false" actionListener="#{customerComponent.redirectToGuestHome()}"   /> 
+                <p:commandButton id="cobrowse" value="Co-browse" action="#{customerComponent.openCobrowseWindow()}" ajax="true"/> 
+            </h:form> 
+            
+            <audio id="myaudio" loop="loop"  controls="controls" style="display:none;">  
+                <source src="#{request.contextPath}/promotional/demo.mp3" type="audio/mpeg" />  
+            </audio>
+            
+            <h:panelGroup id="spinnerReplace" layout="block" styleClass="spinner off" style="z-index: 1003; -moz-opacity: 0.9; opacity:.90; filter: alpha(opacity=90); width: 98%; height: 99%; display: none;">
+                <center>
+                    <video id="spinnerReplacerVideo" class="fullscreen"  style="width: 75%; height:84%; overflow: hidden; margin-top: 2%;" loop="true" >
+                        <source id="promoVideoDynaId" src="#{customerComponent.videoFileUrl}" type="video/mp4" />
+                        Your browser does not support HTML5 video.
+                    </video>
+                </center>
+            </h:panelGroup>
+
+
+            <p:dialog id="agentmiss" header="Notification" widgetVar="missagent" style="max-height: 640px;overflow: auto;border: none;max-width: 98%" closable="false" responsive="true"  minimizable="false"  maximizable="false" resizable="false" draggable="false" position="center"   >
+                <center>
+                    <h:form id="missform" prependId="false" style="overflow: hidden;">
+                        <p:panel style="background: transparent;border: none;">
+                            You missed a Service Agent call
+                            <p></p>
+                            <p>
+                                <p:commandButton id="missok" value="OK " ajax="false" style="width:95px;" onclick="PF('missagent').hide();"  /> 
+                            </p>
+                        </p:panel>
+                    </h:form>
+                </center>
+            </p:dialog>
+            
+            <p:dialog  id="callEndDlgId" widgetVar="agenthangup" resizable="false" responsive="true" closable="false"  header=" Notification" modal="true" appendTo="@(body)" style="max-width: 98%">
+                <h:form id="callEndFrmId" prependId="false" style="overflow:hidden;padding: 10px">
+                    <center>
+                        <br/>
+                        <h:outputText value="Your Call Ended" />
+                        <br/><br/>
+                        <p:commandButton type="button" id="callEndedBtnId" ajax="true" value="OK" onclick="PF('agenthangup').hide();endPage()" ></p:commandButton>
+                        <br/>
+                    </center>
+                </h:form>
+            </p:dialog> 
+            
+            <p:dialog id="invalidUrlLinkDialog" widgetVar="invalidUrlLinkDialogVar" resizable="false"  closable="false" header=" Notification" modal="true" appendTo="@(body)" responsive="true"  style="max-width: 98%">
+                <h:form id="invalidUrlLinkDialogForm" prependId="false" style="overflow: hidden;">
+                    <center>
+                        <br/><br/>
+                        <h:outputText value="Invalid URL Link...!! Please Proceed With Correct URL Link." style="color: red; font-weight: bold;"/>
+                        <br/><br/>
+                        <p:commandButton id="invalidUrlLinkBtn" value="OK" action="#{customerComponent.newCustomerComponent()}" onclick="PF('invalidUrlLinkDialogVar').hide();" icon="ui-icon-stop" />
+                    </center>
+                </h:form>
+            </p:dialog>
+            
+              <select id="windowShares" style="display:none">
+                 <option value='0'>None</option>
+            </select>
+            
+            
+            <div class="user_list" style="display:none;" >
+                <h:form id="vidyowebrtcform" prependId="false">
+                    <div id="optionsParameters" >
+                        <li style="display:none;">
+                            <label for="host">Host</label>
+                            <p:inputText  id="host" value="#{customerComponent.portal}"/>
+                        </li>
+                        <li style="display:none;">
+                            <label for="displayName">Display Name</label>
+                            <p:inputText id="displayName" placeholder="Display Name" value="#{customerComponent.custName}"/>
+                        </li> 
+                        <li style="display:none;">
+                            <label for="roomKey">Room Key</label>
+                            <p:inputText id="roomKey" placeholder="room-key" value="#{customerComponent.roomUrl}"/>
+                        </li> 
+                        <li style="display:none;">
+                            <label for="resourceId">Resource ID</label>
+                            <p:inputText id="resourceId" placeholder="Conference Reference" value="#{customerComponent.roomName}"/>
+                        </li> 
+                     </div>
+                 </h:form>
+              </div> 
+                <p:dialog  id="sett" widgetVar="settingsDia" resizable="false" closable="true" header="Settings" modal="true" appendTo="@(body)" >
+                        <table style="border: none"> 
+                             <tr>
+                                 <td style="padding:10px"><label for="cameras">Cameras</label></td>
+                                 <td style="padding:10px">
+                                     <select id="cameras" style="width:195px">
+                                           <option value='0'>None</option>
+                                    </select>
+                                 </td>
+                             </tr>   
+                            <tr>
+                                <td style="padding:10px"><label for="microphones">Microphones</label></td>
+                                <td style="padding:10px">   
+                                    <select id="microphones" style="width:195px">
+                                       <option value='0'>None</option>
+                                     </select>
+                                </td>       
+                           </tr>    
+                            <tr>
+                                 <td style="padding:10px">     
+                                    <label for="speakers">Speakers</label>
+                                 </td>
+                                 <td style="padding:10px">
+                                    <select id="speakers" style="width:195px">
+                                        <option value='0'>None</option>
+                                    </select>
+                                 </td>
+                             </tr>
+                         </table>
+                 </p:dialog>   
+            
+            <div id="splash" class="container video_wrap" style="text-align: center;margin-top: 10%; overflow: hidden;display:none">
+                    <img src="${request.contextPath}/resources/images/logo-big.jpg"/>
+            </div> 
+           
+            <div id="incallcontainer" class="container video_wrap" style="display:none;">
+                <div class="row" style="margin-left: 15px;margin-top:15px">
+                    <div id="participantDiv" class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+			<div class="user_list" >
+                            <div class="user_head_wrap">
+                                <div class="user_head">
+                                    <div class="col-md-9 col-sm-9 col-xs-8">
+                                        <h2 class="private_chat">Click on participant name for private chat</h2>
+                                    </div>
+                                    <div class="col-md-2 col-sm-3 col-xs-4">
+                                       <div id="webcasting" title="Webcasting" class="toolbarButton" style="display:none"></div>
+                                       <div id="recorder" title="Record Status" class="toolbarButton"></div>  
+                                    </div>
+                                </div>
+                            </div>
+                            <div  id='participantList'>
+                                <div class="user_details" >
+                                    <h2></h2>
+                                </div>
+                            </div>
+                        </div>
+		    </div>
+
+                      <div class="col-lg-9 col-md-8 col-sm-6 col-xs-12" style="max-height: 81vh;">
+                        <div id="videoHead" class="video_head_wrap">
+                            <div class="video_head">
+                                <div class="col-md-7 col-sm-7 col-xs-7">
+                                    <button class="listing_btn" id="endcallcust" onclick="document.getElementById('backBtn').click();" title="End call" >
+                                         <img src="#{request.contextPath}/resources/images/endcall.png" alt="" />
+                                     </button>
+                                    <button class="listing_btn" id="fullscreenvid" onclick="makeFullScreen();" title="Full Screen">
+					<img src="${request.contextPath}/resources/images/fullscreen.png" alt="" />
+				    </button>
+                                     <button class="listing_btn" id="setting1" onclick="PF('settingsDia').show();" title="Settings">
+                                        <img src="#{request.contextPath}/resources/images/settings.png" alt=""  />
+                                    </button>
+                                </div>        
+                                <div class="col-md-5 col-sm-5 col-xs-5" style="float:right">
+                                    <button class="video_icon_btn pull-right" id="mutemic" onclick="muteMic();" title="Mute/Un-Mute Microphone">
+					<img src="${request.contextPath}/resources/images/mute_mic.png" alt="" />
+                                    </button>
+                                    <button class="video_icon_btn pull-right" id="unmutemic" onclick="unmuteMic();" title="Mute/Un-Mute Microphone" style="display: none; background: red;">
+					<img src="${request.contextPath}/resources/images/unmute_mic.png" alt="" />
+                                    </button>
+                                    <button class="video_icon_btn pull-right" id="mutespeaker" onclick="muteSpeaker();" title="Mute/Un-Mute Speaker">
+                                        <img src="${request.contextPath}/resources/images/mute_speaker.png" alt="" />
+                                    </button>
+                                    <button class="video_icon_btn pull-right" id="unmutespeaker" onclick="unmuteSpeaker();" title="Mute/Un-Mute Speaker" style="display: none; background: red;">
+                                        <img src="${request.contextPath}/resources/images/unmute_speaker.png" alt="" />
+                                    </button>
+                                    <button class="video_icon_btn pull-right" id="mutevideo" onclick="muteVideo();" title="Show/Hide Video">
+                                        <img src="${request.contextPath}/resources/images/mute_video.png" alt="" />
+                                    </button>
+                                    <button class="video_icon_btn pull-right" id="unmutevideo" onclick="unmuteVideo();" title="Show/Hide Video" style="display: none;">
+                                        <img src="${request.contextPath}/resources/images/unmute_video.png" alt="" />
+                                    </button>
+                                   <div id="timer" style="color: red;float:right;font-size: small;padding-top: 10px"></div>
+                                    <a class="btn btn-inverse btn-block" href="#" title="Replace Video" id="inCallVideoReplaceButton" style="visibility: hidden;display:none" onclick="replaceVideoStrm();" ></a>
+                                    <a class="btn btn-inverse btn-block" href="#" title="new Video" id="inCallVideoReplaceButton1" style="visibility: hidden;display:none" onclick="showSpinner();" ></a>
+				</div>
+                             </div><!--video_head-->
+                        </div><!--video_head_wrap-->
+
+                        <div id="vidyoConnector">
+                            <div id="inCallContainer" style="margin-top: 0%;">
+                                <div id="parentRenderer" style="height:52vh">
+                                    <div id="renderer" class="pluginOverlay"></div>
+                                </div>
+                                <div id="toolbarCenter" class="toolbar" style="display:none;">
+                                    <button id="cameraButton" title="Camera Privacy" class="toolbarButton cameraOn"></button>			
+                                    <button id="joinLeaveButton" title="Join Conference" class="toolbarButton callStart"></button>
+                                    <button id="microphoneButton" title="Microphone Privacy" class="toolbarButton microphoneOn"></button>
+                                    <button id="speakerButton" title="Speaker Privacy" class="toolbarButton speakerOn"></button>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div id="addstatictabdiv"> 
+                                       <ul class="tabs" id="addstatictab" style="margin-top:5px">
+                                           <li><button href="#collapse1" id="tbutton" class="nav-toggle" style="background:transparent"><img src='#{request.contextPath}/resources/images/top.png' height='20px' width='28px' style="margin-top: -2px;margin-left: 1px;"></img></button></li>
+                                           <li class="selected" id="lieveryone"><a href="#Everyone" id="_Everyone" onclick="setEvery();">Everyone<span id="_Everyonespan" style="width:20px;border-radius: 13px;text-align:center;margin-left: 2px;padding: 2px;"></span></a></li>
+                                       </ul>
+                                       <div id="collapse1" style="display:none;margin-top: -3px;">
+                                           <div class="tabcontents" id="participant">
+                                               <div id="Everyone" ></div>
+                                           </div>
+                                           <div id="contentWrap">
+                                               <h:form prependId="false" id="sendSection" style="margin-top: 5px;" >
+                                                      <div id="chatWrap">
+                                                       <p:inputText id="msgToSend" value="" style="width:75%" maxlength="250"/>   
+                                                       <p:commandButton  type="button" id="send" value="Send"    onclick="sendMessage();document.getElementById('msgToSend').value='';" style="margin-left:5px;"/>
+                                                   </div>
+                                               </h:form>
+                                            </div>
+                                       </div>
+                               </div>
+                    </div><!--col-lg-8-->
+                </div><!--row-->
+            </div><!--container-->
+
+            <div id="custIdWrap" style="display:none">
+                <h:form  prependId="false" id="setCustId" >
+                    <p:inputText id="agentId" value="#{customerComponent.customerSocket}" label="customer socket" />
+                    <p:commandButton  id="custsubmit" ajax="true" value="submit"  onclick="connected();" />
+                </h:form>
+
+                <h:form id="inCallChatFormData"   prependId="false" >
+                    <p:inputTextarea id="inCallChatTextArea" value="#{vidyoAgent.chatText}"  rows="2" style="visibility: hidden"/>
+                    <p:inputTextarea id="inCallChatTabsArea" value="#{vidyoAgent.chatText1}"  rows="2" style="visibility: hidden"/>
+                    <p:commandButton id="chatsave" action="#{vidyoAgent.saveChat()}" value="Save" style="visibility: hidden"/>
+                </h:form>
+            </div>
+         </h:body>
+        </ui:define>
+</ui:composition>

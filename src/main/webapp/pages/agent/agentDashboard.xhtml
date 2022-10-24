@@ -1,0 +1,1389 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"                
+                template="../../templates/layout.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="title">
+        Dashboard
+    </ui:define>
+
+    <ui:define name="content">
+        <h:head>
+            <script>
+                var socketHostPublic = "#{socketHostPublic}";
+                var contextUrl = "#{request.contextPath}";
+                var message_notification;  
+             </script>
+            
+            <style>
+              
+                .ui-fileupload-progress{
+                    display:none;
+                }
+                
+                .value {
+                    width: 1000px !important;
+		}
+                
+                .ui-state-disabled, .ui-widget-content .ui-state-disabled, .ui-widget-header .ui-state-disabled{
+                    opacity: 10 !important;
+		}
+                
+                .fc-toolbar .ui-button:hover {
+                    background: #DB1516 !important;
+		}
+				
+		.fc-title{
+                    display: none !important;
+		}
+                
+                .fc-time-grid .fc-event, .fc-time-grid .fc-bgevent{
+                    position: relative !important;
+                }
+                
+                #npanel_header{
+                    display:none;
+                }
+                                               
+            </style>
+            
+            <script  src="#{request.contextPath}/resources/js/bowser.min.js"></script>
+            <link rel="stylesheet" href="${request.contextPath}/resources/vidyo/hunter/VidyoConnector.css"/>
+            <link rel="stylesheet" href="${request.contextPath}/resources/vidyo/hunter/VidyoTextChat.css"/>
+            <script src="${request.contextPath}/resources/vidyo/hunter/VidyoConnectorRecord.js"></script>
+            <script src="${request.contextPath}/resources/vidyo/hunter/VidyoTextChat.js"></script>
+            <script src="${request.contextPath}/resources/js/script.js"></script>
+            <script src="${request.contextPath}/resources/js/vidyoConnect.js"></script>
+            <script src="${request.contextPath}/resources/js/conference.js"></script>
+            <link type="text/css" rel="stylesheet" href="${request.contextPath}/resources/css/bootstrap.css" />
+            <link type="text/css" rel="stylesheet" href="${request.contextPath}/resources/css/video.css" />
+            <link type="text/css" rel="stylesheet" href="${request.contextPath}/resources/css/responsive.css" />
+            <script type="text/javascript" src="#{request.contextPath}/resources/js/socket.io.js" ></script>
+            <link type="text/css" rel="stylesheet" href="#{request.contextPath}/resources/css/tabs.css"></link>
+            <script type="text/javascript" src="#{request.contextPath}/resources/js/chat.js"></script>
+            <script type="text/javascript" src="#{request.contextPath}/resources/js/tdi.tabs.js"></script>
+            <script type="text/javascript" src="#{request.contextPath}/resources/js/webrtcchat.js"></script>
+            <script type="text/javascript" src="#{request.contextPath}/resources/js/snapshot.js"></script>
+            <script type="text/javascript" src="#{request.contextPath}/resources/js/cropper.js"></script>
+            <link type="text/css" rel="stylesheet" href="${request.contextPath}/resources/css/cropper.css" />
+        
+            <script>
+                        function redirectHome() {
+                            window.location = "#{request.contextPath}/login";
+                        }
+                        
+                        var prototype = {};
+                        prototype.string = {};
+                        prototype.string.autolink = function (string, options) {
+                        if (!options)
+                                options = {};
+                                if (!options.limit)
+                                    options.limit = 100;
+                                if (!options.tagFill)
+                                        options.tagFill = '';
+                                        var regex = /((http\:\/\/|https\:\/\/|ftp\:\/\/)|(www\.))+(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&amp;%@!\-\/]))?/gi;
+                                        string = string.replace(regex, function (value) {
+                                        value = value.toLowerCase();
+                                        var m = value.match(/^([a-z]+:\/\/)/);
+                                        var nice;
+                                        var url;
+                                    if (m)
+                                    {
+                                            nice = value.substring(0, value.indexOf('&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;'));
+                                            url = nice;
+                                    }
+                                    else
+                                    {
+                                            nice = value.substring(0, value.indexOf('&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;'));
+                                            url = 'http://' + nice;
+                                    }
+
+                                return '&lt;a href="' + url + '"' + (options.tagFill !== '' ? (' ' + options.tagFill) : '') + ' style="color:blue;text-decoration:underline;" target="_blank"  &gt;' + prototype.string.autolinkLabel(nice, options.limit) + '&lt;/a&gt;';
+                                });
+                                return string;
+                        };
+                        prototype.string.autolinkLabel = function (text, limit) {
+
+                        if (!limit) {
+                            return text;
+                        }
+
+                        if (text.length > limit) {
+                            return text.substr(0, limit - 3) + '...';
+                        }
+                            return text;
+                        };
+                        
+                        function deskNotificationClose() {
+                            if (!("Notification" in window)) {
+
+                            } else {
+                                if (message_notification) {
+                                    message_notification.close();
+                                }
+                            }
+                        }
+
+                        function deskNotification(title) {
+                            var options = {
+                                // body: bodyContent ,
+                                requireInteraction: true,
+                                icon: '../../#{request.contextPath}/call.png'
+                            };
+
+                            if (!("Notification" in window)) {
+                            } else if (Notification.permission === 'default') {
+                                Notification.requestPermission(function (status) {
+                                    Notification.permission = status;
+                                    message_notification = new Notification(title, options);
+                                    setTimeout(function () {
+                                        message_notification.close();
+                                    }, 30000);
+                                });
+                            } else if (Notification.permission === 'granted') {
+                                message_notification = new Notification(title, options);
+                                setTimeout(function () {
+                                    message_notification.close();
+                                }, 30000);
+                            }
+                        }
+            </script>    
+             #{vidyoAgent.checkSelfView()}
+        </h:head>
+        <h:body>
+            <h:form id="fileDownloadForm" prependId="false" style="display:none">
+                <p:inputText id="filePathName" value="#{vidyoAgent.uploadedFilePath}" label="File Path Name" />
+                <p:inputText id="fileName" value="#{vidyoAgent.fileName}" label="File Name" />
+                <p:commandButton id="fileReceive" value="download" action="#{vidyoAgent.updateLink()}" />
+            </h:form>
+            
+            <audio id="myaudio" loop="loop"  controls="controls" style="display:none;">  
+                <source src="#{request.contextPath}/promotional/demo.mp3" type="audio/mpeg" />  
+            </audio> 
+            <select id="windowShares" style="display:none">
+                 <option value='0'>None</option>
+            </select>
+            
+            <h:form id="vidyowebrtcform" prependId="false" >
+                <div id="optionsParameters" style="display: none;padding: 10px;border:1px solid;border-radius: 5px;">
+                            <li style="display:none;">
+                                <label>portal</label>
+                                <p:inputText id="portal" placeholder="portal" value="#{vidyoAgent.portal}"/>
+                            </li>
+                             <li style="display:none;">
+                                <label for="userName">User Name</label>
+                                <p:inputText id="userName" placeholder="User Name" value="#{vidyoAgent.userName}"/>
+                            </li>   
+                             <li style="display:none;">
+                                <label for="displayName">Display Name</label>
+                                <p:inputText id="displayName" placeholder="Display Name" value="#{vidyoAgent.agentName}"/>
+                            </li> 
+                            
+                            <li style="display:none;">
+                                <label>Room Pin</label>
+                                 <p:inputText id="roomPin" placeholder="Room Pin" value=""/>
+                            </li>
+                            <li style="display:none;">
+                                <label>Host</label>
+                                <p:inputText id="host" placeholder="host" value="#{vidyoAgent.portal}"/>
+                            </li>
+                            <li style="display:none;">
+                                <label>Room Key</label>
+                                <p:inputText id="roomKey" placeholder="room-key" value="#{vidyoAgent.roomUrl}"/>
+                            </li> 
+                            <li style="display:none;">
+                                <label for="resourceId">Resource ID</label>
+                                <p:inputText id="resourceId" placeholder="Conference Reference" value="#{vidyoAgent.roomName}"/>
+                            </li>    
+                 </div>
+            </h:form>                      
+                <p:dialog  id="sett" widgetVar="settingsDia" resizable="false" closable="true" header="Settings" modal="true" appendTo="@(body)" >
+                            <table style="border: none"> 
+                             <tr>
+                                 <td style="padding:10px"><label for="cameras">Cameras</label></td>
+                                 <td style="padding:10px">
+                                     <select id="cameras" style="width:195px">
+                                           <option value='0'>None</option>
+                                    </select>
+                                 </td>
+                             </tr>   
+                            <tr>
+                                <td style="padding:10px"><label for="microphones">Microphones</label></td>
+                                <td style="padding:10px">   
+                                    <select id="microphones" style="width:195px">
+                                       <option value='0'>None</option>
+                                     </select>
+                                </td>       
+                           </tr>    
+                            <tr>
+                                 <td style="padding:10px">     
+                                    <label for="speakers">Speakers</label>
+                                 </td>
+                                 <td style="padding:10px">
+                                    <select id="speakers" style="width:195px">
+                                        <option value='0'>None</option>
+                                    </select>
+                                 </td>
+                             </tr>
+                         </table>
+                </p:dialog>
+            
+            
+            <h:form id="cutomerDashboardForm" prependId="false" > 
+                 <p:menuButton id="empMenu" value="" styleClass="empmenu">
+                    <p:menuitem value="Self View" immediate="true"  action="#{vidyoAgent.testJoin()}" ajax="true" update="panelGrid1 empMenu" rendered="#{vidyoAgent.setupCheck and !vidyoAgent.selfviewenabled}" /> 
+                    <p:menuitem value="Start" ajax="true" action="#{vidyoAgent.goToDashboard()}"  immediate="true" onclick="disconnectCall(); disconnect(); document.getElementById('addstatictabdiv').style.display = 'inline'; document.getElementById('shareScreen').style.display = 'block';document.getElementById('capture').style.display = 'block';" disabled="#{vidyoAgent.gotoDashoardenabled}" rendered="#{vidyoAgent.setupCheck and !vidyoAgent.gotoDashoardenabled}" update="panelGrid1 empMenu" /> 
+                    <p:menuitem value="End" ajax="true"  disabled="#{vidyoAgent.hangupenabled}"  onclick="PF('reasonHangupSelectDlg').show();" action="#{vidyoAgent.showhangUpReasons(request)}"  update=":forId panelGrid1 empMenu " rendered="#{vidyoAgent.dashboardCheck and !vidyoAgent.hangupenabled}"/>
+                    <p:menuitem value="#{vidyoAgent.agentStatus}"  action="#{vidyoAgent.nextCallDisable(request)}" ajax="true" disabled="#{vidyoAgent.availableenabled}" onclick="disconnect(); disconnectCall(); $('#spinner').show();"  rendered="#{vidyoAgent.dashboardCheck and !vidyoAgent.availableenabled}"  oncomplete="refreshEssentials();removeObjectTag();dynamicallyRemoveJs();$('#spinner').hide();document.getElementById('afternextcall').click();" update="panelGrid1 empMenu"/>
+                    <p:menuitem value="Hold" id="holdidMenu" action="#{vidyoAgent.loadPromotionVideo(request)}" disabled="#{vidyoAgent.holdenabled}" ajax="true" rendered="#{vidyoAgent.dashboardCheck and !vidyoAgent.holdenabled}" immediate="true" partialSubmit="false" update=":promoVideoFormId panelGrid1 empMenu :imgIworksForm"/>
+                    <p:menuitem value="UnHold" id="unholdidMenu" action="#{vidyoAgent.unholdCustomer(request)}" ajax="true" style="display: none;" onclick="unholdDisplay();PF('timerDivW').hide();"  update="panelGrid1 empMenu :imgIworksForm" />
+                    <p:menuitem value="MultiWay" action="#{callForwardComponent.availlableSpecialistForMultiway(request)}" disabled="#{vidyoAgent.threewayenabled}"  ajax="true" immediate="true"   rendered="#{vidyoAgent.dashboardCheck and !vidyoAgent.threewayenabled}" /> 
+                    <p:menuitem value="Forward"  ajax="true"  disabled="#{vidyoAgent.forwardenabled}"  action="#{callForwardComponent.newCallForwardComponent(request)}" update=":forwardId" rendered="#{vidyoAgent.dashboardCheck and !vidyoAgent.forwardenabled}" />
+                    <p:menuitem value="Not Ready" ajax="true"  disabled="#{vidyoAgent.notreadyenabled}" onclick="PF('notReadyReasonDlg').show();" action="#{vidyoAgent.showNotReadyReasons(request)}" immediate="true" partialSubmit="false" update=":notreadyform panelGrid1 empMenu" rendered="#{vidyoAgent.dashboardCheck and !vidyoAgent.notreadyenabled}" />
+                    <p:menuitem value="Upload File"  ajax="true" onclick="$('#spinner').show();" actionListener="#{vidyoAgent.getPerticipentList(request)}"  immediate="true" partialSubmit="false"  disabled="#{vidyoAgent.holdenabled}" rendered="#{vidyoAgent.dashboardCheck and !vidyoAgent.holdenabled}"/>
+                    <p:menuitem value="Co-browse" action="#{vidyoAgent.openCobrowseWindow()}" ajax="true"  disabled="#{vidyoAgent.holdenabled}" rendered="#{vidyoAgent.dashboardCheck and !vidyoAgent.holdenabled}"/>
+                    <p:menuitem value="Schedule" ajax="true"  onclick="$('#spinner').show();" oncomplete="$('#spinner').hide();" action="#{vidyoAgent.makeScheduleCall(request)}" disabled="#{vidyoAgent.renderedMakeScheduleButton}" update=" :schedulingForm" rendered="#{vidyoAgent.dashboardCheck and !vidyoAgent.renderedMakeScheduleButton and vidyoAgent.isRm}"/>
+                    <p:menuitem value="Calendar" ajax="true"  onclick="$('#spinner').show();" oncomplete="$('#spinner').hide();" action="#{viewScheduleComponent.onLoad()}" rendered="#{vidyoAgent.dashboardCheck and !vidyoAgent.renderedMakeScheduleButton and vidyoAgent.isRm}" update=":mainForm"/>
+                    <p:menuitem value="Forms" ajax="true"  onclick="PF('accountDlgWid').show();" rendered="#{vidyoAgent.dashboardCheck and !vidyoAgent.holdenabled}"/>
+                    <p:menuitem value="Invite" actionListener="#{vidyoAgent.openSendLink()}" onclick="$('#spinner').show();" oncomplete="$('#spinner').hide();" ajax="true" immediate="true" partialSubmit="false"  disabled="#{vidyoAgent.hangupenabled}" rendered="#{vidyoAgent.dashboardCheck and !vidyoAgent.hangupenabled}" /> 
+                    <p:separator />
+                    <p:menuitem value="Logout" action="#{employeeLoginComponent.showLogoutReasons()}"   ajax="true" immediate="true" disabled="#{vidyoAgent.logoutenabled}" oncomplete="PF('reasonSelectDlg').show();" update=":reasonSelectionForm" rendered="#{!vidyoAgent.logoutenabled}" />
+                </p:menuButton>
+                
+                <p:growl id="msg" sticky="false" showDetail="false"/>  
+                
+                <p:panel id="panel1" style="min-height: 40px">
+                    <h:panelGrid id="panelGrid1" columns="22" >
+                        <p:commandButton id="selfview" value="Self View" action="#{vidyoAgent.testJoin()}" ajax="true" style="font-size:17px;border-radius: 18px;border: 1px solid;box-shadow: inset 0 0 10px" onclick="$('#spinner').show();"  disabled="#{vidyoAgent.selfviewenabled}" immediate="true"  update="panelGrid1 empMenu" rendered="#{vidyoAgent.setupCheck and !vidyoAgent.selfviewenabled}" /> 
+                        <p:spacer width="4" rendered="#{vidyoAgent.setupCheck  and !vidyoAgent.selfviewenabled}"/>
+                        <p:commandButton id="dashboard" value="Start"  ajax="true" action="#{vidyoAgent.goToDashboard()}" style="font-size:17px;border-radius: 18px;border: 1px solid;box-shadow: inset 0 0 10px"  immediate="true" onclick="disconnectCall(); disconnect(); document.getElementById('addstatictabdiv').style.display = 'inline'; document.getElementById('shareScreen').style.display = 'block';document.getElementById('capture').style.display = 'block';" disabled="#{vidyoAgent.gotoDashoardenabled}" rendered="#{vidyoAgent.setupCheck and !vidyoAgent.gotoDashoardenabled}" update="panelGrid1 empMenu" /> 
+                        <p:commandButton id="hangupid" value="End"  ajax="true"  style="font-size:17px;border-radius: 18px;border: 1px solid;box-shadow: inset 0 0 10px"  disabled="#{vidyoAgent.hangupenabled}"  onclick="PF('reasonHangupSelectDlg').show();" action="#{vidyoAgent.showhangUpReasons(request)}"  update=":forId panelGrid1 empMenu " rendered="#{vidyoAgent.dashboardCheck and !vidyoAgent.hangupenabled}"/>
+                        <p:spacer width="4" rendered="#{vidyoAgent.dashboardCheck  and !vidyoAgent.hangupenabled}"/>
+                        <p:commandButton id="nextcall"  action="#{vidyoAgent.nextCallDisable(request)}" ajax="true" disabled="#{vidyoAgent.availableenabled}" onclick="disconnect(); disconnectCall(); $('#spinner').show();" value="#{vidyoAgent.agentStatus}"  style="font-size:17px;border-radius: 18px;border: 1px solid;#{vidyoAgent.agentColor};box-shadow: inset 0 0 10px"   rendered="#{vidyoAgent.dashboardCheck and !vidyoAgent.availableenabled}"  oncomplete="refreshEssentials();removeObjectTag();dynamicallyRemoveJs();$('#spinner').hide();document.getElementById('afternextcall').click();" update="panelGrid1 empMenu"/>
+                        <p:spacer width="4" rendered="#{vidyoAgent.dashboardCheck  and !vidyoAgent.availableenabled}"/>
+                        <p:commandButton id="holdid" value="Hold" action="#{vidyoAgent.loadPromotionVideo(request)}" disabled="#{vidyoAgent.holdenabled}" ajax="true"  style="font-size:17px;display: block;border-radius: 18px;border: 1px solid;box-shadow: inset 0 0 10px"   rendered="#{vidyoAgent.dashboardCheck and !vidyoAgent.holdenabled}" immediate="true" partialSubmit="false" update=":promoVideoFormId panelGrid1 empMenu :imgIworksForm"/>
+                        <p:commandButton id="unholdid" value="UnHold"  action="#{vidyoAgent.unholdCustomer(request)}" style="font-size:17px;display: none;background: red;border-radius: 18px;border: 1px solid;box-shadow: inset 0 0 10px" ajax="true" onclick="unholdDisplay();PF('timerDivW').hide();"  update="panelGrid1 empMenu :imgIworksForm" />
+                        <p:spacer width="4" rendered="#{vidyoAgent.dashboardCheck  and !vidyoAgent.holdenabled}"/>
+                        <p:commandButton id="threeway" value="MultiWay"  action="#{callForwardComponent.availlableSpecialistForMultiway(request)}" disabled="#{vidyoAgent.threewayenabled}" style="font-size:17px;border-radius: 18px;border: 1px solid;box-shadow: inset 0 0 10px" ajax="true" immediate="true"   rendered="#{vidyoAgent.dashboardCheck and !vidyoAgent.threewayenabled}" /> 
+                        <p:spacer width="4" rendered="#{vidyoAgent.dashboardCheck  and !vidyoAgent.threewayenabled}"/>
+                        <p:commandButton id="forward" value="Forward"  style="font-size:17px;border-radius: 18px;border: 1px solid;box-shadow: inset 0 0 10px" ajax="true" disabled="#{vidyoAgent.forwardenabled}"  action="#{callForwardComponent.newCallForwardComponent(request)}" update=":forwardId" rendered="#{vidyoAgent.dashboardCheck and !vidyoAgent.forwardenabled}" />
+                        <p:spacer width="4" rendered="#{vidyoAgent.dashboardCheck  and !vidyoAgent.forwardenabled}"/>
+                        <p:commandButton id="notReady" value="Not Ready" ajax="true"  style="font-size:17px;border-radius: 18px;border: 1px solid;box-shadow: inset 0 0 10px" disabled="#{vidyoAgent.notreadyenabled}" onclick="PF('notReadyReasonDlg').show();" action="#{vidyoAgent.showNotReadyReasons(request)}" immediate="true" partialSubmit="false" update=":notreadyform panelGrid1 empMenu" rendered="#{vidyoAgent.dashboardCheck and !vidyoAgent.notreadyenabled}" />
+                        <p:spacer width="4" rendered="#{vidyoAgent.dashboardCheck  and !vidyoAgent.notreadyenabled}"/>
+                        <p:commandButton id="fileUploadBtn" value="Upload File" ajax="true" onclick="$('#spinner').show();" style="font-size:17px;border-radius: 18px;border: 1px solid;box-shadow: inset 0 0 10px" actionListener="#{vidyoAgent.getPerticipentList(request)}"  immediate="true" partialSubmit="false"  disabled="#{vidyoAgent.holdenabled}" rendered="#{vidyoAgent.dashboardCheck and !vidyoAgent.holdenabled}"/>
+                        <p:spacer width="4" rendered="#{vidyoAgent.dashboardCheck  and !vidyoAgent.holdenabled}"/>
+                        <p:commandButton id="accountOpenId"  value="Co-browse" action="#{vidyoAgent.openCobrowseWindow()}" ajax="true" style="font-size:17px;border-radius: 18px;border: 1px solid;box-shadow: inset 0 0 10px" disabled="#{vidyoAgent.holdenabled}" rendered="#{vidyoAgent.dashboardCheck and !vidyoAgent.holdenabled}"/>
+                        <p:spacer width="4" rendered="#{vidyoAgent.dashboardCheck  and !vidyoAgent.holdenabled}"/>
+                        <p:commandButton id="makeScheduleDtlsId" value="Schedule" ajax="true" style="font-size:17px;border-radius: 18px;border: 1px solid;box-shadow: inset 0 0 10px;white-space: nowrap" onclick="$('#spinner').show();" oncomplete="$('#spinner').hide();" action="#{vidyoAgent.makeScheduleCall(request)}" disabled="#{vidyoAgent.renderedMakeScheduleButton}" update=" :schedulingForm" rendered="#{vidyoAgent.dashboardCheck and !vidyoAgent.renderedMakeScheduleButton and vidyoAgent.isRm}"/>
+                        <p:spacer width="4" rendered="#{vidyoAgent.dashboardCheck and !vidyoAgent.renderedMakeScheduleButton and vidyoAgent.isRm}"/>
+                         <p:commandButton id="viewScheduleDtlsId" value="Calendar" ajax="true" style="font-size:17px;border-radius: 18px;border: 1px solid;box-shadow: inset 0 0 10px;white-space: nowrap" onclick="$('#spinner').show();" oncomplete="$('#spinner').hide();" action="#{viewScheduleComponent.onLoad()}" rendered="#{vidyoAgent.dashboardCheck and !vidyoAgent.renderedMakeScheduleButton and vidyoAgent.isRm}"/>
+                         <p:spacer width="4" rendered="#{vidyoAgent.dashboardCheck}"/>
+                        <p:commandButton id="accountOpenId1" value="Forms" ajax="true" style="font-size:17px;border-radius: 18px;border: 1px solid;box-shadow: inset 0 0 10px" onclick="PF('accountDlgWid').show();" disabled="#{vidyoAgent.holdenabled}" rendered="#{vidyoAgent.dashboardCheck and !vidyoAgent.holdenabled}"/>
+                        <p:spacer width="4" rendered="#{vidyoAgent.dashboardCheck and vidyoAgent.hangupenabled}"/>
+                        
+                        <p:commandButton value="Invite" actionListener="#{vidyoAgent.openSendLink()}" onclick="$('#spinner').show();" oncomplete="$('#spinner').hide();" ajax="true" immediate="true" partialSubmit="false" style="font-size:17px;margin-left:10px;border-radius: 18px;border: 1px solid;box-shadow: inset 0 0 10px" disabled="#{vidyoAgent.hangupenabled}" rendered="#{vidyoAgent.dashboardCheck and !vidyoAgent.hangupenabled  and vidyoAgent.isRm}" /> 
+                        <p:spacer width="4" rendered="#{vidyoAgent.dashboardCheck  and !vidyoAgent.hangupenabled  and vidyoAgent.isRm}"/>
+                        <p:commandButton id="logout" value="Logout" action="#{employeeLoginComponent.showLogoutReasons()}"   ajax="true" immediate="true" disabled="#{vidyoAgent.logoutenabled}" style="font-size:17px;border-radius: 18px;border: 1px solid;box-shadow: inset 0 0 10px" oncomplete="PF('reasonSelectDlg').show();" update=":reasonSelectionForm" rendered="#{!vidyoAgent.logoutenabled}" />
+                    </h:panelGrid>
+                    
+                        <p:poll interval="3" listener="#{callStartedComponent.callStarted(request)}" />
+                        <p:poll interval="3" listener="#{callStartedComponent.checkCallEndedAtAgentSession()}"/>
+                        
+                        <p:commandButton id="refreshCustomerAccountDtlBtn" ajax="true"  value="Refersh Customer Account Form Detail"  action="#{vidyoAgent.refreshCustomerAccount()}"  style="display:none"  update="panelGrid1 empMenu"/>
+                        <p:commandButton id="refreshExistingCustomerLoanAccountDtlBtn" ajax="true"  value="Refersh Existing Customer Loan Account Form Detail"  action="#{vidyoAgent.refreshCustomerLoanAccount()}"  style="display:none"  update="panelGrid1 empMenu"/>
+                        <p:commandButton id="afternextcall"  action="#{vidyoAgent.nextCall(request)}" ajax="true" style="display:none" update="panelGrid1 empMenu"/>
+                        <p:commandButton id="checkCallType" ajax="true"  value=""  actionListener="#{vidyoAgent.checkCallOption(request)}" style="display:none" />
+                        <p:commandButton id="startRecording" ajax="true"  value=""  actionListener="#{callRecordsComponent.getOngoingCallRecording(request)}" style="display:none" />
+                        <p:commandButton id="refreshbuttonchat" ajax="true"  value=""  actionListener="#{vidyoAgent.refreshOperations(request)}"  update=":imgIworksForm :panelGrid1 empMenu :recordForm "  style="display:none" />
+                        <p:commandButton id="refreshbutton" ajax="true"  value=""  actionListener="#{vidyoAgent.refreshOperations(request)}"  update=":imgIworksForm :panelGrid1 empMenu :recordForm "  style="display:none" />
+                        <p:commandButton id="forwarded" value="forwardcall"  action="#{callStartedComponent.joinForwardingRoom()}"  style="display:none" update="panelGrid1 empMenu :imgIworksForm" />
+                        <p:commandButton id="forwarding" ajax="true"  value="forwardingcall"  action="#{callStartedComponent.resetbutton(request)}"  style="display:none" update="panelGrid1 empMenu :imgIworksForm "/>
+                        <p:commandButton id="hanging" ajax="true"  value="hangingup"  action="#{vidyoAgent.hangUp(request)}" style="display:none" update="panelGrid1 empMenu :imgIworksForm" oncomplete="refreshCustomerAccoutDetails();refreshEssentials();"/>
+                        <p:commandButton id="callabondaned" ajax="true"  value="abandoned"  action="#{vidyoAgent.callAbondaned(request)}"  style="display:none"  update="panelGrid1 empMenu :imgIworksForm"/>
+                        <p:commandButton id="callabondaned1" ajax="true"  value="abandoned"  action="#{vidyoAgent.callAbondaned1(request)}"  style="display:none"  update="panelGrid1 empMenu :imgIworksForm"/>
+                        <p:commandButton id="checkforward" ajax="true"  value="callforward"  action="#{callStartedComponent.checkForwardCallReceive(request)}"  style="display:none"  update="panelGrid1 empMenu"/>
+                        <p:commandButton id="checkspecialist" ajax="true"  value="callspecialist"  action="#{callStartedComponent.checkSpecialistCallReceive(request)}"  style="display:none"  update="panelGrid1 empMenu"/>
+                        <p:commandButton id="mocknotReady" value="mocknotready" ajax="true"  style="display:none"  update="panelGrid1 empMenu :imgIworksForm" action="#{vidyoAgent.showNotMockReadyReasons(request)}" immediate="true" partialSubmit="false"  />
+                        <p:commandButton id="mocknotReadyForward" value="mocknotreadyforward" ajax="true"  style="display:none"  update="panelGrid1 empMenu :imgIworksForm" action="#{callStartedComponent.showNotMockReadyReasonsForward(request)}" immediate="true" partialSubmit="false"  />
+                        <p:commandButton id="dupexit" ajax="true"  value="exit"  action="#{employeeLoginComponent.leave()}"  style="display:none"  />
+                        <p:commandButton id="checkReceive" ajax="true" actionListener="#{vidyoAgent.checkReceive(request)}"    style="display:none" update=":panelGrid1 empMenu :imgIworksForm " /> 
+                        <p:commandButton id="checkReceiveIdCard" ajax="true" actionListener="#{vidyoAgent.checkReceiveIdCardFromCust(request)}" oncomplete="childReload();" style="display:none"  /> 
+                        <p:inputText id="checkReceiveIdCardValue" value="#{vidyoAgent.idCardFromCust}" style="display:none"/>
+                        <p:commandButton id="checkReceiveAddProof" ajax="true" actionListener="#{vidyoAgent.checkReceiveAddProofFromCust(request)}" oncomplete="childReload();"  style="display:none"  /> 
+                        <p:inputText id="checkReceiveAddProofValue" value="#{vidyoAgent.addProofFromCust}" style="display:none"/>
+                        <p:commandButton id="checkReceiveSelfImage" ajax="true" actionListener="#{vidyoAgent.checkReceiveSelfImageFromCust(request)}" oncomplete="childReload();"  style="display:none"  /> 
+                        <p:inputText id="checkReceiveSelfImageValue" value="#{vidyoAgent.selfImageFromCust}" style="display:none"/>
+                        <p:commandButton id="checkRefresh" ajax="true" actionListener="#{vidyoAgent.refreshCheck()}"  style="display:none"  update=":panelGrid1 empMenu :imgIworksForm " />
+                        <p:commandButton id="checkReceiveIncoming" ajax="true" actionListener="#{vidyoAgent.checkIncomingReceive(request)}"  style="display:none;"  />  
+                </p:panel>
+            </h:form>
+      
+            
+            <p:dialog  id="odialog" widgetVar="notDialog" resizable="false" closable="false" responsive="true" header="New Notification" modal="true" appendTo="@(body)" onShow="intervalFotNoti();" style="max-width: 98%"  >
+                <h:form style="overflow:hidden">
+                    <center>
+                            <br/>
+                            <h:outputText value="Customer is waiting for your response.Please join the conference" />
+                            <br/><br/>
+                            <p:commandButton ajax="true"  value="Ok" onclick="checkCallOption(); vidyoConnectJoin();PF('notDialog').hide();stopAudio();stopIntervalForNoti();deskNotificationClose();"  update=":imgIworksForm :panelGrid1 empMenu :accountDlgFrmId" oncomplete="startCounterTimer();" />
+                    </center>
+                 </h:form>
+            </p:dialog> 
+            
+            <p:dialog  id="misscustomer" widgetVar="misscust" responsive="true" resizable="false" closable="false" header=" Notification" modal="true" appendTo="@(body)" style="max-width: 98%">
+                <h:form style="overflow:hidden">
+                    <center>
+                            <br/>
+                            <h:outputText value="Sorry! You have missed a customer call" />
+                            <br/><br/>
+                            <p:commandButton ajax="true"   value="OK"   onclick="PF('misscust').hide();"/>
+                    </center>
+                </h:form>
+            </p:dialog> 
+            
+            <p:dialog  id="custhangs1" widgetVar="customerhangup" responsive="true" resizable="false" closable="false" header=" Notification" modal="true" appendTo="@(body)" style="max-width: 98%">
+                <h:form id="custhangsid" style="overflow:hidden;">
+                    <center>
+                        <br/>
+                        <h:outputText value="Customer Disconnected" />
+                        <br/><br/>
+                        <p:commandButton ajax="true"   value="OK"   onclick="PF('customerhangup').hide();"  />
+                    </center>
+                </h:form>
+             </p:dialog> 
+
+            <p:dialog  id="custmiss1" widgetVar="customermissed" responsive="true" resizable="false" closable="false" header=" Notification" modal="true" appendTo="@(body)" style="max-width: 98%">
+                <h:form id="custmissid" style="overflow:hidden;">
+                    <center>
+                        <br/>
+                        <h:outputText value="Customer missed the call" />
+                        <br/><br/>
+                         <p:commandButton ajax="true"   value="OK"   onclick="PF('customermissed').hide();"  />
+                    </center>
+                </h:form>
+             </p:dialog> 
+            
+            
+            <p:dialog id="forwardDlgId" widgetVar="forwardDlg" responsive="true" modal="true" header="Select Forward Options"  resizable="false" appendTo="@(body)" draggable="true"  dynamic="true" closeOnEscape="false" closable="true" style="max-width: 98%"  > 
+                  <h:form id="forwardId" style="overflow: hidden" >
+                <p:spacer width="20px"/> 
+                <center>
+                    <h:panelGroup>
+                        <p:commandButton  value="By Agent Group" action="#{callForwardComponent.newCallForwardComponent(request)}" onclick="PF('forwardDlgGroup').show();" oncomplete="PF('forwardDlg').hide();" update=":forwardGroupId" />
+                        <p:commandButton  value="By Agent Name" action="#{callForwardComponent.availlableAgentForForward(request)}" onclick="PF('forwardDlg').hide();" update=":forwardNameId" />
+                    </h:panelGroup>
+                 </center>
+                 <p:spacer width="20px"/> 
+                </h:form>         
+            </p:dialog>
+            
+            <p:dialog id="forwardDlgGroupId" widgetVar="forwardDlgGroup" modal="true" header="Select Service"  resizable="false" appendTo="@(body)" responsive="true" draggable="true"  dynamic="true" closeOnEscape="false" closable="false" style="max-width: 98%" > 
+                <h:form id="forwardGroupId" style="overflow:hidden" >
+                    <h:outputText value="Product Type " />
+                    <h:panelGroup layout="block" style="padding-bottom: 10px; " >
+                        <p:selectOneListbox id="forwa" value="#{callForwardComponent.service_id}" required="true" label="Service:" scrollHeight="60" style="width: 96% !important;">       
+                            <f:selectItems value="#{callForwardComponent.selectService}" var="service" itemValue="#{service.id}" itemLabel="#{service.serviceName}"/>
+                        </p:selectOneListbox>
+                    </h:panelGroup >
+                    <h:panelGroup >
+                        <p:commandButton  action="#{callForwardComponent.forwardByGroup(request)}"  style="margin-right:10px;" value="Forward" onclick="PF('forwardDlg').hide();$('#spinner').show();" update=":forwardId :panelGrid1 empMenu" />
+                        <p:commandButton  ajax="true" type="button"  style="margin-left:5px;" value="Cancel" onclick="PF('forwardDlgGroup').hide();" update=":forwardId :panelGrid1 empMenu" />
+                    </h:panelGroup>
+                    <p:spacer width="5"/> 
+                    <p:spacer width="5"/> 
+                </h:form>         
+            </p:dialog>
+            
+             <p:dialog id="forwardDlgNameId" widgetVar="forwardDlgName" modal="true" header="Select Available Agent(if any)"  resizable="false" appendTo="@(body)" draggable="true"  dynamic="true" closeOnEscape="false" closable="false" onShow="PF('agentpoll').start();"  onHide="PF('agentpoll').stop();" responsive="true" style="max-width: 98%"> 
+                <h:form id="forwardpollForm" prependId="false">
+                    <p:poll widgetVar="agentpoll" interval="3" listener="#{callForwardComponent.availlableAgentForForwardPoll(request)}"  autoStart="false" />
+                </h:form> 
+                <h:form id="forwardNameId" prependId="false" style="overflow:hidden" >
+                    <h:outputText value="Available Agents: " />
+                    <h:panelGroup layout="block" style="padding-bottom: 10px; " >
+                        <p:selectOneListbox id="forwa" value="#{callForwardComponent.agentId}"  required="true" label="Available Agents:" style="width: 96% !important;height: 60px;overflow-y: scroll;">       
+                            <f:selectItems value="#{callForwardComponent.availableAgents}" var="agent"  itemValue="#{agent.empId.id}" itemLabel="#{agent.empId.firstName}(#{agent.empId.loginId})"/>
+                        </p:selectOneListbox>
+                    </h:panelGroup >
+                    <h:panelGroup>
+                        <p:commandButton ajax="true" action="#{callForwardComponent.forwardByName(request)}"  style="margin-right:10px;" value="Forward" onclick="PF('forwardDlgName').hide();$('#spinner').show(); " update=":forwardNameId" />
+                        <p:commandButton ajax="true" type="button"   style="margin-left:5px;" value="Cancel" onclick="PF('forwardDlgName').hide();vidyoShow();" update=":forwardNameId" />
+                    </h:panelGroup>
+                    <p:spacer width="5"/> 
+                    <p:spacer width="5"/> 
+                </h:form>         
+            </p:dialog>
+            
+            <p:dialog  id="noagentid" widgetVar="noagent" responsive="true" resizable="false" closable="false" header=" Notification" modal="true" appendTo="@(body)" style="max-width: 98%">
+                  <h:form style="overflow:hidden">
+                        <center>
+                            <h:outputText value="Sorry! No Agent is Available" />
+                            <br/><br/>
+                            <p:commandButton ajax="true"   value="OK" style="margin-left: 5px;"  onclick="PF('noagent').hide();" update="panelGrid1 empMenu" />
+                        </center>
+                    </h:form>
+            </p:dialog> 
+
+            <p:dialog  id="callforwardingid" responsive="true" widgetVar="callforwarding" resizable="false" closable="false"  header=" Notification" modal="true" appendTo="@(body)" onShow="checkIntervalforForwardResponse();" style="max-width: 98%;">
+                <center>
+                        <br/><br/>
+                        <h:outputText value="Waiting for Service Agent to receive the forwarded call" />
+                        <br/><br/><br/>
+                 </center>
+            </p:dialog>
+
+            <p:dialog  id="forwardsuccess" responsive="true" widgetVar="forsuccess" resizable="false" closable="false" header=" Notification" modal="true" appendTo="@(body)" style=" max-width: 98%">
+                <h:form style="overflow:hidden">
+                        <center>
+                            <br/>
+                            <h:outputText value="Call forwarded Successfully" />
+                            <br/><br/>
+                            <p:commandButton ajax="true"   value="OK"   onclick="PF('forsuccess').hide(); refreshEssentials();"  />
+                        </center>
+                </h:form>
+            </p:dialog> 
+            
+            <p:dialog  id="forwardfailure" responsive="true" widgetVar="forfailure" resizable="false" closable="false"  header=" Notification" modal="true" appendTo="@(body)"  style="max-width: 98%">
+                <h:form style="overflow:hidden">
+                    <center>
+                            <br/>
+                            <h:outputText value="Sorry! forwarded Service Agent did not received the call" />
+                            <br/><br/>
+                            <p:commandButton ajax="true"   value="OK"   onclick="PF('forfailure').hide();"  />
+                    </center>
+                </h:form>
+            </p:dialog> 
+            
+            <p:dialog  id="forwardnotId" responsive="true" widgetVar="forwardedNotification" resizable="false" closable="false"   header="Notification" modal="true" appendTo="@(body)" onShow="checkReceiveForwardInterval();" style="max-width: 98%" >
+                <h:form id="receiveForward"  style="overflow:hidden;">    
+                    <center>
+                        <br/>
+                        <h:outputText id="receiveForwardText" value="#{callStartedComponent.popUpMessage}" />
+                        <br/>
+                        <br/>
+                        <p:commandButton ajax="true"  value="OK"  onclick="forwardCall(); stopAudio(); startCounterTimer();deskNotificationClose();" action="#{imageComponent.resetFileForForwardCall(request)}"  oncomplete="PF('forwardedNotification').hide();" update=":panelGrid1 empMenu :imgIworksForm" />
+                    </center>
+                </h:form>
+            </p:dialog> 
+
+            <p:dialog  id="missforward" responsive="true" widgetVar="missfor" resizable="false" closable="false"   header=" Notification" appendTo="@(body)" onShow="PF('forwardedNotification').hide();PF('forwardjoin').hide();"  style="max-width:98%" >
+                <h:form id="missForwardform"  style="overflow:hidden;">    
+                    <center>
+                        <br/>
+                        <h:outputText value="Sorry! You have missed a forwarded call" />
+                        <br/><br/>
+                        <p:commandButton ajax="true"   value="OK" style="margin-left: 5px;"  onclick="PF('missfor').hide();"  />
+                    </center>
+                </h:form>
+            </p:dialog> 
+            
+            <p:dialog  id="forwardretry" responsive="true" widgetVar="forwardjoin" resizable="false" closable="true"  header="Try again"  style="max-width:98%" >
+                <h:form id="forwardretryform" style="overflow:hidden;">
+                    <center>
+                        <br></br>
+                        <h:outputText id="forwardjointext" value="Conference join failed " /><br></br><br></br>
+                        <p:commandButton onclick="PF('forwardjoin').hide(); forwardCall();" value="Retry" style="margin-left: 5px;"  update=":imgIworksForm :panelGrid1 empMenu :recordForm"  />
+                        <p:commandButton ajax="true"  value="Cancel" style="margin-left: 5px;"  update=":imgIworksForm :panelGrid1 empMenu :recordForm"  onclick="PF('forwardjoin').hide(); hitNotReady();" oncomplete="callHangup();stopAudio();" />
+                    </center>
+                </h:form>
+            </p:dialog>
+            
+            
+            <p:dialog id="multiwayDlgNameId" responsive="true" widgetVar="multiwayDlgName" modal="true" header="Select Available Specialist(if any)"  resizable="false" appendTo="@(body)" draggable="true"  dynamic="true" closeOnEscape="false" closable="false" onShow="PF('agentpoll').start();"  onHide="PF('agentpoll').stop();" style="max-width: 98%"> 
+                <h:form id="multipollForm" prependId="false">
+                    <p:poll widgetVar="agentpoll" interval="3" listener="#{callForwardComponent.availlableSpecialistForMultiwayPoll(request)}"  autoStart="false" />
+                </h:form> 
+                <h:form id="multiwayNameId" prependId="false" style="overflow:hidden" >
+                    <h:outputText value="Available Specialists: " />
+                    <h:panelGroup layout="block" style="padding-bottom: 10px; " >
+                        <p:selectOneListbox id="mul" value="#{vidyoAgent.specialistId}"  required="true" label="Available Spicialists:" style="width: 96% !important;height: 60px;overflow-y: scroll;">       
+                            <f:selectItems value="#{callForwardComponent.availableSpecialists}" var="agent"  itemValue="#{agent.empId.loginId}" itemLabel="#{agent.empId.firstName}(#{agent.empId.loginId})"/>
+                        </p:selectOneListbox>
+                    </h:panelGroup >
+                    <h:panelGroup >
+                        <p:commandButton ajax="true" action="#{vidyoAgent.searchSpecialist(vidyoAgent.specialistId)}"  style="margin-right:20px;" value="Call" onclick="PF('multiwayDlgName').hide();$('#spinner').show(); "  update="@this :panelGrid1 empMenu" />
+                        <p:commandButton ajax="true" immediate="true" action="#{vidyoAgent.threeway()}"   style="margin-left:5px;" value="Cancel" onclick="PF('multiwayDlgName').hide();"  update="@this :panelGrid1 empMenu" />
+                    </h:panelGroup>
+                    <p:spacer width="5"/> 
+                    <p:spacer width="5"/> 
+                </h:form>         
+            </p:dialog>
+            
+            <p:dialog  id="nospid" responsive="true" widgetVar="multiwayNoAgent" resizable="false" closable="false" header=" Notification" modal="true" appendTo="@(body)" style="max-width: 98%">
+                   <h:form style="overflow:hidden">
+                         <center>
+                            <h:outputText value="Sorry! No Specialist is Available" />
+                            <br/><br/>
+                            <p:commandButton ajax="true"   value="OK" style="margin-left: 5px;"  onclick="PF('multiwayNoAgent').hide();" update="panelGrid1 empMenu" />
+                        </center>
+                   </h:form>
+            </p:dialog>  
+
+            <p:dialog  id="specialistsuccess" responsive="true"  widgetVar="specialistsuccess" resizable="false" closable="false"  header=" Notification" modal="true" appendTo="@(body)" style="max-width: 98%" >
+                    <center>
+                            <br/><br/>
+                            <h:outputText value="Specialist Joined" />
+                            <br/><br/><br/>
+                    </center>
+            </p:dialog> 
+
+            <p:dialog  id="forspecialist" responsive="true" widgetVar="forspecialist" resizable="false" closable="false"  header=" Notification" modal="true" appendTo="@(body)" style="max-width: 98%">
+                   <center>
+                            <br/><br/>
+                            <h:outputText value="Sorry! Specialist did not received the call" />
+                            <br/><br/><br/>
+                    </center>
+            </p:dialog> 
+
+            <p:dialog  id="specilistInfo" responsive="true" widgetVar="specilistInfoDia" resizable="false" closable="false" header=" Notification" modal="true" appendTo="@(body)" onShow="checkIntervalforSpecialistResponse();" style="max-width: 98%" >
+                    <center>
+                            <br/><br/>
+                            <h:outputText value="Wait for Specialist to join" />
+                            <br/><br/><br/>
+                    </center>
+            </p:dialog> 
+
+            <p:dialog  id="specilistInfo1" responsive="true" widgetVar="specilistInfoDia1" resizable="false" closable="false"  header=" Notification" modal="true" appendTo="@(body)" style="max-width: 98%">
+                    <center>
+                            <br/><br/>
+                            <h:outputText value="Sorry! Specialist not found" />
+                            <br/><br/><br/>
+                    </center>
+            </p:dialog> 
+
+            <p:dialog  id="specilistInfo2" responsive="true" widgetVar="specilistInfoDia2" resizable="false" closable="false" header=" Notification" modal="true" appendTo="@(body)" style="max-width: 98%">
+                    <center>
+                            <br/><br/>
+                            <h:outputText value="Sorry! Specialist is Busy" />
+                            <br/><br/><br/>
+                    </center>
+            </p:dialog> 
+
+            <p:dialog  id="specilistInfo3" responsive="true" widgetVar="specilistInfoDia3" resizable="false" closable="false" header=" Notification" modal="true" appendTo="@(body)" style="max-width: 98%">
+                   <center>
+                             <br/><br/>
+                            <h:outputText value="Sorry! Specialist not Logged in" />
+                             <br/><br/><br/>
+                    </center>
+            </p:dialog> 
+
+            <p:dialog  id="specilistInfo4" responsive="true" widgetVar="specilistInfoDia4" resizable="false" closable="false" header=" Notification" modal="true" appendTo="@(body)" style="max-width: 98%">
+                  <center>
+                        <br/><br/>
+                            <h:outputText value="Sorry! This is Not a Specialist" />
+                        <br/><br/><br/>
+                   </center>
+            </p:dialog> 
+
+            <p:dialog  id="specilistInfo5" responsive="true" widgetVar="specilistInfoDia5" resizable="false" closable="false" header=" Notification" modal="true" appendTo="@(body)" style="max-width: 98%">
+                   <center>
+                        <br/><br/>
+                            <h:outputText value="Sorry! CR Manager Logged in but is not ready" />
+                        <br/><br/><br/>
+                    </center>
+            </p:dialog> 
+                        
+            <p:dialog id="timerDiv" header="Customer Hold Time" widgetVar="timerDivW" height="auto" closable="false"  minimizable="false"  maximizable="false" resizable="false" position="45,435" draggable="true" style="background-color: papayawhip;font-size: small;max-width: 98%">
+                <h:form prependId="false" style="overflow:hidden">
+                        <center>
+                            Total  Hold  Time : <h:outputText id="stopWatchId" style="color: red; font-weight: bold;" value="0.0.0" ></h:outputText>
+                            <br/>
+                            Current Hold Time : <h:outputText id="stopWatchNnId" style="color: red; font-weight: bold;" value="0.0.0" ></h:outputText>
+                            <br/>
+                        </center>
+                   </h:form>
+            </p:dialog>
+            
+            <p:dialog  id="showSendLinkId" widgetVar="showSendLinkWidId" resizable="false" responsive="true" closable="true" header="Send Link To Guest" modal="true" appendTo="@(body)" style="max-width: 98%"  >
+                <h:form id="showSendLinkFormId" prependId="false" style="overflow:hidden">
+                     <p:growl id="msgx" sticky="false" showDetail="false"/>  
+                    <center>
+                        <br></br>
+                        <p:panelGrid columns="2" style="background: transparent;border: none;margin-bottom: 10px;" styleClass="noBorders">
+                            <p:panel style="border: none !important;background: transparent">
+                                <h:outputText value="Email:" /><font color='red'>*</font></p:panel>
+                                <p:inputText id="guest_email" value="#{vidyoAgent.guestEmail}" validatorMessage="Email: Validation Error:Invalid email format"  requiredMessage="Email Id Required" required="true" maxlength="50" style="width: 220px;">
+                                    <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$"/>
+                                 </p:inputText>
+                        </p:panelGrid>
+                        <br></br>
+                        <p:commandButton   ajax="true" action="#{vidyoAgent.sendLink(vidyoAgent.guestEmail)}"   value=" Send "    />
+                        <p:commandButton  action="#{vidyoAgent.mailReset()}"  value="Cancel"  style="margin-left: 5px;" immediate="true"  onclick="PF('showSendLinkWidId').hide();" update="@this :showSendLinkFormId" />
+                        <p:commandButton id="slink" ajax="true" value="Send" action="#{vidyoAgent.sendMultiWayCallEmailToGuest()}" onclick="PF('showSendLinkWidId').hide();$('#spinner').show();" oncomplete="$('#spinner').hide();" style="display:none" update=":showSendLinkFormId"/>
+                     
+                    </center>
+                </h:form>
+            </p:dialog> 
+           
+            <p:dialog id="fileUploadDlgId" widgetVar="fileUploadVar" resizable="false" width="500" responsive="true" closable="true" header="Document Sending..." modal="true" appendTo="@(body)" onShow="$('#spinner').hide()" onHide="document.getElementById('doRefresh').click();" position="20,center" style="max-width: 95%">
+                        <h:form id="fileUploadVarForm" prependId="false" style="overflow:hidden;">
+                               <p:panel id="fileTitlePanel" rendered="#{!vidyoAgent.fileCaptionRenderer}" style="margin-top:13%;margin-bottom:13%;border:none;font-size: small">
+                                    <p:panelGrid columns="3" styleClass="noBorders" >                                
+                                        <h:outputLabel value="Document Title:" style="white-space: nowrap"/>
+                                        <p:inputTextarea id="fileCaption" cols="15" autoResize="false" value="#{vidyoAgent.docTitle}" placeholder="Document Title" required="true" label="Title" requiredMessage="Please enter document title" onchange="this.value = this.value.trim()" maxlength="120">
+                                            </p:inputTextarea>       
+                                            <p:commandButton value="Next" actionListener="#{vidyoAgent.setFileTitle(request)}" style="margin-left: 5px;" update=":fileUploadVarForm"/>                                
+                                    </p:panelGrid>     
+                                  <p:message for="fileCaption" id="messageFor" redisplay="false"/>
+                                </p:panel>
+                                
+                            <p:commandButton immediate="true" id="doRefresh" value="OK" style="display:none"  action="#{vidyoAgent.resetbuttons()}" ajax="true" update=":fileUploadVarForm"/>
+                             
+                                <p:panel id="fileUploadPanel" rendered="#{vidyoAgent.fileCaptionRenderer}">
+                                    <p:panelGrid columns="1" columnClasses="ui-grid-col-12" layout="grid" style="margin-top: 10px;">
+                                        <p:fileUpload id="fileuploadbutton" widgetVar="" fileUploadListener="#{vidyoAgent.fileUploadListener}" mode="advanced" dragDropSupport="false" multiple="false" fileLimit="1" fileLimitMessage="You can send only one file at a time" update="@this fileUploadMessages" sizeLimit="20000000" allowTypes="/(\.|\/)(gif|jpg|jpeg|png|bmp|tiff|webp|rif|exif|txt|docx|doc|xls|xlsx|rtf|pdf|ppt|pptx)$/"  />
+                                       <p:growl id="fileUploadMessages" showDetail="true" />
+				    </p:panelGrid>
+                                    <p:panel id="imagePanel" rendered="#{vidyoAgent.multipleParticipant}">
+                                        <p:dataTable id="imagePanelT" style="white-space: nowrap" var="filieUpload" value="#{vidyoAgent.fileUploadDtoList}" rows="5" paginator="true"  paginatorPosition="bottom"  selection="#{vidyoAgent.selectedFileuploadDtoList}" rowKey="#{filieUpload.id}" rowIndexVar="rfindex"  >                        
+                                        <f:facet name="header">
+                                             Select Participants
+                                         </f:facet>
+                                            <p:ajax event="toggleSelect" update="@this"/>
+                                             <p:ajax event="rowSelectCheckbox"  update="@this"></p:ajax>
+                                             <p:ajax event="rowUnselectCheckbox" update="@this"></p:ajax>
+                                             <p:column selectionMode="multiple" style="width:10%" />
+                                             <p:column headerText="Name" sortBy="#{filieUpload.name}" >
+                                                 <h:outputText value="#{filieUpload.name}" />
+                                             </p:column>
+                                             <p:column headerText="Description">
+                                                <h:outputText value="#{filieUpload.participantType}"/>
+                                             </p:column>
+                                       </p:dataTable>
+                                    </p:panel>
+                                    <p:message for="fileuploadbutton" id="messageUp" redisplay="false"/>
+                              </p:panel>
+                        </h:form>
+             </p:dialog>
+            
+            <p:dialog id="promoVideoIdDia" responsive="true"  modal="true" widgetVar="promoVideoWid" resizable="false" closable="true" appendTo="@(body)" onShow="hideVideoStream();" onHide="showVideoStream();" width="auto" header="Select Participants" style="max-width: 450px;">
+                <h:form id="promoVideoFormId" style="overflow: hidden;" prependId="false"> 
+                <p:panel id="promoVideoPanelUserListId" rendered="#{vidyoAgent.renderedPromoVideoUserListPanel}">
+                     <p:dataTable id="holdUnHoldReceiverTab" style="white-space: nowrap" var="holdUnHold" value="#{vidyoAgent.holdUnHoldDtoList}" rows="5" paginator="true" paginatorPosition="bottom"  selection="#{vidyoAgent.selectedHoldUnHoldDtoList}" rowKey="#{holdUnHold.id}" rowIndexVar="rindex"  >                        
+                       <f:facet name="header">
+                            Select Participants For Hold
+                        </f:facet>
+                        <p:ajax event="toggleSelect" update="@this"/>
+                        <p:ajax event="rowSelectCheckbox"  update="@this"></p:ajax>
+                        <p:ajax event="rowUnselectCheckbox" update="@this"></p:ajax>
+                        <p:column selectionMode="multiple" style="width:8%"  />
+                        <p:column headerText="Name(Email)" sortBy="#{holdUnHold.nameAndLoginId}" style="white-space: nowrap">
+                            <h:outputText value="#{holdUnHold.nameAndLoginId}" />
+                        </p:column>
+             
+                    </p:dataTable> 
+                    <br/>
+                    <center>
+                        <p:commandButton id="select-participant-holdUnHold" value="Hold" ajax="true" actionListener="#{vidyoAgent.holdCustomer(request)}" update=":promoVideoFormId panelGrid1 empMenu :imgIworksForm"/>
+                    </center>
+                </p:panel>
+                </h:form > 
+            </p:dialog>
+
+            <p:dialog id="reasonHangupSelectDl"  widgetVar="reasonHangupSelectDlg" modal="true" responsive="true" header="Select HangUp Reason" resizable="false"  appendTo="@(body)"  draggable="true" dynamic="true" closeOnEscape="false" closable="false" style="max-width: 98%" > 
+                <h:form id="forId" style="overflow:hidden;">
+                    <h:panelGroup layout="block" style="padding-bottom: 10px; " >
+                        <h:selectOneListbox id="rolla" value="#{vidyoAgent.agentHangUpComment}" required="true" label="HangUp Reason" style="width: 95%;border: 1px solid !important">       
+                            <f:selectItems value="#{vidyoAgent.hangupReasonMstList}" var="rsnMst" itemValue="#{rsnMst.id}" itemLabel="#{rsnMst.reasonDesc}(#{rsnMst.reasonCd})"/>
+                        </h:selectOneListbox>
+                    </h:panelGroup >
+                    <p:commandButton ajax="true"  value="Ok" action="#{callStartedComponent.reasonHangUp(request)}" style="margin-left: 5px;width: 65px;"  onclick="PF('reasonHangupSelectDlg').hide(); disconnect(); disconnectCall(); $('#spinner').show();" oncomplete="callHangup();" update=":forId"  />
+                    <p:commandButton ajax="true"  value="Cancel" action="#{vidyoAgent.revokehangUpReasons(request)}"  style="margin-left: 5px;"  onclick="PF('reasonHangupSelectDlg').hide();" update=":forId :panelGrid1 empMenu"/>
+                    <p:spacer width="5"/> 
+                    <p:spacer width="5"/> 
+                </h:form>         
+            </p:dialog>
+            
+            <p:dialog id="notReadyReason"  widgetVar="notReadyReasonDlg" modal="true" header="Select Not Ready Reason" resizable="false" responsive="true"  appendTo="@(body)" draggable="true" dynamic="true" closeOnEscape="false" closable="false"  style="max-width:98%" > 
+                <h:form id="notreadyform" style="overflow:hidden;">
+                    <h:panelGroup layout="block" style="padding-bottom: 10px; " >
+                        <h:selectOneListbox id="rol1" value="#{vidyoAgent.agentNotreadyComment}" required="true" label="Not Ready Reason" style="width: 95%;border: 1px solid !important">       
+                            <f:selectItems value="#{vidyoAgent.notreadyreasonMstList}" var="rsnMst" itemValue="#{rsnMst.id}" itemLabel="#{rsnMst.reasonDesc}(#{rsnMst.reasonCd})"/>
+                        </h:selectOneListbox>
+                    </h:panelGroup >
+                    <p:commandButton ajax="true" action="#{vidyoAgent.notReady(request)}" value="Ok" style="margin-left: 5px;width: 65px;"  onclick="PF('notReadyReasonDlg').hide();" update=":notreadyform :panelGrid1 empMenu"  />
+                    <p:commandButton ajax="true"  value="Cancel" action="#{vidyoAgent.revokenotReady()}" style="margin-left: 5px;"  onclick="PF('notReadyReasonDlg').hide();" update=":panelGrid1 empMenu"/>
+                    <p:spacer width="5"/> 
+                    <p:spacer width="5"/> 
+                </h:form>         
+            </p:dialog>
+
+            <p:dialog  id="retryRecording" responsive="true" widgetVar="retryRecordingDlg" resizable="false" closable="false"  width="30%" header="Retry Start Recording" modal="true" appendTo="@(body)" style="max-width: 98%">
+                <h:form id="retryRecordingForm" prependId="false" style="overflow:hidden">
+                    <center>
+                        <br></br>
+                         <h:outputText id="reRecord" value="Start Recording Error" /><br></br><br></br>
+                          <p:commandButton value="Retry" action="#{callRecordsComponent.retryStartRecording(request)}" update=":recordForm"/>
+                          <p:spacer width="7px"/>
+                          <p:commandButton value="Call Hang Up" action="#{vidyoAgent.showhangUpReasonsFailedRecording(request)}" onclick="disconnect();PF('retryRecordingDlg').hide();" oncomplete="closeAllDialog();PF('reasonHangupSelectDlg').show();" update=":recordForm" />
+                    </center>
+                </h:form>
+            </p:dialog>
+            
+            <p:dialog  id="callretry" responsive="true" widgetVar="calljoin" resizable="true" closable="true"  width="35%" header="Try again" style="max-width: 98%">
+                <h:form id="callretryform" style="overflow:hidden;">
+                    <center>
+                        <br></br>
+                        <h:outputText id="calljointext" value="Conference join failed " /><br></br><br></br>
+                        <p:commandButton ajax="true"   value="Retry" style="margin-left: 5px;"  update=":cutomerDashboardForm"  onclick="PF('calljoin').hide();refreshEssentials();"  oncomplete="stopAudio();retryCall();" />
+                        <p:commandButton ajax="true"  value="Cancel" style="margin-left: 5px;"  update=":cutomerDashboardForm"  onclick="PF('calljoin').hide();hitNotReady()" oncomplete="callHangup();stopAudio();" />
+                       
+                    </center>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog  id="nextcallretry" responsive="true" widgetVar="nextcallrecreate" resizable="false" closable="false"  header="Try again"  style="max-width:98%" >
+                <h:form id="nextcallretryform" style="overflow:hidden;">
+                    <center>
+                        <br></br>
+                        <h:outputText id="nextcallretrytext" value="Sorry! operation failed" /><br></br><br></br>
+                        <p:commandButton ajax="true"   value="Retry"  style="margin-left: 5px;"  update=":panelGrid1 empMenu"  onclick="PF('nextcallrecreate').hide(); $('#spinner').show();" oncomplete="document.getElementById('afternextcall').click();" />
+                        <p:commandButton ajax="true"  action="#{vidyoAgent.nextCalEnable(request)}" value="Cancel" style="margin-left: 5px;"   onclick="PF('nextcallrecreate').hide();" update=":panelGrid1 empMenu"/>
+                    </center>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog  id="anotherloggeedin" responsive="true" widgetVar="anotherLoggedIn" resizable="false" closable="false"  header="Logging out" onHide="redirectToLoginPage();"  style="max-width:98%" >
+                <h:form id="anotherloggeedinform" style="overflow:hidden;">
+                    <center>
+                        <br></br>
+                        <h:outputText id="info" value="Another user has logged in with same credentials" /><br></br><br></br>
+                    </center>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog  responsive="true"  id="snapshotDia" widgetVar="snapshotvar" resizable="false" modal="true" appendTo="@(body)" closable="true"  header="Snapshot" onHide="clearPic();" position="230,30" style="max-width: 98%">
+                <center>
+                    <div id="form_snapshot_div">
+                    </div>
+                    <h:form id="snapForm" prependId="false" style="overflow: hidden;">
+                        <p:panel style="background: transparent;border: none;">
+                            
+                            <p:panelGrid columns="1" style="background: transparent;border: none;" styleClass="noBorders" >
+                                <p:commandButton id="previewDownload" onclick="PF('snapshotvar').hide();" value="Preview" ajax="true"  style="width:95px;"  /> 
+                            </p:panelGrid>
+                          
+                        </p:panel>
+                     </h:form>
+                    
+                </center>
+            </p:dialog>
+            
+            <p:dialog  responsive="true" id="notAllowedSnapshotDia" widgetVar="notAllowedSnapshotvar" resizable="false" modal="true" appendTo="@(body)" closable="true"  header="Snapshot" onHide="clearPic();" position="450,200" style="max-width: 98%">
+                <h:form id="notAllowedSnapForm" prependId="false" style="overflow: hidden;">
+                <center>
+                        <br/>
+                        <h:outputText value="VideoFeed For SnapShot Not Available" />
+                        <br/><br/>
+                        <p:commandButton ajax="true"  value="OK" style="margin-left: 5px;"  onclick="PF('notAllowedSnapshotvar').hide();"  />
+                    </center>
+               </h:form>
+            </p:dialog>
+            
+            <p:dialog id="previewSnapshotDia" width="400" responsive="true" widgetVar="previewSnapshotvar" resizable="false" modal="true" appendTo="@(body)" closable="true" header="Snapshot" onHide="clearPic();" position="500,150" style="max-width: 98%">
+                <center>   
+                    <div id="preview_form_snapshot_div"> <img id="cropped_preview"></img></div>
+                    <h:form id="previewSnapForm" prependId="false" style="overflow: hidden;padding:10px;">
+                        <p:panel style="background: transparent;border: none;" >
+                            <p:inputText id="scanval" value="#{vidyoAgent.binaryImage}" style="display:none" />
+                            <a id="download1"  onclick="PF('previewSnapshotvar').hide();" style="cursor: pointer;padding: 5px;border: 1px solid;box-shadow: 1px 1px 1px 1px;border-radius: 5px">Download as JPG</a>
+                            <a id="download"  onclick="PF('previewSnapshotvar').hide();" style="cursor: pointer; margin-left: 12px;padding: 5px;border: 1px solid;box-shadow: 1px 1px 1px 1px;border-radius: 5px">Image Snap</a>
+                            <a id="captureidcard"  onclick="PF('previewSnapshotvar').hide();" style="cursor: pointer; margin-left: 12px;padding: 5px;border: 1px solid;box-shadow: 1px 1px 1px 1px;border-radius: 5px;display: none;">Id Card</a>
+                            <a id="captureaddproof"  onclick="PF('previewSnapshotvar').hide();" style="cursor: pointer; margin-left: 12px;padding: 5px;border: 1px solid;box-shadow: 1px 1px 1px 1px;border-radius: 5px;display: none;">Address proof</a>
+                            <p:commandButton id="captureImgBtn"  oncomplete="childReload();" actionListener="#{vidyoAgent.handleSaveFromSnap()}" style="display:none" />
+                            <p:commandButton id="captureIdCardBtn" oncomplete="childReload();" actionListener="#{vidyoAgent.handleSaveIdCardFromSnap()}" style="display:none" />
+                            <p:commandButton id="captureAddProofBtn" oncomplete="childReload();" actionListener="#{vidyoAgent.handleSaveAddProofFromSnap()}" style="display:none" />
+                        </p:panel>
+                      </h:form>
+                </center>
+            </p:dialog>
+            
+            <p:dialog id="doScheduleDia" header="Schedule Call" widgetVar="doScheduleDialog" appendTo="@(body)" style="max-width: 98%" closable="false"  minimizable="false" resizable="false"  maximizable="false" position="center" responsive="true">
+
+                <h:form id="schedulingForm" prependId="false" style="overflow:hidden;">
+
+                    <p:panel id="schDateTimePickerPanel" style="border:none" >
+                        <h:panelGrid columns="2" styleClass="noBorders"  >
+                        	<p:panel style="border: none !important;" ><h:outputText value="Customer Name:" /><font color="red">*</font></p:panel>
+                            <p:selectOneMenu id="customer_id"  value="#{vidyoAgent.selectedCustomerId}" required="true" requiredMessage="Please Select Customer"  style="width: 155px !important;" label="Customer">
+                                <f:selectItem itemLabel="Select One" itemValue="" />
+                                <f:selectItems value="#{vidyoAgent.loadCustomerMstForRM()}" var="cus" itemLabel="#{cus.firstName}" itemValue="#{cus.id}" />
+                            </p:selectOneMenu>
+                        
+                            <p:panel style="border: none !important;" ><h:outputText value="From Date and Time" /><font color="red">*</font></p:panel>
+                            <p:calendar id="inlineSchDateTime" label="Schedule" value="#{vidyoAgent.schDateTime}" pattern="dd-MMM-yyyy HH:mm" showOn="button" timeOnly="false" timeZone="#{employeeLoginComponent.timeZone}" required="true" requiredMessage="Please select a start date to schedule" />
+                            
+                            <p:panel style="border: none !important;" ><h:outputText value="To Date and Time" /><font color="red">*</font></p:panel>
+                            <p:calendar id="inlineSchEndDateTime" label="Schedule" value="#{vidyoAgent.schEndDateTime}" pattern="dd-MMM-yyyy HH:mm" showOn="button" timeOnly="false" timeZone="#{employeeLoginComponent.timeZone}" required="true" requiredMessage="Please select a end date to schedule" />
+
+                            <p:panel style="border: none !important;" ><h:outputText value="Call Type:" /><font color="red">*</font></p:panel>
+                            <p:selectOneMenu id="cl_type_id" value="#{vidyoAgent.callType}" required="true" label="Call Type" requiredMessage="Please Select Call Type" style="width: 155px !important;">
+                                <f:selectItem itemLabel="Select One" itemValue=""/>
+                                <f:selectItem itemLabel="Video" itemValue="Video"/>
+                                <f:selectItem itemLabel="Audio" itemValue="Audio"/>
+                                <f:selectItem itemLabel="Chat" itemValue="Chat"/>
+                                <p:ajax event="change"  listener="#{vidyoAgent.checkErrors()}" immediate="true"   partialSubmit="true"  async="true" update="@this" />
+                            </p:selectOneMenu>
+                            <p:panel style="border: none !important;" ><h:outputText value="Product:" /><font color="red">*</font></p:panel>
+                            <p:selectOneMenu id="service_call_id"  value="#{vidyoAgent.selectedServiceName}" required="true" requiredMessage="Please Select Product"  style="width: 155px !important;" label="Product">
+                                <f:selectItem itemLabel="Select One" itemValue="" />
+                                <f:selectItems value="#{vidyoAgent.loadServiceMstForExistingCust()}" var="ser" itemLabel="#{ser.serviceName}" itemValue="#{ser.id}" />
+                            </p:selectOneMenu>
+                            <p:commandButton id="thanksSchedule" value="Schedule Now" onclick="$('#spinner').show();" oncomplete="$('#spinner').hide();" action="#{vidyoAgent.makeScheduleCallFromWeb(request)}"  style="margin-left: 10px;" ajax="true" icon="ui-icon-check" update=":confirmscheduleform :mainForm" /> 
+                            <p:commandButton  immediate="true" id="ignoreSchedule" value="Cancel" actionListener="#{vidyoAgent.doScheduleCancel()}" ajax="true" style="width:140px; margin-left: 10px;" onclick="PF('doScheduleDialog').hide();"  icon="ui-icon-cancel" tabindex="2" />
+                            <p:panel style="border: none !important;" ><font color="red"><h:outputText value="#{vidyoAgent.serviceTimeText}" /></font></p:panel>
+                        </h:panelGrid>
+                    </p:panel>
+                </h:form>
+            </p:dialog>
+            
+            <p:dialog  id="scheduleNotifi" widgetVar="scheduleNotifiWid" resizable="false" responsive="true" closable="false" header="Schedule Notification" modal="true" appendTo="@(body)" onShow="intervalFotNotiSche();" style="max-width: 98%">
+                <h:form id="scheduleNotiFicFrmId" prependId="false" style="overflow: hidden;">
+                    <center>
+                            <br/>
+                            <h:outputText value="#{callStartedComponent.popUpMessage}" />
+                            <br/><br/>
+                            <p:commandButton immediate="true" type="button" ajax="true" value="Ok" onclick="stopIntervalForNotiSch();PF('scheduleNotifiWid').hide();"/>
+                    </center>
+                </h:form>
+            </p:dialog> 
+ 
+            <p:dialog  id="confirmschedule"  widgetVar="confirmscheduleDlg"  onShow="hideConfirm();" responsive="true" resizable="false" closable="false" header=" Notification" modal="true" appendTo="@(body)" style="max-width: 98%" >
+                <h:form id="confirmscheduleform" style="overflow:hidden;">
+                    <center>
+                        <br/>
+                        <h:outputText value="#{vidyoAgent.scheduleText}" />
+                        <br/><br/>
+                    </center>
+                </h:form>
+            </p:dialog>
+            
+            <p:dialog  id="confirmschedule2"  widgetVar="confirmscheduleDlg2" responsive="true"  onShow="hideConfirm2();" onHide="PF('doScheduleDialog').show();" resizable="false" closable="false"  header=" Notification" modal="true" appendTo="@(body)" style="max-width: 98%" >
+                <h:form id="confirmscheduleform2" style="overflow:hidden;">
+                    <center>
+                        <br/><br/>
+                        <h:outputText value="#{vidyoAgent.scheduleText}" />
+                        <br/><br/>
+                        <p:commandButton value="Ok" onclick="PF('confirmscheduleDlg2').hide();PF('doScheduleDialog').show(); "/>
+                    </center>
+                </h:form>
+            </p:dialog>
+            
+        <p:dialog widgetVar="calVar" header="Schedule Calendar" modal="true" appendTo="@(body)"  resizable="false" closable="true" responsive="true" position="center,top" style="max-width: 98%">  
+                    <h:form id="mainForm" prependId="false">
+                    <p:growl autoUpdate="true" showDetail="true" showSummary="false" />
+                    <p:panel id="npanel" header="Schedule Details" styleClass="no-header">
+                       <h:panelGrid columnClasses="value">
+                           <p:schedule id="schedule" value="#{viewScheduleComponent.eventModel}" widgetVar="myschedule"  clientTimeZone="local" resizable="false" aspectRatio="1.6" displayEventEnd="true">
+                                <p:ajax event="eventSelect" listener="#{viewScheduleComponent.onEventSelect}" update=":eventDialogForm" />
+                            </p:schedule>
+                        </h:panelGrid>
+                    </p:panel>
+                </h:form>
+        </p:dialog>     
+
+        <p:dialog widgetVar="eventDialogVar" header="Event Details" modal="true" appendTo="@(body)" resizable="false" closable="true" responsive="true" width="70%">
+           <h:form id="eventDialogForm"  style="overflow: hidden">
+		<p:growl autoUpdate="true" showDetail="true" showSummary="false" />
+                    <p:panel>
+			<p:panelGrid columns="1" columnClasses="ui-grid-col-12" layout="grid">
+                            <p:dataTable id="eventTbl" var="row" rowKey="#{row.id}" value="#{viewScheduleComponent.scheduledCallDtlDtoList}" rows="5" paginator="true" paginatorPosition="bottom">
+				<f:facet name="header">
+                                      Schedule Details
+                                </f:facet>
+		                    <p:column>
+		                        <f:facet name="header">
+		                            <h:outputText value="Customer" />
+		                        </f:facet>
+					<h:outputText value="#{row.customerName}" />
+		                    </p:column>
+		                    
+		                    <p:column>
+		                        <f:facet name="header">
+		                            <h:outputText value="Call Type" />
+		                        </f:facet>
+		                        <h:outputText value="#{row.callType}" />
+		                    </p:column>
+		                    
+		                    <p:column>
+		                        <f:facet name="header">
+		                            <h:outputText value="Product" />
+		                        </f:facet>
+		                        <h:outputText value="#{row.serviceName}" />
+		                    </p:column>
+		                    
+		                    <p:column>
+		                        <f:facet name="header">
+		                            <h:outputText value="Start Time" />
+		                        </f:facet>
+		                        <h:outputText value="#{row.scheduleStartDateTime}" >
+                                            <f:convertDateTime pattern="yyyy-MM-dd HH:mm" timeZone="#{employeeLoginComponent.timeZone}"/>
+                                        </h:outputText>  
+		                    </p:column>
+		                    
+		                    <p:column>
+		                        <f:facet name="header">
+		                            <h:outputText value="End Time" />
+		                        </f:facet>
+		                        <h:outputText value="#{row.scheduleEndDateTime}" >
+                                             <f:convertDateTime pattern="yyyy-MM-dd HH:mm" timeZone="#{employeeLoginComponent.timeZone}"/>
+                                        </h:outputText>  
+		                    </p:column>
+                            </p:dataTable>
+			</p:panelGrid>
+                            <f:facet name="footer">
+					<p:commandButton id="cancelSchdlBtn" value="Cancel Schedule Call" action="#{viewScheduleComponent.onCancelScheduleCall(request)}" rendered="#{viewScheduleComponent.renderedCancelSchdlBtn }" icon="ui-icon-stop" style="font-weight:bolder" ajax="false"/>
+                            </f:facet>
+                    </p:panel>
+		</h:form>
+        </p:dialog>
+            
+            <p:dialog  id="confirmScheduleCallDlgId" widgetVar="scheduleCallNotiWid" resizable="false" responsive="true" closable="false" header="Schedule Call Notification" modal="true" appendTo="@(body)" style="max-width: 98%" >
+                  <h:form style="overflow: hidden">     
+                 <center>
+                            <br/>
+                            <h:outputText value="Customer is waiting for your response.Please join the Schedule Call conference" />
+                            <br/><br/>
+                            <p:commandButton ajax="true"  value="Ok" onclick="stopIntervalForScheduleNoti();checkCallOption(); vidyoConnectJoin();PF('scheduleCallNotiWid').hide();stopAudio();deskNotificationClose();"  update=":imgIworksForm :cutomerDashboardForm:panelGrid1 :accountDlgFrmId" oncomplete="startCounterTimer();" />
+                        </center>
+                 </h:form>
+         </p:dialog>
+            
+  
+                        
+            <p:dialog id="verifyFaceDia" responsive="true" widgetVar="verifyFacevar" resizable="false" modal="true" appendTo="@(body)" closable="true" header="Verification Result" style="max-width: 98%">
+                <center>  
+                    <h:form id="verifyFaceForm" prependId="false" style="overflow: hidden;">
+                        <p:panel style="border: none;">
+                            
+                            <h:outputText id="verifyfaceresult" style="font-weight: bold" value="Matched" /><br></br>
+                        </p:panel>
+
+                    </h:form>
+                </center>
+            </p:dialog>
+            
+            <p:dialog id="verifyFaceNotDia" responsive="true" widgetVar="verifyFacenotvar" resizable="false" modal="true" appendTo="@(body)" closable="true" header="Verification Result" style="max-width: 98%">
+                <center>  
+                    <h:form id="verifyFaceNotForm" prependId="false" style="overflow: hidden;">
+                        <p:panel style="border: none;">
+                            
+                            <h:outputText id="verifyfacenotresult" style="font-weight: bold" value="Not Matched" /><br></br>
+                        </p:panel>
+                    </h:form>
+                </center>
+            </p:dialog>
+            
+            <p:dialog id="verifyFaceNoFileDia" responsive="true" widgetVar="verifyFacenofilevar" resizable="false" modal="true" appendTo="@(body)" closable="true" header="Verification Result" style="max-width: 98%">
+                <center>  
+                    <h:form id="verifyFaceNoFileForm" prependId="false" style="overflow: hidden;">
+                        <p:panel style="border: none;">
+                            <h:outputText id="verifyfacenofileresult" style="font-weight: bold" value="No File to Matched" /><br></br>
+                        </p:panel>
+                    </h:form>
+                </center>
+            </p:dialog>
+
+                       
+            <p:dialog id="accountDlgId" responsive="true"  header="Select Form"  widgetVar="accountDlgWid" resizable="false"  closable="true" modal="true" appendTo="@(body)" onHide="document.getElementById('resetOptions').click()" style="max-width: 98%">
+                <center>
+                    <h:form id="accountDlgFrmId" prependId="false"  style="overflow:hidden;">          
+                        <h:panelGrid id="panelGridaccount" columns="1"  style="margin-top: 10px;margin-bottom: 5px;" >
+                                                    
+                            <p:selectOneRadio id="roll" value="#{vidyoAgent.docTobeOpen}" label="Select Form " layout="pageDirection" onclick="document.getElementById('openDocDtlId').click()" rendered="#{!vidyoAgent.existingCustomer}">       
+                                <f:selectItem itemLabel="CASA" itemValue="acc"  /> 
+                            </p:selectOneRadio>
+                            <p:selectOneRadio id="roll1" value="#{vidyoAgent.docTobeOpen}" label="Select Form " layout="pageDirection" onclick="document.getElementById('openDocDtlId').click()" rendered="#{vidyoAgent.existingCustomer}">       
+                                <f:selectItem itemLabel="Loan" itemValue="loan"  /> 
+                             
+                            </p:selectOneRadio>
+                        </h:panelGrid>
+                            <p:commandButton id="openDocDtlId"  ajax="true" action="#{vidyoAgent.openDocDtl(request)}"   value=" Open " style="width:100px;display: none"  oncomplete="PF('accountDlgWid').hide();"   />
+                            <p:commandButton id="resetOptions"  ajax="true" action="#{vidyoAgent.resetOptions()}"   value=" Reset " style="width:100px;display: none"  oncomplete="PF('accountDlgWid').hide();" update=":accountDlgFrmId"  />
+                    </h:form>
+                </center>
+            </p:dialog>
+            
+           
+    
+            <form style="display: none">
+                APP ID: <input type="text" id="app_id" class="app-key" value="6262fb03"/>
+                APP KEY: <input type="text" id="app_key" class="app-key" value="fd5a21616763b2a6702f39fb0fe7f777"/>
+                <input type="button" id="enterApiKeys" value="Enter" />
+            </form>
+
+            <form id="verifyForm" style="display: none">
+                Image (public URL or base64 data): <input type="text" class="image" name="Image" id="imageBaseData"/>
+                Image (local file): <input type="file" class="image-upload" name="Image Upload"/>
+                Gallery Name: <input type="text" class="gallery_name" name="Gallery Name" value="mygallery"/>
+                Subject ID: <input type="text" class="subject_id" name="Subject ID" value="test1"/>
+                <input type="button" id="testVerify" value="Test" />
+            </form>
+
+            <div class="row" style="display: none">
+                <h5>Time:</h5>
+                <div id="timerRes" class="col-lg-8"></div>
+            </div>
+            <div class="row" style="display: none">
+                <h5>Response:</h5>
+
+                <div id="view_data" class="col-lg-8"></div>
+            </div>
+
+
+
+            <div class="user_list" style="display:none;">
+                 <h:form  prependId="false" id="clearPromoListForm" >
+                     <p:commandButton  id="clearPromoListFormButtn" ajax="true" value="submit"  actionListener="#{vidyoAgent.clearPromoVideoList()}" update=":promoVideoFormId"/>
+                </h:form>
+            </div>
+
+            <br/>
+            <h:panelGroup id="spinnerReplace" layout="block" styleClass="spinner off" style="z-index: 1003; -moz-opacity: 0.9; opacity:.90; filter: alpha(opacity=90); width: 100%; height: 87%;margin-top: 1%; display: none;">
+                <center>
+                    <video id="spinnerReplacerVideo" class="fullscreen"  style="width: 75%; height:84%; overflow: hidden; margin-top: 2%;" loop="true" >
+                        <source id="promoVideoDynaId" src="#{vidyoAgent.promoURL}" type="video/mp4" />
+                        Your browser does not support HTML5 video.
+                    </video>
+                </center>
+            </h:panelGroup>
+            
+            <div id="splash" class="container video_wrap" style="text-align: center;margin-top: 10%; overflow: hidden;display:none">
+                    <img src="${request.contextPath}/resources/images/logo-big.jpg"/>
+            </div>
+            <div id="incallcontainer" class="container video_wrap" style="display:none;">
+                <div class="row">
+                    <div id="participantDiv" class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+			<div class="user_list">
+                            <div class="user_head_wrap">
+				<div class="user_head">
+                                    <div class="col-md-9 col-sm-9 col-xs-8" style="float:left ">
+					 <h2 class="private_chat">Click on participant name for private chat</h2>
+                                    </div>
+                                    <div class="col-md-2 col-sm-3 col-xs-4"  style="max-width:8%;float:right ">
+					<button class="pull-right" id="recording" style="display: none;">
+                                            <img src="#{request.contextPath}/resources/images/rec1.png" alt="" title="Recording" />
+					</button>
+                                    </div>
+				</div>
+                            </div>
+                            <div id='participantList' class="participantListCustom">
+				<div class="user_details">
+                                    <h2></h2>
+				</div>
+			    </div>
+			</div>
+		    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-6 col-xs-12" style="max-height: 81vh;">
+			<div id="videoHead" class="video_head_wrap">
+			    <div class="video_head">
+				<div class="col-md-3 col-sm-3 col-xs-5">
+				    <button id="stopshareScreen" class="listing_btn" onclick="stopShare()" title="Stop Share" style="display: none;">
+					<img src="${request.contextPath}/resources/images/stopshare.png" alt="" />
+				    </button>
+                                    <button id="shareScreen" class="listing_btn" title="Share"  onclick="startShare()" >
+ 					<img src="${request.contextPath}/resources/images/sharescreen.png" alt="" />
+                                    </button>
+                                    <button class="listing_btn" style="display: none;" onclick="stopShare()">
+					<img src="${request.contextPath}/resources/images/stopshare.png" alt="" />
+				    </button>
+                                    <button class="listing_btn" id="capture" style="display:none">
+                                        <img src="#{request.contextPath}/resources/images/snapshot.png" title="Snapshot" alt=""/>
+                                    </button>
+                                    <button class="listing_btn" id="fullscreenvid" onclick="makeFullScreen();" title="Full Screen">
+					<img src="${request.contextPath}/resources/images/fullscreen.png" alt="" />
+				    </button>
+                              
+                                    <button class="listing_btn" id="setting1" onclick="PF('settingsDia').show();" title="Settings">
+                                        <img src="#{request.contextPath}/resources/images/settings.png" alt=""  />
+                                    </button>
+                   		</div>
+                                <div class="col-md-7 col-sm-7 col-xs-7" style="float:right">
+                                    <button class="video_icon_btn pull-right" id="mutemic" onclick="muteMic();" title="Mute/Un-Mute Microphone">
+					<img src="${request.contextPath}/resources/images/mute_mic.png" alt="" />
+                                    </button>
+                                    <button class="video_icon_btn pull-right" id="unmutemic" onclick="unmuteMic();" title="Mute/Un-Mute Microphone" style="display: none; background: red;">
+					<img src="${request.contextPath}/resources/images/unmute_mic.png" alt="" />
+                                    </button>
+                                    <button class="video_icon_btn pull-right" id="mutespeaker" onclick="muteSpeaker();" title="Mute/Un-Mute Speaker">
+                                        <img src="${request.contextPath}/resources/images/mute_speaker.png" alt="" />
+                                    </button>
+                                    <button class="video_icon_btn pull-right" id="unmutespeaker" onclick="unmuteSpeaker();" title="Mute/Un-Mute Speaker" style="display: none; background: red;">
+                                        <img src="${request.contextPath}/resources/images/unmute_speaker.png" alt="" />
+                                    </button>
+                                    <button class="video_icon_btn pull-right" id="mutevideo" onclick="muteVideo();" title="Show/Hide Video">
+                                        <img src="${request.contextPath}/resources/images/mute_video.png" alt="" />
+                                    </button>
+                                    <button class="video_icon_btn pull-right" id="unmutevideo" onclick="unmuteVideo();" title="Show/Hide Video" style="display: none;">
+                                        <img src="${request.contextPath}/resources/images/unmute_video.png" alt="" />
+                                    </button>
+                                   <div id="timer" style="color: red;float:right;font-size: small;padding-top: 10px"></div>
+				</div>
+                	    </div>
+                       </div>
+			<div id="vidyoConnector" style="height:52vh">
+                            <div id="inCallContainer">
+                                <div id="parentRenderer" style="height:52vh">
+                                    <div id="renderer" class="pluginOverlay"></div>
+                                </div>
+                            <div id="toolbarRight" class="toolbar">
+                                <span id="connectionStatus">Initializing</span>
+                            </div>
+                            <div id="toolbarCenter" class="toolbar" style="display:none;">
+                                <button id="cameraButton" title="Camera Privacy" class="toolbarButton cameraOn"></button>			
+                                <button id="joinLeaveButton" title="Join Conference" class="toolbarButton callStart"></button>
+                                <button id="microphoneButton" title="Microphone Privacy" class="toolbarButton microphoneOn"></button>
+                                <button id="speakerButton" title="Speaker Privacy" class="toolbarButton speakerOn"></button>
+                            </div>
+                        </div>
+                    </div>
+					
+				
+                        <div id="addstatictabdiv" style="display:none"> 
+                            <ul class="tabs" id="addstatictab" style="margin-top:5px">
+                                <li><button href="#collapse1" id="tbutton" class="nav-toggle" style="background:transparent"><img src='#{request.contextPath}/resources/images/top.png' height='20px' width='28px' style="margin-top: -2px;margin-left: 1px;"></img></button></li>
+                                <li class="selected" id="lieveryone"><a href="#Everyone" id="_Everyone" onclick="setEvery();">Everyone<span id="_Everyonespan" style="width:20px;border-radius: 13px;text-align:center;margin-left: 2px;padding: 2px;"></span></a></li>
+                            </ul>
+                            <div id="collapse1" style="display:none;margin-top: -4px;">
+                                <div class="tabcontents" id="participant">
+                                    <div id="Everyone" ></div>
+                                </div>
+                                <div id="contentWrap">
+                                    <h:form prependId="false" id="sendSection" style="margin-top: 5px;" >
+                                           <div id="chatWrap">
+                                            <p:inputText id="msgToSend" value="" style="width:75%" maxlength="250"/>   
+                                            <p:commandButton  type="button" id="send" value="Send"    onclick="sendMessage();document.getElementById('msgToSend').value='';" style="margin-left:5px;"/>
+                                        </div>
+                                    </h:form>
+                                 </div>
+                            </div>
+                    </div>
+                </div><!--col-lg-8-->
+             </div><!--row-->
+        </div><!--container-->
+
+
+            <div id="custIdWrap" style="display:none">
+                <h:form  prependId="false" id="setCustId" >
+                    <p:inputText id="agentId" value="#{employeeLoginComponent.userLoginId}" label="agent socket" />
+                    <p:commandButton  id="custsubmit" ajax="true" value="submit"  onclick="connected();" />
+                </h:form>
+                <h:form id="inCallChatFormData"   prependId="false" >
+                    <p:inputTextarea id="inCallChatTextArea" value="#{vidyoAgent.chatText}"  rows="2" style="visibility: hidden"    />
+                    <p:inputTextarea id="inCallChatTabsArea" value="#{vidyoAgent.chatText1}"  rows="2" style="visibility: hidden"    />
+                    <p:commandButton id="chatsave" action="#{vidyoAgent.saveChat()}" value="Save" style="visibility: hidden" />
+                </h:form>
+                <h:form  prependId="false" id="setPromoVideopath" >
+                    <p:inputText id="setPromoVideopathInput" value="#{customerComponent.promotionalVideoLink}" label="Set Promotional Video" />
+                    <p:commandButton  id="setPromoVideopathButton" ajax="true" value="submit" update=":spinnerReplace" />
+                </h:form>
+                <h:form  prependId="false" id="callholdunhold" >
+                    <p:commandButton id="holdBtn" ajax="true" action="#{vidyoAgent.executeHold(request)}" style="display:none;"/>
+                    <p:commandButton id="unholdBtn" ajax="true" action="#{vidyoAgent.executeUnhold(request)}" style="display:none;" />
+                </h:form>
+             </div>
+
+        </h:body>
+
+    </ui:define>
+   <ui:define name="right">
+        <p:ajax event="toggle" listener="#{layoutComponent.handleToggle}"  /> 
+        <p:layoutUnit id="right" position="east" size="280"    header="Message" resizable="false" closable="false" collapsible="true" collapsed="#{layoutComponent.renderToggle()}" style="text-align:center;min-height: 200px;">
+            <h:form id="forwardchattext">
+                <p:panel id="forwardChatpanel"  style="text-align: center; margin: 0px; padding: 0px" header="Previous Chat History" rendered="#{imageComponent.forwardChatHistory}">
+                    <p:commandButton value="View" actionListener="#{callRecordsComponent.JSPopup(request)}" style="margin:10px"  />
+                </p:panel>
+            </h:form>
+
+
+            <h:form id="imgIworksForm" prependId="false" rendererType="multipart" >
+                <p:panel rendered="#{vidyoAgent.iworkImage}" style="border:none;">
+                   <b>Customer Information</b>
+                   <p:panel id="custDetailsPanel" style="overflow: auto">
+                        <table style="font-size: small">
+                            <tr>
+                                <td>
+                                    <h:outputLabel id="custIdLbl" value="Cust Id" />
+                                </td>
+                                <td>
+                                    <h:outputLabel value=":" />
+                                </td>
+                                <td>
+                                    <h:outputLabel id="custId" value="#{imageComponent.custId}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h:outputLabel id="custNameLbl" value="Name" />
+                                </td>
+                                <td>
+                                    <h:outputLabel value=":" />
+                                </td>
+                                <td>
+                                    <h:outputLabel id="custName" value="#{imageComponent.custNm}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h:outputLabel id="custPhoneLbl" value="Phone" />
+                                </td>
+                                <td>
+                                    <h:outputLabel value=":" />
+                                </td>
+                                <td>
+                                    <h:outputLabel id="custPhone" value="#{imageComponent.custPhone}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h:outputLabel id="custEmailLbl" value="Email" />
+                                </td>
+                                <td>
+                                    <h:outputLabel value=":" />
+                                </td>
+                                <td>
+                                    <h:outputLabel id="custEmail" value="#{imageComponent.custEmail}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h:outputLabel id="servcLbl" value="Product" />
+                                </td>
+                                <td>
+                                    <h:outputLabel value=": " />
+                                </td>
+                                <td>
+                                    <h:outputLabel id="servc" value="#{imageComponent.service}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h:outputLabel id="natinalityLbl" value="Nationality" />
+                                </td>
+                                <td>
+                                    <h:outputLabel value=": " />
+                                </td>
+                                <td>
+                                    <h:outputLabel id="natinotalityc" value="#{imageComponent.custNationality}" />
+                                </td>
+                            </tr>
+                             <tr>
+                                <td>
+                                    <h:outputLabel id="locLbl" value="Location" />
+                                </td>
+                                <td>
+                                    <h:outputLabel value=": " />
+                                </td>
+                                <td>
+                                    <h:outputLabel id="locityc" value="#{imageComponent.customerLocation}" />
+                                </td>
+                            </tr>
+                             <tr>
+                               <td>
+                                    <h:outputLabel id="latLbl" value="Latitude" />
+                                </td>
+                               <td>
+                                    <h:outputLabel value=": " />
+                                </td>
+                                <td>
+                                    <h:outputLabel id="lattyc" value="#{imageComponent.latitude}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h:outputLabel id="longLbl" value="Longitude" />
+                                </td>
+                                <td>
+                                    <h:outputLabel value=": " />
+                                </td>
+                               <td>
+                                    <h:outputLabel id="longtyc" value="#{imageComponent.longitude}" />
+                                </td>
+                            </tr>
+                         </table>
+                    </p:panel>
+                   
+                    <p:panel id="empMediaBody" style="text-align: center; margin: 0px; padding: 10px!important ;border:none;" rendered="#{vidyoAgent.fileDownloadDtoList.size()>0}">
+                        <h5 class="media-heading" id="arrivalagent" style="color:red" >#{vidyoAgent.newFileMessage}</h5>
+                        <small id="fileDownloadIdEmp" class="media-meta">
+                            <p:dataTable id="employeeFileMstTable" value="#{vidyoAgent.fileDownloadDtoList}" var="row" rows="10">
+                                <p:column headerText="Received Documents">
+                                    <p:commandLink id="downloadFileIdEmp" title="download" value="#{row.fileName}" style="#{row.downloadCss}" ajax="true" action="#{vidyoAgent.downloadFile(row)}" oncomplete="$('#arrivalagent').css('display', 'none');" /> 
+                                </p:column>
+                            </p:dataTable>
+                        </small>
+                    </p:panel>
+ 
+                   
+                </p:panel >
+            </h:form>
+            <h:form prependId="false" id="accViewFrmId">
+                 <p:commandLink id="downloadPDFId" value="Customer Form" ajax="true" action="#{vidyoAgent.getCustomerForm(request)}" onsuccess="openPdfInTab();"  styleClass="ui-panel-titlebar-icon ui-corner-all ui-state-default"  style="margin-left: 0px; float: none; padding: 2px 10px;display: none;" /> 
+            </h:form>
+            
+            <h:form id="scanresult">
+                <c:if test="#{imageComponent.idCardName ne ''}">
+                    <p:panel id="custDetailsScanPanel" style="text-align: center; margin: 0px; padding: 0px;border:none;display: none">
+                        <table>
+                            <tr>
+                                <td style="text-align: left;">
+                                    <h:outputLabel id="idCardNameLbl" value="Name As Id Card" />
+                                </td>
+                                <td style="text-align: center">
+                                    <h:outputLabel value=": " />
+                                </td>
+                                <td style="text-align: left;">
+                                    <h:outputLabel id="idCardNameC" value="#{imageComponent.idCardName}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left;">
+                                    <h:outputLabel id="idCardNoLbl" value="Id Number" />
+                                </td>
+                                <td style="text-align: center">
+                                    <h:outputLabel value=": " />
+                                </td>
+                                <td style="text-align: left;">
+                                    <h:outputLabel id="idCardNoC" value="#{imageComponent.idCardNumber}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left;">
+                                    <h:outputLabel id="idCardNationalityLbl" value="Nationality" />
+                                </td>
+                                <td style="text-align: center">
+                                    <h:outputLabel value=": " />
+                                </td>
+                                <td style="text-align: left;">
+                                    <h:outputLabel id="idCardNationalityC" value="#{imageComponent.idCardNationality}" />
+                                </td>
+                            </tr>
+                        </table>
+                    </p:panel >
+                </c:if>
+            </h:form>
+
+            <div id="show" align="center"></div>
+            <p:panel style="border: none !important;height:20px;background: transparent">
+                <h:form id="holdForm"  >
+                    <h:outputText id="mge" style="color: red;" value=""/>
+                </h:form>
+            </p:panel>
+            <p:panel style="border: none !important;height:20px;background: transparent">
+                <h:form id="recordForm"  >
+                    <h:outputText id="record" style="color: red;" value="#{callRecordsComponent.recordingStatus}"/>
+                </h:form>
+            </p:panel>
+            
+         <script>
+             document.getElementById('checkRefresh').click();
+        </script>
+        </p:layoutUnit> 
+    </ui:define> 
+</ui:composition>

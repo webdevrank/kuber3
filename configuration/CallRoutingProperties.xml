@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CallRoutingProperties>
+	<CRProperty>
+		<PropertyName>Language</PropertyName>
+		<propertySequence>1</propertySequence>
+	</CRProperty>
+	<CRProperty>
+		<PropertyName>Segment</PropertyName>
+		<propertySequence>2</propertySequence>
+	</CRProperty>
+	<CRProperty>
+		<PropertyName>Service</PropertyName>
+		<propertySequence>3</propertySequence>
+	</CRProperty>
+</CallRoutingProperties>

@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="../../templates/layout.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <ui:define name="title">
+        List Employee Skill
+    </ui:define>
+    <ui:define name="menu">
+        <c:if test="#{employeeLoginComponent.adminmenuRenderer }">
+            <ui:include src="../../templates/menu.xhtml" />
+        </c:if>
+    </ui:define>
+    <ui:define name="content">
+
+        <c:if test="#{employeeLoginComponent.adminmenuRenderer }">
+            <h:form id="mainform" style="margin-top: 45px;" >	
+                <p:outputPanel autoUpdate="true" style="text-align: right; margin-bottom: 3px; margin-right: 20px;" layout="block" >
+                    <p:commandButton title="edit" action="#{employeeProficiencyMapComponent.checkEdit()}"   icon="ui-icon-pencil"   />
+                </p:outputPanel>
+
+                <p:panel id="mainpanel" >
+                    <f:facet name="header" >
+                        Select Employee to add Skill <span style="float: right;">Records Found : #{fn:length(employeeProficiencyMapComponent.listEmployee) }</span>
+                    </f:facet>
+                    <p:dataTable id="empTable"  value="#{employeeProficiencyMapComponent.listEmployee}" selection="#{employeeProficiencyMapComponent.selectedEmp}" rowKey="#{current.id}" filteredValue="#{employeeProficiencyMapComponent.filterdListEmployee}"  var="current" rows="15" paginator="true" paginatorPosition="bottom">
+                        <p:column selectionMode="single" style="width:3%"  />
+                        <p:column sortBy="#{current.id}" filterBy="id"  filterMatchMode="contains"> 
+                            <f:facet name="header">
+                                <h:outputText value="ID"  />
+                            </f:facet>
+                            <h:outputText value="#{current.id}"/>
+                        </p:column>
+
+                        <c:if test="${not empty current.midName}">
+                            <c:set var="midname" value="${fn:replace(current.midName, ' ', '')}" />
+                            <c:if test="${not empty midname}">
+                                <p:column sortBy="#{current.firstName}" filterBy="#{current.firstName} #{current.midName} #{current.lastName}"  filterMatchMode="contains"> 
+                                    <f:facet name="header">
+                                        <h:outputText value="Name" />
+                                    </f:facet>
+                                    <h:outputText value="#{current.firstName} #{current.midName} #{current.lastName}"/>
+                                </p:column>
+                            </c:if>
+                            <c:if test="${empty midname}">
+                                <p:column sortBy="#{current.firstName}" filterBy="#{current.firstName} #{current.lastName}"  filterMatchMode="contains"> 
+                                    <f:facet name="header">
+                                        <h:outputText value="Name" />
+                                    </f:facet>
+                                    <h:outputText value="#{current.firstName} #{current.lastName}"/>
+                                </p:column>
+                            </c:if>
+                        </c:if>
+                        <c:if test="${empty current.midName}">
+                            <p:column sortBy="#{current.firstName}" filterBy="#{current.firstName} #{current.lastName}"  filterMatchMode="contains"> 
+                                <f:facet name="header">
+                                    <h:outputText value="Name" />
+                                </f:facet>
+                                <h:outputText value="#{current.firstName} #{current.lastName}"/>
+                            </p:column>
+                        </c:if>
+                        <p:column sortBy="#{current.loginId}" filterBy="#{current.loginId}"  filterMatchMode="contains"> 
+                            <f:facet name="header">
+                                <h:outputText value="Login Id" />
+                            </f:facet>
+                            <h:outputText value="#{current.loginId}"/>
+                        </p:column>
+                        <p:column sortBy="#{current.email}" filterBy="email"  filterMatchMode="contains"> 
+                            <f:facet name="header">
+                                <h:outputText value="Email" />
+                            </f:facet>
+                            <h:outputText value="#{current.email}"/>
+                        </p:column>
+                        <p:column sortBy="#{current.cellPhone}" filterBy="cellPhone"  filterMatchMode="contains"> 
+                            <f:facet name="header">
+                                <h:outputText value="Mobile Number" />
+                            </f:facet>
+                            <h:outputText value="#{current.cellPhone}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+
+            <p:dialog id="editempdialog" header="Employee selection" appendTo="@(body)" widgetVar="editDialog" resizable="false" modal="true" width="23%" >
+                <center>
+                    <h:form style="padding: 10px 10px 10px 10px">
+                        <br/><h:outputText value="No Employee selected"  /><br/><br/>
+                        <p:commandButton ajax="true"  value="Ok"   onclick="PF('editDialog').hide();"/>
+                    </h:form>
+                </center>
+            </p:dialog>
+        </c:if>
+    </ui:define>
+</ui:composition>

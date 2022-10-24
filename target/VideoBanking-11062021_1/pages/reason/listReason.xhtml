@@ -1,0 +1,165 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="../../templates/layout.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <ui:define name="title">
+        Reason List
+    </ui:define>
+    <ui:define name="menu">
+      <c:if test="#{employeeLoginComponent.adminmenuRenderer }">
+            <ui:include src="../../templates/menu.xhtml" />
+      </c:if>
+    </ui:define>
+    <ui:define name="content">
+       
+        <c:if test="#{employeeLoginComponent.adminmenuRenderer }">
+            <h:form id="mainform" style="margin-top: 45px;" >	
+            <p:outputPanel autoUpdate="true" style="text-align: right; margin-bottom: 3px; margin-right: 20px;" layout="block" >
+                <p:commandButton icon="ui-icon-search" oncomplete="PF('reasonViewDialog').show()" update=":viewform:reasonViewdialog" title="View"  />
+                <p:commandButton action="#{reasonMstComponent.checkReasonEdit()}"  icon="ui-icon-pencil"  title="Edit"  />
+                <p:commandButton  title="De-activate" icon="ui-icon-trash" oncomplete="PF('reasonDeleteDialog').show()" update=":reasonMasterDeleteDialog"/>
+            </p:outputPanel>
+
+
+            <p:panel id="mainpanel" >
+                <f:facet name="header" >
+                    Reason List <span style="float: right;" >Records Found : #{fn:length(reasonMstComponent.listReasonMst) }</span>
+                </f:facet>
+                <p:scrollPanel mode="native" style="-ms-overflow-y:hidden;" >
+                    <p:dataTable id="reasonTable" value="#{reasonMstComponent.listReasonMst}" selection="#{reasonMstComponent.selectReasonMst}" first="#{reasonMstComponent.first}" rowKey="${reason.id}"  var="reason" rows="10" paginator="true" paginatorPosition="bottom" >
+                        <p:ajax event="page"  listener="#{reasonMstComponent.onPageChange}" />
+                        <p:column selectionMode="multiple" style="width:3%;vertical-align: middle;"  />
+
+                        <p:column sortBy="#{reason.id}" filterBy="id"  filterMatchMode="contains"> 
+                            <f:facet name="header">
+                                <h:outputText value="ID" />
+                            </f:facet>
+                            <p:commandLink  style="font-weight: bold; color: #00498f;" ajax="true" action="#{reasonMstComponent.selectReasonById(reason.id)}" oncomplete="PF('singlereasonViewDialog').show()" update=":singleviewform:singlereasonviewdialog" >
+                                <h:outputText value="#{reason.id}"/>
+                            </p:commandLink>
+                        </p:column>
+                        <p:column sortBy="#{reason.reasonCd}" filterBy="reasonCd"  filterMatchMode="contains"> 
+                            <f:facet name="header">
+                                <h:outputText value="Code" />
+                            </f:facet>
+                            <h:outputText value="#{reason.reasonCd} "/>
+                        </p:column>
+
+                        <p:column sortBy="#{reason.type}" filterBy="type"  filterMatchMode="contains"> 
+                            <f:facet name="header">
+                                <h:outputText value="Type" />
+                            </f:facet>
+                            <h:outputText value="#{reason.type}"/>
+                        </p:column>
+
+                        <p:column sortBy="#{reason.reasonDesc}" filterBy="reasonDesc"  filterMatchMode="contains"> 
+                            <f:facet name="header">
+                                <h:outputText value="Reason Description" />
+                            </f:facet>
+                            <h:outputText value="#{reason.reasonDesc}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:scrollPanel>
+            </p:panel>
+        </h:form>
+
+        <h:form  id="singleviewform">
+            <p:dialog id="singlereasonviewdialog" appendTo="@(body)" modal="true" header="Reason Detail" widgetVar="singlereasonViewDialog" resizable="false" style="max-width: 500px;"> 
+                <h:panelGrid id="detail" columns="3" styleClass="noBorders"    columnClasses="label,value" cellspacing="5" cellpadding="30">
+
+                    <h:outputText value="ID" style="font-size: small;font-weight: bold" />
+                    <h:outputText value=":" />
+                    <h:outputText value="#{reasonMstComponent.reasonMst.id}" style="font-size:small"/>
+                    <h:outputText value="Code" style="font-size: small;font-weight: bold"/>
+                    <h:outputText value=":" />
+                    <h:outputText value="#{reasonMstComponent.reasonMst.reasonCd}" style="font-size:small"/>
+                    <h:outputText value="Type" style="font-size: small;font-weight: bold"/>
+                    <h:outputText value=":" />
+                    <h:outputText value="#{reasonMstComponent.reasonMst.type}" style="font-size:small"/>
+                    <h:outputText value="Reason Description" style="font-size: small;font-weight: bold"/>
+                    <h:outputText value=":" />
+                    <h:outputText value="#{reasonMstComponent.reasonMst.reasonDesc}" style="font-size:small" />
+
+                    <p:spacer/>
+                    <p:spacer/>
+                    <p:spacer/>
+                </h:panelGrid>
+            </p:dialog>
+        </h:form>
+
+        <h:form  id="viewform">
+            <p:dialog id="reasonViewdialog" appendTo="@(body)" modal="true" header="Reason Detail"  widgetVar="reasonViewDialog" resizable="false" style="max-width: 800px;"  > 
+                <c:if test="#{reasonMstComponent.selectReasonMst.size()>1}">
+                    <p:scrollPanel mode="native" style="max-width: 800px;max-height: 380px;" >
+                        <p:dataTable var="reason" value="#{reasonMstComponent.selectReasonMst}"  >           
+
+                            <p:column headerText="ID" sortBy="#{reason.id}"   >
+                                <h:outputText value="#{reason.id}" />
+                            </p:column>
+                            <p:column headerText="Code" sortBy="#{reason.reasonCd}"  >
+                                <h:outputText value="#{reason.reasonCd}"  />
+                            </p:column>
+                            <p:column headerText="Type" sortBy="#{reason.type}"   >
+                                <h:outputText value="#{reason.type}" />
+                            </p:column>
+                            <p:column headerText="Reason Description" sortBy="#{reason.reasonDesc}"  >
+                                <h:outputText value="#{reason.reasonDesc}" />
+                            </p:column>
+
+                        </p:dataTable> 
+                    </p:scrollPanel>
+                </c:if>
+                <c:if test="#{reasonMstComponent.selectReasonMst.size()== 1}">
+
+                    <h:panelGrid id="detail" columns="3" styleClass="noBorders"   columnClasses="label,value" cellspacing="5" cellpadding="30">
+                        <h:outputText value="ID" style="font-size: small;font-weight: bold" />
+                        <h:outputText value=":" />
+                        <h:outputText value="#{reasonMstComponent.reasonMst.id}" style="font-size:small"/>
+                        <h:outputText value="Code" style="font-size: small;font-weight: bold"/>
+                        <h:outputText value=":" />
+                        <h:outputText value="#{reasonMstComponent.reasonMst.reasonCd}" style="font-size:small"/>
+                        <h:outputText value="Type" style="font-size: small;font-weight: bold"/>
+                        <h:outputText value=":" />
+                        <h:outputText value="#{reasonMstComponent.reasonMst.type}" style="font-size:small"/>
+                        <h:outputText value="Reason Description" style="font-size: small;font-weight: bold"/>
+                        <h:outputText value=":" />
+                        <h:outputText value="#{reasonMstComponent.reasonMst.reasonDesc}" style="font-size:small"/>
+                        <p:spacer/>
+                        <p:spacer/>
+                        <p:spacer/>
+                    </h:panelGrid>
+                </c:if>
+                <c:if test="#{reasonMstComponent.selectReasonMst.size() == 0}">
+                    <p:spacer width="10"/><br/><h:outputText value="No record is selected"/> <br/><br/> <p:spacer width="25"/>
+                </c:if>
+            </p:dialog>
+        </h:form>
+
+        <p:dialog id="reasonNoeditDialog" appendTo="@(body)" modal="true" header="Edit Reason" widgetVar="editReasonDialog" resizable="false" width="27%" > 
+            <h:form  id="reasonnoeditform" style="padding:12px 12px 12px 12px">
+                <center><h:outputText value="No record is selected" /> <br/><br/> </center>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog id="reasonMasterDeleteDialog" appendTo="@(body)" modal="true" header="De-activate Reason" widgetVar="reasonDeleteDialog" resizable="false" width="27%" > 
+            <h:form  id="deleteform" style="padding:12px 12px 12px 12px">
+                <c:if test="#{reasonMstComponent.selectReasonMst.size() > 0}">
+                    <center>
+                        <h:outputText value="Do You Want To De-activate #{reasonMstComponent.selectReasonMst.size()} Item(s)?" /> <br/><br/> 
+                        <p:commandButton icon="ui-icon-check" ajax="false" action="#{reasonMstComponent.deleteReason(request)}" value="Yes" oncomplete="PF('reasonDeleteDialog').hide();" update=":mainform:reasonTable"  /> <p:spacer width="5"/> 
+                        <p:commandButton value="No" type="button"  icon="ui-icon-close" onclick="PF('reasonDeleteDialog').hide()" />  
+                    </center> 
+                </c:if>
+                <c:if test="#{reasonMstComponent.selectReasonMst.size() == 0}">
+                    <center><h:outputText value="No Record To De-activate" /> <br/><br/></center>
+                </c:if>
+            </h:form>
+        </p:dialog>
+
+        </c:if>
+    </ui:define>
+</ui:composition>

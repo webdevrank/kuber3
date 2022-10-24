@@ -1,0 +1,277 @@
+*{
+    margin:0;
+    padding:0
+}
+html,body{
+    width:100%;
+    height:100%;
+    font-family:'robotolight','Open Sans','Helvetica','Arial',sans-serif
+}
+#options{
+    position:absolute;
+    top:0;
+    left:0;
+    bottom:60px;
+    width:350px;
+    text-align:center;
+    z-index:99
+}
+#optionsVisibilityButton{
+    position:absolute;
+    z-index:100
+}
+#renderer{
+/*    position:absolute;*/
+    top:0px;
+    width:100%;
+    left:0%;
+    right:0%;
+    bottom:0;
+    background-color:black;
+    height:100%
+}
+#helper{
+    position:absolute;
+    top:0;
+    left:0;
+    width:48%;
+    height:75%;
+    background:#c5281c none repeat scroll 0% 0%;
+    color:#c5281c;
+    font-weight:300;
+    margin-top:6%;
+    margin-left:21%
+}
+#helper table{
+    margin:auto
+}
+#helper td{
+    vertical-align:middle;
+    text-align:center;
+    width:800px;
+    padding:10px
+}
+#helper img{
+    vertical-align:middle
+}
+.helperCheck{
+    vertical-align:middle;
+    text-align:left;
+    padding:10px
+}
+.helperHeader,.helperFooter{
+    padding:30px 0
+}
+#helperText{
+    font-size:36px
+}
+#helperText p{
+    font-size:16px
+}
+.helperFooter a{
+    font-size:18px;
+    text-align:center;
+    text-decoration:none;
+    background-color:#83C36D;
+    display:inline-block;
+    padding:14px 0 14px 0;
+    color:white;
+    font-weight:400;
+    width:200px;
+    margin:auto;
+    border-radius:5px
+}
+#helper ul{
+    display:inline-block;
+    list-style-type:none
+}
+.toolbar{
+    position:absolute;
+    bottom:0;
+    height:1px;
+    text-align:center;
+    /*background-color:rgb(19,38,58)*/
+}
+#toolbarLeft{
+    left:3%;
+    /*right:70%;*/
+    width:30%;
+    top:70px;
+}
+#toolbarCenter{
+    left:30%;
+    right:30%;
+    width:52%
+}
+#toolbarRight{
+    /*left:70%;*/
+    right:15px;
+    width:30%;
+    top:90px;
+}
+.rendererWithOptions{
+    left:350px
+}
+.rendererFullScreen{
+    left:0
+}
+.rendererFullScreenPermanent{
+    left:0
+}
+.hidden{
+    display:none
+}
+.hiddenPermanent{
+    display:none
+}
+#error{
+    color:red;
+    font-size:50%
+}
+#message{
+    font-size:50%
+}
+#participantStatus{
+    color:red;
+    line-height:16px;
+    margin:0 10px;
+    position:absolute;
+    left:0;
+    font-weight: bold;
+    font-size: smaller;
+}
+#connectionStatus{
+    color:red;
+    line-height:16px;
+    margin:0 10px;
+    position:absolute;
+    right:0;
+    bottom:0px;
+    font-weight: bold;
+    font-size: x-small;
+}
+#clientVersion{
+    color:white;
+    line-height:10px;
+    margin:0 10px;
+    position:absolute;
+    right:0;
+    bottom:3px;
+    font-size:75%
+}
+#options p{
+    text-align:center
+}
+#options label{
+    display:inline-block;
+    width:105px;
+    margin:5px;
+    padding:4px;
+    text-align:right
+}
+#options input{
+    display:inline-block;
+    width:195px;
+    margin:5px;
+    padding:4px
+}
+#options select{
+    display:inline-block;
+    width:195px;
+    margin:5px;
+    padding:4px
+}
+.logo{
+    margin:20px;
+    width:300px
+}
+.optionsVisibiliyButtonElements{
+    width:30px;
+    height:30px;
+    background-repeat:no-repeat;
+    background-position:center;
+    background-color:rgb(255,255,255);
+    border:0
+}
+.toolbarButton{
+    width:30px;
+    height:23px;
+    background-size:32px auto;
+    background-repeat:no-repeat;
+    background-position:center;
+/*    background-color:rgb(19,38,58);*/
+    border:0
+}
+.cameraOn{
+    background-image:url(../../Images/cameraOn.png)
+}
+.cameraOff{
+    background-image:url(../../Images/cameraOff.png)
+}
+.speakerOn{
+    background-image:url(../../Images/speakerOn.png)
+}
+.speakerOff{
+    background-image:url(../../Images/speakerOff.png)
+}
+.microphoneOn{
+    background-image:url(../../Images/microphoneOn.png)
+}
+.microphoneOff{
+    background-image:url(../../Images/microphoneOff.png)
+}
+.callStart{
+    background-image:url(../../Images/callStart.png)
+}
+.callEnd{
+    background-image:url(../../Images/callEnd.png)
+}
+.showOptions{
+    background-image:url(../../Images/showOptions.png);
+    background-size:30px auto;
+    left:0
+}
+.hideOptions{
+    background-image:url(../../Images/hideOptions.png);
+    background-size:15px auto;
+    left:315px
+}
+.pluginOverlay .videoContainer .frame video{
+    background-image:url(../../Images/default_profile.svg);
+    background-repeat:no-repeat;
+    background-position:center;
+    background-size:33%;
+    text-align: center;
+}
+.optionsHide{
+    display:none
+}
+.snap .overlay:hover {
+  opacity: 1;
+  /* cursor: url(../../Images/mouse.png), auto !important; */
+  cursor: pointer;
+}
+
+.snap .overlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(7, 164, 247, 0.4);
+  z-index: 9;
+  opacity: 0
+}
+
+.recorderOn      { background-image: url(Images/icon_record.png);float: right; }
+.recorderPaused  { background-image: url(Images/pause.png);float: right; }
+.webcastingOn  { background-image: url(Images/icon_webcast.png);float: left; }
+.cameraOn      { background-image: url(Images/cameraOn.png); }
+.cameraOff     { background-image: url(Images/cameraOff.png); }
+.microphoneOn  { background-image: url(Images/microphoneOn.png); }
+.microphoneOff { background-image: url(Images/microphoneOff.png); }
+.speakerOn     { background-image: url(Images/speakerOn.png); }
+.speakerOff    { background-image: url(Images/speakerOff.png); }
+.callStart     { background-image: url(Images/callStart.png); }
+.callEnd       { background-image: url(Images/callEnd.png); }
+.chaticon      { background-image: url(Images/chat.png); }

@@ -1,0 +1,1311 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="../../templates/layoutCustomer.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"                
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <ui:define name="title">
+        Customer
+    </ui:define>
+
+    <ui:define name="content">
+        <h:head>
+            #{customerComponent.selectPromoVideo()} 
+            #{customerComponent.loadFeedbackQuery()} 
+            <script>
+                var socketHostPublic = "#{socketHostPublic}";
+                var contextUrl = "#{request.contextPath}";
+            </script>
+
+            <style type="text/css">
+                .value {
+                    width: 1000px !important;
+                }
+                iframe{
+                    width: 770px !important;
+                    height: 600px !important;
+                }
+                .ui-selectonemenu .ui-selectonemenu-trigger{
+                    width:auto !important;
+                }
+                #backBtn{
+                    display:none;
+                }
+                #backBtnMenu{
+                    display:none;
+                }
+                .ui-state-disabled, .ui-widget-content .ui-state-disabled, .ui-widget-header .ui-state-disabled{
+                    opacity: 10 !important;
+                }
+
+                .fc-toolbar .ui-button:hover {
+                    background: #DB1516 !important;
+                }
+                .fc-title{
+                    display: none !important;
+                }
+                .fc-time-grid .fc-event, .fc-time-grid .fc-bgevent{
+                    position: relative !important;
+                }
+                #npanel_header{
+                    display:none;
+                }
+                #ncpanel_header{
+                    display:none;
+                }
+                #videoHead{
+                    padding-top: 5px;
+                }
+                #videoHeadchat{
+                    display:none !important;
+                }
+                
+            </style>
+
+            <script  src="#{request.contextPath}/resources/js/bowser.min.js"></script>
+            
+            <link rel="stylesheet" href="${request.contextPath}/resources/vidyo/hunter/VidyoConnector.css"/>
+            <link rel="stylesheet" href="${request.contextPath}/resources/vidyo/hunter/VidyoTextChat.css"/>
+            <script src="${request.contextPath}/resources/vidyo/hunter/VidyoConnector.js"></script>
+            <script src="${request.contextPath}/resources/vidyo/hunter/VidyoTextChat.js"></script>
+            <script src="${request.contextPath}/resources/js/script.js"></script>
+            <script type="text/javascript" src="#{request.contextPath}/resources/js/vidyoConnect.js"></script>
+            
+            <script type="text/javascript" src="#{request.contextPath}/resources/js/socket.io.js" ></script>
+            <link type="text/css" rel="stylesheet" href="#{request.contextPath}/resources/css/tabs.css"></link>
+            <script type="text/javascript" src="#{request.contextPath}/resources/js/chat.js"></script>
+            <script type="text/javascript" src="#{request.contextPath}/resources/js/tdi.tabs.js"></script>
+            
+            
+            <script type="text/javascript" src="#{request.contextPath}/resources/js/webrtcchat.js"></script>
+            <script type="text/javascript" src="#{request.contextPath}/resources/js/snapshotcust.js"></script>
+            <script type="text/javascript" src="#{request.contextPath}/resources/js/cropper.js"></script>
+            <link type="text/css" rel="stylesheet" href="${request.contextPath}/resources/css/cropper.css" />
+            <link rel="stylesheet" href="${request.contextPath}/resources/css/customerVideoCall.css"/>
+            <script  src="#{request.contextPath}/resources/js/customJs/customerVideoCall.js"></script>
+            <script  src="#{request.contextPath}/resources/js/customJs/customerDashboard.js"></script>
+            <link href="${request.contextPath}/resources/css/feedback.css" rel="stylesheet"/>
+            <link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/css/bootstrap.css" />
+            <link type="text/css" rel="stylesheet" href="${request.contextPath}/resources/css/video.css" />
+            <link type="text/css" rel="stylesheet" href="${request.contextPath}/resources/css/responsive.css" />
+            <script>
+                var displayName = "#{customerComponent.custName}";
+                
+                window.addEventListener('unload', function () {
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('GET', '${request.contextPath}/CustomerLogoutServlet', true);
+                    xhr.send(null);
+                }, false);
+
+                        var prototype = {};
+                        prototype.string = {};
+                        prototype.string.autolink = function (string, options) {
+                        if (!options)
+                                options = {};
+                                if (!options.limit)
+                                options.limit = 100;
+                                if (!options.tagFill)
+                                options.tagFill = '';
+                                var regex = /((http\:\/\/|https\:\/\/|ftp\:\/\/)|(www\.))+(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&amp;%@!\-\/]))?/gi;
+                                string = string.replace(regex, function (value) {
+                                value = value.toLowerCase();
+                                        var m = value.match(/^([a-z]+:\/\/)/);
+                                        var nice;
+                                        var url;
+                                 if (m)
+                                    {
+                                        nice = value.substring(0,value.indexOf('&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;'));
+
+                                        url = nice;
+                                    }
+                                    else
+                                    {
+                                        nice = value.substring(0,value.indexOf('&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;'));
+
+                                        url = 'http://' + nice;
+                                    }
+
+                                    return '&lt;a href="' + url + '"' + (options.tagFill !== '' ? (' ' + options.tagFill) : '') + ' style="color:blue;text-decoration:underline;" target="_blank"  &gt;' + prototype.string.autolinkLabel(nice, options.limit) + '&lt;/a&gt;';
+                                });
+                                return string;
+                        };
+                        prototype.string.autolinkLabel = function (text, limit) {
+
+                        if (!limit) {
+                            return text;
+                        }
+
+                        if (text.length > limit) {
+                            return text.substr(0, limit - 3) + '...';
+                        }
+
+                            return text;
+                        };
+                      
+                var chatWindowState=0;
+                
+                function refreshEssentials(){
+                        hideVideoStream();
+                        document.getElementById('_Everyone').style.background='white' ;
+                        document.getElementById('_Everyonespan').style.display='none' ;
+                         if (document.getElementById('collapse1').style.display=='block') {
+                            document.getElementById('tbutton').click();
+                        } 
+                       
+                        $('#tbutton img').src='#{request.contextPath}/resources/images/top.png';
+                        $('#parentRenderer').css("height", "56vh");
+                        $(".frame video > video").css("height", "56vh");
+                        chatWindowState = 0   
+                        
+                        stopCounterTimer();
+                        $('#spinner').hide();
+                        removeObjectTag();
+                        unmuteSpeaker();
+                        unmuteMic();
+                        unmuteVideo();
+                        document.getElementById("timer").innerHTML='';
+                        var cnt=0;
+                        resetTabs();
+                        resetuserList();
+                        dynamicallyRemoveJs();
+                        resetVidyoConnectorValues();
+                        $('#addstatictab li').each(function (i) {
+                            cnt++;
+                            if(cnt &gt; 2){
+                                $(this).remove();
+                             }
+                       
+                        });
+                        var counter=0;
+                        document.getElementById('Everyone').innerHTML='';
+                         $('#participant div').each(function (i) {
+                            counter++;
+                            if(counter &gt; 1){
+                                $(this).remove();
+                             }
+                         });
+                        $('#participantList').empty();
+                        $('#renderer').empty();
+                        document.getElementById('mutevideo').style.display='block';
+                        document.getElementById('unmutevideo').style.display='block';
+                    } 
+              
+            </script>
+            <style>
+                td label{
+                    margin-left: 5px;
+                    margin-right: 5px;
+                }
+            </style>
+        </h:head>
+        
+        <h:body>
+            <audio id="myaudio" loop="loop"  controls="controls" style="display:none;">  
+                <source src="#{request.contextPath}/promotional/demo.mp3" type="audio/mpeg" />  
+            </audio>
+
+            <h:panelGroup id="spinnerReplace" layout="block" styleClass="spinner off" style="z-index: 1003; -moz-opacity: 0.9; opacity:.90; filter: alpha(opacity=90); width: 100%; height: 100%; display: none;">
+                <center>
+                    <video id="spinnerReplacerVideo" class="fullscreen"  style="width: 60%; overflow: hidden; margin-top: 2%;" loop="true" >
+                        <source id="promoVideoDynaId" src="#{customerComponent.videoFileUrl}" type="video/mp4" />
+                        Your browser does not support HTML5 video.
+                    </video>
+                </center>
+            </h:panelGroup>
+
+            <h:panelGroup id="showLoader" layout="block" styleClass="spinner off" style="z-index: 1003; -moz-opacity: 0.9; opacity:.90; filter: alpha(opacity=90); width: 100%; height: 100%; display: none;">
+                <center>
+                    <div class="loader"></div>
+                </center>
+            </h:panelGroup>
+            
+            <select id="windowShares" style="display:none">
+                 <option value='0'>None</option>
+            </select>
+
+               <div class="user_list" style="display:none;" >
+                <h:form id="vidyowebrtcform" prependId="false" >
+                    <div id="optionsParameters" >
+                        <li style="display:none;">
+                            <label for="host">Host</label>
+                            <p:inputText  id="host" value="#{customerComponent.portal}"/>
+                        </li>
+                        <li style="display:none;">
+                            <label for="displayName">Display Name</label>
+                            <p:inputText id="displayName" placeholder="Display Name" value="#{customerComponent.custName}"/>
+                        </li> 
+                        <li style="display:none;">
+                            <label for="roomKey">Room Key</label>
+                            <p:inputText id="roomKey" placeholder="room-key" value="#{customerComponent.roomUrl}"/>
+                        </li> 
+                        <li style="display:none;">
+                            <label for="resourceId">Resource ID</label>
+                            <p:inputText id="resourceId" placeholder="Conference Reference" value="#{customerComponent.roomName}"/>
+                        </li> 
+                     </div>
+                 </h:form>
+              </div> 
+                <p:dialog  id="sett" widgetVar="settingsDia" resizable="false" closable="true" header="Settings" modal="true" appendTo="@(body)" >
+                        <table style="border: none"> 
+                             <tr>
+                                 <td style="padding:10px"><label for="cameras">Cameras</label></td>
+                                 <td style="padding:10px">
+                                     <select id="cameras" style="width:195px">
+                                           <option value='0'>None</option>
+                                    </select>
+                                 </td>
+                             </tr>   
+                            <tr>
+                                <td style="padding:10px"><label for="microphones">Microphones</label></td>
+                                <td style="padding:10px">   
+                                    <select id="microphones" style="width:195px">
+                                       <option value='0'>None</option>
+                                     </select>
+                                </td>       
+                           </tr>    
+                            <tr>
+                                 <td style="padding:10px">     
+                                    <label for="speakers">Speakers</label>
+                                 </td>
+                                 <td style="padding:10px">
+                                    <select id="speakers" style="width:195px">
+                                        <option value='0'>None</option>
+                                    </select>
+                                 </td>
+                             </tr>
+                         </table>
+                 </p:dialog>   
+            
+            <p:dialog id="initialCallCancelDlgId"  widgetVar="initialCallCancelDlg"  resizable="false" closable="false" maximizable="false" draggable="true" position="center,center"  header="Connecting......"  style="overflow: hidden; border: none;  ">
+                <h:form id="initialCallCancelDlgformid" prependId="false" style="overflow:hidden;" >
+                    <center>
+                        <br/>
+                        <h:outputText value="Your call is being connected with Video Agent...Please wait!" style="padding: 10px;" />
+                        <br/><br/>
+                        <p:commandButton onclick="PF('initialCallCancelDlg').hide();hideSpinner();disableCancelDia();closeAllDialog();showLoaderBeforeRefresh();"  ajax="true" value="End" action="#{customerComponent.setCallEndTime(request)}"  oncomplete="endConferenceOperation();" style="margin-bottom: 5px;" update=":burgeInForm :initialCallCancelDlgformid"/>
+                        <br/><br/>
+                    </center>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog id="callNotInitialisedDialogid"  widgetVar="callNotInitialisedDialog" onShow="PF('initialCallCancelDlg').hide();disableCancelDia();clearDialTime();"  resizable="false" closable="false" maximizable="false" draggable="true" position="center" header="Information"   style="overflow: auto;">
+                <center>
+                    <h:form id="retryForm" prependId="false" style="overflow:hidden;">
+                        <p:panel style="background: transparent;border: none;">
+                            <h5 style="color: red;" >Sorry! Service Agent currently not available</h5>
+                            <p:spacer/><br/>
+                            <p:panelGrid columns="2" style="background: transparent;border: none;" styleClass="noBorders"  >
+                                <p:commandButton icon="ui-icon-circle-close" id="cancelschedulebtnid" value="Cancel" action="#{customerComponent.resetData()}"  ajax="true" style="width:95px; " onclick="PF('callNotInitialisedDialog').hide();hideSpinner();" immediate="true"  update=":retryForm" async="false"/> 
+                                <p:commandButton icon="ui-icon-circle-triangle-e" id="retrybuttonid" value="Retry"  ajax="true" style="width:95px; margin-left: 5px;" onclick="PF('callNotInitialisedDialog').hide();PF('initialCallCancelDlg').show();showSpinner();enableCancelDia();PF('exitSysVar').hide();" immediate="true"  actionListener="#{customerComponent.retryCall(request)}"   update=":retryForm :burgeInForm:roomurlTextId :burgeInForm:custNametextId :exitSysForm " async="false"/> 
+                            </p:panelGrid>
+                        </p:panel>
+                    </h:form>
+                </center>
+            </p:dialog>
+            
+             <p:dialog  id="agentNotAvailablediaId" widgetVar="agentnotAvailableDlg" onShow="PF('initialCallCancelDlg').hide();disableCancelDia();clearDialTime();"  resizable="false" closable="false" header=" Notification" modal="true" appendTo="@(body)" >
+                <h:form id="agentnotAvailableformId" style="overflow:hidden;">
+                    <center>
+                        <br/><br/>
+                        <h:outputText value="Sorry! Service Agent currently not available." style="padding: 10px;"/>
+                        <br/><br/>
+                        <p:commandButton onclick="PF('agentnotAvailableDlg').hide();hideSpinner();enableCustometForTakeCall();"  ajax="true" value="DashBoard"/>
+                        <br/><br/>
+                    </center>
+                </h:form>
+            </p:dialog> 
+            
+            <p:dialog id="initialCallCancelDlgIdRM"  widgetVar="initialCallCancelDlgRM"  resizable="false" closable="false" maximizable="false" draggable="true" position="center,center"  header="Connecting......"  style="overflow: hidden; border: none;  ">
+                <h:form id="initialCallCancelDlgformidRM" prependId="false" style="overflow:hidden;" >
+                    <center>
+                        <br/>
+                        <h:outputText value="Your call is being connected with Relationship Manager...Please wait!" style="padding: 10px;" />
+                        <br/><br/>
+                        <p:commandButton id="endRM" onclick="PF('initialCallCancelDlgRM').hide();hideSpinner();disableCancelDiaRM();closeAllDialog();showLoaderBeforeRefresh();"  ajax="true" value="Cancel" actionListener="#{customerComponent.setCallEndTimeRM(request)}"  oncomplete="endConferenceOperation();" style="margin-bottom: 5px;" update=":burgeInForm :initialCallCancelDlgformidRM"/>
+                     <br/><br/>
+                    </center>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog id="tempinitialCallCancelDlgIdRM"  widgetVar="tempinitialCallCancelDlgRM"  resizable="false" closable="false" maximizable="false" draggable="true" position="center,center"  header="Connecting......"  style="overflow: hidden; border: none;  ">
+                <h:form id="tempinitialCallCancelDlgformidRM" prependId="false" style="overflow:hidden;" >
+                    <center>
+                        <br/>
+                        <h:outputText value="Your call is being connected with Relationship Manager...Please wait!" style="padding: 10px;" />
+                        <br/><br/>
+                    </center>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog id="callNotInitialisedDialogidRM"  widgetVar="callNotInitialisedDialogRM" onShow="PF('initialCallCancelDlgRM').hide();disableCancelDiaRM();clearDialTime();"  resizable="false" closable="false"  draggable="true" position="center" header="Information"   style="overflow: auto;">
+                <center>
+                    <h:form id="retryFormRM" prependId="false" style="overflow:hidden;height:110px;">
+                        <p:panel style="background: transparent;border: none;">
+                            <h5 style="color: red;" >Sorry! Relationship Manager currently not available.Call Senior Relationship Manager</h5>
+                            <p:spacer/><br/>
+                            <p:panelGrid columns="3" style="background: transparent;border: none;" styleClass="noBorders"  >
+                                <p:commandButton icon="ui-icon-arrowreturnthick-1-w" id="retryRMbtnid" value="Retry"  onclick="checkRetryRM()" /> 
+                                <p:commandButton icon="ui-icon-circle-close" id="cancelRMbtnid" value="Cancel" action="#{customerComponent.resetData()}"  ajax="true"  onclick="PF('callNotInitialisedDialogRM').hide();hideSpinner();" immediate="true"  update=":retryFormRM" async="false"/>
+                                <p:commandButton icon="ui-icon-circle-triangle-e" id="retrybuttonidSRM" value="Call Senior Relationship Manager"  ajax="true" style="margin-left: 5px;" onclick="PF('callNotInitialisedDialogRM').hide();PF('initialCallCancelDlgSRM').show();showSpinner();enableCancelDiaSRM();PF('exitSysVar').hide();" immediate="true"  actionListener="#{customerComponent.retryCallSRM(request)}"   update=":retryForm :burgeInForm:roomurlTextId :burgeInForm:custNametextId :exitSysForm :vidyowebrtcform :downtimedialogidform" async="false"/> 
+                            </p:panelGrid>
+                        </p:panel>
+                        <br/>
+                    </h:form>
+                </center>
+            </p:dialog>
+            
+            <p:dialog id="initialCallCancelDlgIdSRM"  widgetVar="initialCallCancelDlgSRM"  resizable="false" closable="false" maximizable="false" draggable="true" position="center,center"  header="Connecting......"  style="overflow: hidden; border: none;  ">
+                <h:form id="initialCallCancelDlgformidSRM" prependId="false" style="overflow:hidden;" >
+                    <center>
+                        <br/>
+                        <h:outputText value="Your call is being connected with Senior Relationship Manager...Please wait!" style="padding: 10px;" />
+                        <br/><br/>
+                        <p:commandButton onclick="PF('initialCallCancelDlgSRM').hide();hideSpinner();disableCancelDiaSRM();closeAllDialog();showLoaderBeforeRefresh();"  ajax="true" value="Cancel" action="#{customerComponent.setCallEndTimeSRM(request)}"  oncomplete="endConferenceOperation();" style="margin-bottom: 5px;" update="  :burgeInForm :initialCallCancelDlgformidSRM"/>
+                        <br/><br/>
+                    </center>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog id="tempinitialCallCancelDlgIdSRM"  widgetVar="tempinitialCallCancelDlgSRM"  resizable="false" closable="false" maximizable="false" draggable="true" position="center,center"  header="Connecting......"  style="overflow: hidden; border: none;  ">
+                <h:form id="tempinitialCallCancelDlgformidSRM" prependId="false" style="overflow:hidden;" >
+                    <center>
+                        <br/>
+                        <h:outputText value="Your call is being connected with Senior Relationship Manager...Please wait!" style="padding: 10px;" />
+                        <br/><br/>
+                    </center>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog id="callNotInitialisedDialogidSRM" widgetVar="callNotInitialisedDialogSRM" onShow="PF('initialCallCancelDlgSRM').hide();disableCancelDiaSRM();clearDialTime();"  resizable="false" closable="false" draggable="true" position="center" header="Information"  responsive="true" style="overflow: auto; ">
+                <center>
+                    <h:form id="retryFormSRM" prependId="false" style="overflow:hidden;">
+                        <p:panel style="background: transparent;border: none;">
+                            <h5 style="color: red;" >Sorry! Senior Relationship Manager currently not available.Call Branch Manager</h5>
+                            <p:spacer/><br/>
+                            <p:panelGrid columns="3" style="background: transparent;border: none;" styleClass="noBorders"  >
+                                <p:commandButton icon="ui-icon-arrowreturnthick-1-w" id="retrySRMbtnid" value="Retry"  onclick="checkRetrySRM()"   /> 
+                                <p:commandButton icon="ui-icon-circle-close" id="cancelSRMbtnid" value="Cancel" action="#{customerComponent.resetData()}"  ajax="true" onclick="PF('callNotInitialisedDialogSRM').hide();hideSpinner();" immediate="true"  update=":retryFormSRM" async="false"/>
+                                <p:commandButton icon="ui-icon-circle-triangle-e" id="retrybuttonidBM" value="Call Branch Manager"  ajax="true" style="margin-left: 5px;" onclick="PF('callNotInitialisedDialogSRM').hide();PF('initialCallCancelDlgBM').show();showSpinner();enableCancelDiaBM();PF('exitSysVar').hide();" immediate="true"  actionListener="#{customerComponent.retryCallBM(request)}"   update=":retryForm :burgeInForm:roomurlTextId :burgeInForm:custNametextId :exitSysForm :vidyowebrtcform :downtimedialogidform " async="false"/> 
+                            </p:panelGrid>
+                        </p:panel>
+                        <br/>
+                    </h:form>
+                </center>
+            </p:dialog>
+            
+            <p:dialog id="initialCallCancelDlgIdBM"  widgetVar="initialCallCancelDlgBM"  resizable="false" closable="false" maximizable="false" draggable="true" position="center,center"  header="Connecting......"  style="overflow: hidden; border: none;  ">
+                <h:form id="initialCallCancelDlgformidBM" prependId="false" style="overflow:hidden;" >
+                    <center>
+                        <br/>
+                        <h:outputText value="Your call is being connected with Branch Manager...Please wait!" style="padding: 10px;" />
+                        <br/><br/>
+                        <p:commandButton onclick="PF('initialCallCancelDlgBM').hide();hideSpinner();disableCancelDiaBM();closeAllDialog();showLoaderBeforeRefresh();"  ajax="true" value="Cancel" action="#{customerComponent.setCallEndTimeBM(request)}"  oncomplete="endConferenceOperation();" style="margin-bottom: 5px;" update="  :burgeInForm :initialCallCancelDlgformidBM"/>
+                        <br/><br/>
+                    </center>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog id="tempinitialCallCancelDlgIdBM"  widgetVar="tempinitialCallCancelDlgBM"  resizable="false" closable="false" maximizable="false" draggable="true" position="center,center"  header="Connecting......"  style="overflow: hidden; border: none;  ">
+                <h:form id="tempinitialCallCancelDlgformidBM" prependId="false" style="overflow:hidden;" >
+                    <center>
+                        <br/>
+                        <h:outputText value="Your call is being connected with Branch Manager...Please wait!" style="padding: 10px;" />
+                        <br/><br/>
+                    </center>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog id="callNotInitialisedDialogidBM"  width="auto" widgetVar="callNotInitialisedDialogBM" onShow="PF('initialCallCancelDlgBM').hide();disableCancelDiaBM();clearDialTime();"  resizable="false" closable="false" maximizable="false" draggable="true" position="center" header="Information"   style="overflow: auto;">
+                <center>
+                    <h:form id="retryFormBM" prependId="false" style="overflow:hidden;height:90px;">
+                        <p:panel style="background: transparent;border: none;">
+                            <h5 style="color: red;" >Sorry! Branch Manager currently not available.Please try again later</h5>
+                            <p:spacer/><br/>
+                            <p:panelGrid columns="2" style="background: transparent;border: none;" styleClass="noBorders"  >
+                                <p:commandButton icon="ui-icon-arrowreturnthick-1-w" id="retryBMbtnid" value="Retry"  onclick="checkRetryBM()"   /> 
+                                <p:commandButton icon="ui-icon-circle-close" id="okBMbtnid" value="OK" action="#{customerComponent.resetData()}"  ajax="true" style="width:95px; " onclick="PF('callNotInitialisedDialogBM').hide();hideSpinner();" immediate="true"  update=":retryFormBM" async="false"/>
+                            </p:panelGrid>
+                        </p:panel>
+                        <br/>
+                    </h:form>
+                </center>
+            </p:dialog>
+            
+            <p:dialog id="exitSysDiag" widgetVar="exitSysVar" width="auto" header="Please stay connected" style=" max-height: 640px;overflow: hidden; border: none;" closable="false" modal="true"  minimizable="false"  maximizable="false" resizable="false" draggable="true" position="center" onShow="startReceiveCheckRegistered();" >
+                <center>
+                    <h:form id="exitSysForm" prependId="false" style="overflow: hidden;">
+                        <p:panel style="background: transparent;border: none;">
+                            <p>&nbsp;</p>
+                            <span style="color: red;"><h5>You are going to meet #{customerComponent.agentName}....</h5></span>
+                            <p>&nbsp;</p>
+                        </p:panel>
+                    </h:form>
+                </center>
+            </p:dialog>
+
+            <p:dialog id="doScheduleDia" header="Schedule Call" widgetVar="doScheduleDialog" style="overflow: hidden;border: none;" resizable="false" responsive="true" closable="false"  minimizable="false"  maximizable="false" position="center">
+                <h:form id="schedulingForm" prependId="false" style="overflow:hidden;">
+                    <p:panel id="schDateTimePickerPanel" style="background: transparent;border: none;">
+                        <h:panelGrid columns="2" style="background: transparent;border: none;" styleClass="noBorders"  >
+                            <p:panel style="border: none !important;background: transparent" ><h:outputText value="From Date and Time" /><font color="red">*</font></p:panel>
+                            <p:calendar id="inlineSchDateTime" label="Schedule" value="#{customerComponent.schDateTime}" pattern="dd-MMM-yyyy HH:mm" showOn="button" timeOnly="false" timeZone="#{customerLoginProcessesComponent.timeZone}" required="true" requiredMessage="Please select a start date to schedule" />
+                            <p:panel style="border: none !important;background: transparent" ><h:outputText value="To Date and Time" /><font color="red">*</font></p:panel>
+                            <p:calendar id="inlineSchEndDateTime" label="Schedule" value="#{customerComponent.schEndDateTime}" pattern="dd-MMM-yyyy HH:mm" showOn="button" timeOnly="false" timeZone="#{customerLoginProcessesComponent.timeZone}" required="true" requiredMessage="Please select a end date to schedule" />
+
+                            <p:panel style="border: none !important;background: transparent" ><h:outputText value="Call Type:" /><font color="red">*</font></p:panel>
+                            <p:selectOneMenu id="cl_type_id" value="#{customerComponent.callType}" required="true" label="Call Type" requiredMessage="Please Select Call Type" >
+                                <f:selectItem itemLabel="Select One" itemValue=""/>
+                                <f:selectItem itemLabel="Video" itemValue="Video"/>
+                                <f:selectItem itemLabel="Audio" itemValue="Audio"/>
+                                <f:selectItem itemLabel="Chat" itemValue="Chat"/>
+                                <p:ajax event="change"  listener="#{customerComponent.checkErrors()}" immediate="true"   partialSubmit="true"  async="true" update="@this" />
+                            </p:selectOneMenu>
+                            <p:panel style="border: none !important;background: transparent" ><h:outputText value="Product:" /><font color="red">*</font></p:panel>
+                            <p:selectOneMenu id="service_call_id"  value="#{customerComponent.selectedServiceName}" required="true" requiredMessage="Please Select Product"  label="Product">
+                                <f:selectItem itemLabel="Select One" itemValue="" />
+                                <f:selectItems value="#{customerComponent.loadServiceMstForExistingCust()}" var="ser" itemLabel="#{ser.serviceName}" itemValue="#{ser.id}" />
+                            </p:selectOneMenu>
+                            <p:commandButton id="thanksSchedule" value="Schedule Now" action="#{customerComponent.makeScheduleCallFromWeb(request)}" onclick="showLoaderSpinner();" oncomplete="hideLoaderSpinner();" style="margin-left: 10px;" ajax="true" icon="ui-icon-check" update=":confirmscheduleform :mainForm" /> 
+                            <p:commandButton  immediate="true" id="ignoreSchedule" value="Cancel" actionListener="#{customerComponent.doScheduleCancel()}" ajax="true" style=" margin-left: 5px;" onclick="PF('doScheduleDialog').hide();"  icon="ui-icon-cancel" tabindex="2" /> 
+                            <p:commandButton id="viewScheduleCalenderId" value="View RM availability" action="#{customerComponent.viewScheduleCallRM(request)}" style="margin-left: 5px;" ajax="true" immediate="true" async="false" icon="ui-icon-calendar" update=":mform" />
+                            <p:panel style="border: none !important;background: transparent" ><font color="red"><h:outputText value="#{customerComponent.serviceTimeText}" /></font></p:panel>
+                        </h:panelGrid>
+                    </p:panel>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog  id="confirmschedule"  widgetVar="confirmscheduleDlg"  onShow="hideConfirm();" resizable="false" closable="false" width="25%"  header=" Notification" modal="true" appendTo="@(body)" >
+                <h:form id="confirmscheduleform" style="overflow:hidden;">
+                    <center>
+                        <br/>
+                        <h:outputText value="#{customerComponent.scheduleText}" />
+                        <br/><br/>
+                    </center>
+                </h:form>
+            </p:dialog> 
+
+            <p:dialog  id="confirmschedule2"  widgetVar="confirmscheduleDlg2"  onShow="hideConfirm2();" onHide="PF('doScheduleDialog').show();" resizable="false" closable="false" width="25%"  header=" Notification" modal="true" appendTo="@(body)" >
+                <h:form id="confirmscheduleform2" style="overflow:hidden;">
+                    <center>
+                        <br/><br/>
+                        <h:outputText value="#{customerComponent.scheduleText}" />
+                        <br/><br/>
+                        <p:commandButton value="Ok" onclick="PF('confirmscheduleDlg2').hide();PF('doScheduleDialog').show();"/>
+                    </center>
+                </h:form>
+            </p:dialog> 
+
+            <p:dialog  id="downtimedialogid" widgetVar="downtimeDlg"   resizable="false" closable="false" width="25%"  header="DOWNTIME" modal="true" appendTo="@(body)" >
+                <h:form id="downtimedialogidform" style="overflow:hidden;">
+                    <center>
+                        <br/><br/>
+                        <h:outputText value="#{customerComponent.downMessage}" style="color: red;font-size: large;font-weight: bold;"/>
+                        <br/><br/><br/>
+                        <p:commandButton value="Ok" onclick="PF('downtimeDlg').hide();hideSpinner();"/>
+                    </center>
+                </h:form>
+            </p:dialog> 
+
+                    
+            <p:dialog style="display: none"  id="snapshotDia" widgetVar="snapshotvar" resizable="false" modal="true" appendTo="@(body)" closable="true"  header="Snapshot" onHide="clearPic();" position="center">
+                <center>
+                    <div id="form_snapshot_div">
+                    </div>
+                    <h:form id="snapForm" prependId="false" style="overflow: hidden;">
+                        <p:panel style="background: transparent;border: none;">
+                            
+                            <p:panelGrid columns="1" style="background: transparent;border: none;" styleClass="noBorders" >
+                                <p:commandButton id="previewDownload" onclick="PF('snapshotvar').hide();" value="Preview" ajax="true"  style="width:95px;"  /> 
+                            </p:panelGrid>
+                          
+                        </p:panel>
+                     </h:form>
+                    
+                </center>
+            </p:dialog>
+            
+            <p:dialog style="display: none" id="notAllowedSnapshotDia" widgetVar="notAllowedSnapshotvar" resizable="false" modal="true" appendTo="@(body)" closable="true"  header="Snapshot" onHide="clearPic();" position="center">
+                <h:form id="notAllowedSnapForm" prependId="false" style="overflow: hidden;padding: 10px">
+                <center>
+                        <br/>
+                        <h:outputText value="VideoFeed For SnapShot Not Available" />
+                        <br/><br/>
+                        <p:commandButton ajax="true"  value="OK" style="margin-left: 5px;"  onclick="PF('notAllowedSnapshotvar').hide();"  />
+                    </center>
+               </h:form>
+            </p:dialog>
+            
+            <p:dialog id="previewSnapshotDia" widgetVar="previewSnapshotvar" resizable="false" modal="true" appendTo="@(body)" closable="true" header="Snapshot" onHide="clearPic();" position="center">
+                <center>   
+                    <div id="preview_form_snapshot_div"> <img id="cropped_preview"></img></div>
+                    <h:form id="previewSnapForm" prependId="false" style="overflow: hidden;padding:10px;">
+                        <p:panel style="background: transparent;border: none;" >
+                            <p:inputText id="scanval" value="#{customerComponent.binaryImage}" style="display:none" />
+                            <a id="download1"  onclick="PF('previewSnapshotvar').hide();" style="cursor: pointer;padding: 5px;border: 1px solid;box-shadow: 1px 1px 1px 1px;border-radius: 5px">Download as JPG</a>
+                            <a id="download"  onclick="PF('previewSnapshotvar').hide();" style="cursor: pointer; margin-left: 12px;padding: 5px;border: 1px solid;box-shadow: 1px 1px 1px 1px;border-radius: 5px">Self Image Upload</a>
+                            <p:commandButton id="captureImgBtn"  actionListener="#{customerComponent.handleSaveFromSnap()}" style="display:none" />
+                        </p:panel>
+                      </h:form>
+                </center>
+            </p:dialog>
+
+            <p:dialog id="exitdialigid" widgetVar="exitDialog" width="auto" header="Logged out" style=" max-height: 640px;overflow: hidden; border: none; " closable="false"  minimizable="false"  maximizable="false" resizable="false" draggable="false" position="center" modal="true" appendTo="@(body)" >
+                <center>
+                    <h:form id="exitDialogFormId" prependId="false">
+                        <p:panel style="background: transparent;border: none;">
+                            <p>&nbsp;</p>
+                            <span style="color: red;"><h5>You are logged in from elsewhere.</h5></span>
+                            <p>&nbsp;</p>
+                            <br></br>
+                            <p:commandButton value="OK" action="#{customerLoginProcessesComponent.customerLogoutFromOtherDeviceAuto()}" onclick="PF('exitDialog').hide();"/>
+                        </p:panel>
+                    </h:form>
+                </center>
+            </p:dialog>
+
+            <p:dialog id="receiveSchDiag" widgetVar="receiveSchVar" width="auto" style=" max-height: 640px;overflow: hidden; border: none;" closable="false"  minimizable="false"  maximizable="false" resizable="false" draggable="false" position="center" >
+                <center>
+                    <h:form id="receiveSchForm" prependId="false">
+                        <p:panel style="background: transparent;border: none;">
+                            <p>&nbsp;</p>
+                            <span style="font-style: italic;color: red;"><h4>#{videoCallComponent.agentName} is Waiting for your response. Please Join....</h4>
+                                <p:commandButton icon="ui-icon-arrow-2-e-w" id="joinSchCall" value="OK" ajax="true" style="visibility:visible; width:90px; margin-left: 10px;" onclick="stopAudio();PF('receiveSchVar').hide();"  immediate="true"  />
+                            </span>
+                        </p:panel>
+                    </h:form>
+                </center>
+            </p:dialog>
+
+            <p:dialog id="doCancelDia" header="Cancel" widgetVar="doCancelDialog"  style="max-height: 640px;overflow: auto;border: none; margin-top: -14px;" closable="false"  minimizable="false"  maximizable="false" resizable="false" draggable="false" position="center"   >
+                <center>
+                    <h:form id="cancelForm" prependId="false">
+                        <p:panel style="background: transparent;border: none;">
+                            <h3 style="color: red;" >Sorry!.. All Agents are Busy. Please try after sometime.</h3>
+                            <p>&nbsp;</p>
+                            <p>
+                                <p:commandButton icon="ui-icon-cancel" id="cancelButn" value="OK " actionListener="#{videoCallComponent.cancelCall(request)}" ajax="false" style="width:95px; margin-left: 10px;" onclick="hideSpinner();removeOtp();PF('doCancelDialog').hide()" immediate="true" update=":burgeInForm" /> 
+                            </p>
+                        </p:panel>
+                    </h:form>
+                </center>
+            </p:dialog>
+
+            <p:dialog id="agentmiss" header="Notification" widgetVar="missagent"  style="max-height: 640px;overflow: auto;border: none;" closable="false"  minimizable="false"  maximizable="false" resizable="false" draggable="false" position="center" onShow="clearDialTime();"  >
+                <center>
+                    <h:form id="missform" prependId="false" style="overflow: hidden;">
+                        <p:panel style="background: transparent;border: none;">
+                            You missed a Service Agent call
+                            <p></p>
+
+                            <p>
+                                <p:commandButton  id="missok" value="OK " ajax="false" style="width:95px;" onclick="PF('missagent').hide();"  /> 
+                            </p>
+                        </p:panel>
+                    </h:form>
+                </center>
+            </p:dialog>
+
+            <p:dialog id="scmiss" header="Notification" widgetVar="scheduleMiss" width="25%" style="max-height: 640px;overflow: auto;border: none; " closable="false"  minimizable="false"  maximizable="false" resizable="false" draggable="false" position="center"   >
+                <center>
+                    <h:form id="scmissform" prependId="false" style="overflow: hidden;">
+                        <p:panel style="background: transparent;border: none;">
+                            You have missed a schedule call
+                            <p></p>
+                            <p>
+                                <p:commandButton  id="missoksc" value="OK " ajax="false" style="width:95px;"  onclick="PF('scheduleMiss').hide();"  /> 
+                            </p>
+                        </p:panel>
+                    </h:form>
+                </center>
+            </p:dialog>
+
+            <p:dialog id="sccallwait" header="Notification" widgetVar="waiting" width="25%" style="max-height: 640px;overflow: auto;border: none; margin-top: -14px;" closable="false"  minimizable="false"  maximizable="false" resizable="false" draggable="false" position="center"   >
+                <center>
+                    <h:form id="scagentwaitform" prependId="false" style="overflow: hidden;">
+                        <p:panel style="background: transparent;border: none;">
+                            Waiting for Schedule Agent to join..... 
+                            <p></p>
+                        </p:panel>
+                    </h:form>
+                </center>
+            </p:dialog>
+
+            <p:dialog  id="accOpendia" widgetVar="accOpenWar" resizable="false" width="20%"  header=" Notification" modal="true" appendTo="@(body)" >
+                <h:form id="accopenform" style="overflow:hidden;">
+                    <center>
+                        <br/>
+                        <h:outputText value="Your Account has been verified Successfully." />
+                        <br/><br/>
+                    </center>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog  id="loanAppdia" widgetVar="loanAppWar" resizable="false" width="20%"  header=" Notification" modal="true" appendTo="@(body)" >
+                <h:form id="loanappform" style="overflow:hidden;">
+                    <center>
+                        <br/>
+                        <h:outputText value="Your Loan has been Approved Successfully." />
+                        <br/><br/>
+                    </center>
+                </h:form>
+            </p:dialog>
+
+            <h:form id="fileDownloadForm" prependId="false" style="display:none">
+                <p:inputText id="filePathName" value="#{customerComponent.uploadedFilePath}" label="File Path Name" />
+                <p:inputText id="fileName" value="#{customerComponent.fileName}" label="File Name" />
+                <p:commandButton id="fileReceive" value="download" action="#{customerComponent.updateLink()}" />
+            </h:form>
+
+            <h:form id="burgeInForm" prependId="false" style="margin-bottom: 5px;" >
+                <p:menuButton id="custMenu" value="" styleClass="custmenu">
+                    <p:menuitem id="backBtnMenu" value="End Call" onclick="disconnectCall();" immediate="true" partialSubmit="false" rendered="#{!customerComponent.diasableEndCallButton}" actionListener="#{customerComponent.refreshWhenCallEnds(request)}" update=":holdmsg :burgeInForm" oncomplete="endConferenceOperation();" style="display:none"/>
+                    <p:menuitem value="Upload File" ajax="true" onclick="$('#spinner').show();" actionListener="#{customerComponent.searchParticipant(request)}" immediate="true" partialSubmit="false" rendered="#{!customerComponent.disableUploadFileButton}" style="display: none"/>
+                    <p:menuitem value="Call" ajax="true"  oncomplete="PF('rmcallDlgWid').show();" action="#{customerComponent.refreshOperations()}" rendered="#{!customerComponent.disableCallButton}" update=":directOrScheduleCallFormId :serviceDialogFormId"/>
+                    <p:menuitem value="Calendar" ajax="true" action="#{customerComponent.viewScheduleCallCustomer(request)}" rendered="#{customerComponent.diasableEndCallButton}"/>
+                    <p:menuitem value="Forms" ajax="true"  onclick="PF('accountDlgWid').show();" rendered="#{!customerComponent.diasableEndCallButton}" style="display:none"/> 
+                    <p:separator />
+                    <p:menuitem value="Logout" action="#{customerLoginProcessesComponent.customerLogout(request)}" ajax="true" immediate="true" rendered="#{customerComponent.diasableEndCallButton}" />
+                </p:menuButton>
+
+                <p:commandButton id="backBtncall" value="End Call"  style="margin-left: 8px;border-radius: 18px;border: 1px solid;box-shadow: inset 0 0 10px;display:none" onclick="disconnectCall();" immediate="true" partialSubmit="false" rendered="#{!customerComponent.diasableEndCallButton}" actionListener="#{customerComponent.refreshWhenCallEnds(request)}"  oncomplete="endConferenceOperation();" update=":holdmsg :burgeInForm"  /> 
+                <p:commandButton id="fileUploadBtn" value="Upload File" ajax="true"  style="margin-left:8px;border-radius: 18px;border: 1px solid;box-shadow: inset 0 0 10px;display:none" onclick="$('#spinner').show();" actionListener="#{customerComponent.searchParticipant(request)}" immediate="true" partialSubmit="false" rendered="#{!customerComponent.disableUploadFileButton}"/>
+                <p:commandButton id="makeVidyocall" value="Call" ajax="true"  style="margin-left:4px;border-radius: 18px;border: 1px solid;box-shadow: inset 0 0 10px"  oncomplete="PF('rmcallDlgWid').show();" action="#{customerComponent.refreshOperations()}" rendered="#{!customerComponent.disableCallButton}" update=":directOrScheduleCallFormId :serviceDialogFormId" />
+                <p:commandButton id="scheduleDtl" value="Calendar" ajax="true" style="margin-left:8px;border-radius: 18px;border: 1px solid;box-shadow: inset 0 0 10px;white-space: nowrap;" action="#{customerComponent.viewScheduleCallCustomer(request)}" rendered="#{customerComponent.diasableEndCallButton}"/>
+                <p:commandButton id="accountOpenId" value="Forms" ajax="true"  style="margin-left:10px;border-radius: 18px;border: 1px solid;box-shadow: inset 0 0 10px;display:none"  onclick="PF('accountDlgWid').show();" rendered="#{!customerComponent.diasableEndCallButton}" /> 
+                <p:commandButton id="logout" value="Logout" action="#{customerLoginProcessesComponent.customerLogout(request)}" ajax="true" immediate="true" rendered="#{customerComponent.diasableEndCallButton}" style="margin-left:10px;border-radius: 18px;border: 1px solid;box-shadow: inset 0 0 10px"  />
+          
+                <p:commandButton id="backBtn" value="End Call"  style="display:none" onclick="disconnectCall();" immediate="true" partialSubmit="false"  actionListener="#{customerComponent.refreshWhenCallEnds(request)}"  oncomplete="endConferenceOperation();" update=":holdmsg :burgeInForm" /> 
+                <p:commandButton id="restoreVideoBtn" value="Restore Video" ajax="true" style="display:none" onclick="restoreVideoConfrnce();"  immediate="true"  />
+                <p:commandButton id="restoreVideoBtn1" value="video pause" ajax="true" style="display:none" onclick="hideSpinner();"  immediate="true"  /> 
+                <p:commandButton id="showSpinnerbutn" value="show spinnere" ajax="true" style="display:none" onclick="showSpinner();"  immediate="true"  /> 
+                <p:commandButton id="scheduleCallByCustomerId" ajax="true" action="#{customerComponent.scheduleCallCallDataFromCustomer(request)}" style="display:none"/>
+                
+                <p:poll interval="3" listener="#{callStartedComponent.checkSessionCallMstForCustomer(request)}" />
+                <p:poll interval="5" listener="#{customerLoginProcessesComponent.checkCustomerLoggedInWithOtherDevice(request)}" />
+               
+                <h:inputHidden id="roomurlTextId" value="#{customerComponent.roomUrl}"/>
+                <h:inputHidden id="custNametextId" value="#{customerComponent.custName}"/>
+
+                <p:commandButton id="holdBtn" action="#{customerComponent.executeHold(request)}" style="display:none;" update=":imgIworksForm"/>
+                <p:commandButton id="unholdBtn" action="#{customerComponent.executeUnhold(request)}" style="display:none;" />
+                <p:commandButton id="agentFoundClickOk" value="OK" onclick="clearDialTime();clearReceiveCheckRegistered();hideSpinner();PF('initialCallCancelDlg').hide();disableCancelDia();" style="display:none" actionListener="#{customerComponent.refreshWhenCallStarts()}"  ajax="true" update=":burgeInForm :imgIworksForm"/>
+                <p:commandButton id="doAutoLogout" value="OK" style="display:none"  action="#{customerLoginProcessesComponent.customerLogoutFromOtherDeviceAuto()}"  ajax="true"/>
+                <p:commandButton id="endBtn" value="End Call"  style="display:none" immediate="true" partialSubmit="false" actionListener="#{customerComponent.refreshWhenCallEnds1(request)}"  update=":imgIworksForm" /> 
+                <p:commandButton id="logout1" value="Logout" action="#{customerLoginProcessesComponent.customerForceLogout(request)}"   ajax="true" immediate="true" disabled="#{!customerComponent.diasableEndCallButton}" style="display:none;"  />
+                <p:commandButton id="logout2" value="Logout1" action="#{customerLoginProcessesComponent.customerForceLogoutWhenAnotherUserLoggedIn(request)}" ajax="true" immediate="true"  style="display:none;" update=":burgeInForm"  />
+                <p:commandButton id="accopen" value="Account Open" style="display:none" onclick="PF('accOpenWar').show();" />
+                <p:commandButton id="loanapp" value="Account Open" style="display:none" onclick="PF('loanAppWar').show();" />
+                <p:commandButton value="missschedule"  ajax="true"  onclick="PF('scheduledCallDlg').hide();" actionListener="#{customerComponent.missedScheduledCall(request)}" style="display:none;" update=":burgeInForm" />
+                <p:commandButton value="enableCustometForTakeCall"  id="enableCustometForTakeCall" ajax="true"  actionListener="#{customerComponent.enableCustometForTakeCall(request)}" style="display:none;" />
+            </h:form>
+
+            <p:dialog  id="showSendLinkId" widgetVar="showSendLinkWidId" resizable="false" responsive="true" closable="true" width="30%"  header="Send Link To Guest" modal="true" appendTo="@(body)" >
+                <h:form id="showSendLinkFormId" prependId="false" style="overflow:hidden">
+                    <center>
+                        <br></br>
+                        <p:panelGrid columns="2" style="background: transparent;border: none;margin-bottom: 10px;" styleClass="noBorders">
+                            <p:panel style="border: none !important;margin-left: -13px;"><h:outputText value="Email:" /><font color='red'>*</font></p:panel>
+                            <p:inputText id="guest_email" value="#{customerComponent.guestEmail}" validatorMessage="Email: Validation Error:Invalid email format"  requiredMessage="Email Id Required" required="true" maxlength="50" style="width: 220px;">
+                                <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$"/>
+                                <p:ajax event="blur" listener="#{customerComponent.checkErrors()}" immediate="true" partialSubmit="false" async="true" update="@this" />
+                            </p:inputText>
+                        </p:panelGrid>
+                        <br></br>
+                        <p:commandButton ajax="true" value="Send" action="#{customerComponent.sendMultiWayCallEmailToGuest()}" onclick="PF('showSendLinkWidId').hide();
+                                showLoaderSpinner();" oncomplete="hideLoaderSpinner();" style="margin-right: 20px"/>
+                        <p:commandButton ajax="true" value="Close"  onclick="PF('showSendLinkWidId').hide();
+                                hideLoaderSpinner();"/>
+                    </center>
+                </h:form>
+            </p:dialog> 
+
+            <p:dialog  id="fileuploadsuccessDia" widgetVar="fileuploadsuccess" responsive="true" resizable="false" closable="true"  header="Notification" modal="true" appendTo="@(body)" style="max-width: 95%;" >
+                <center>
+                    <br/><br/>
+                    <h:outputText id="fText" style="font-weight: bold;padding: 10px;" value="File sent successfully" />
+                    <br/><br/><br/>
+                </center>
+            </p:dialog>
+
+            <p:dialog id="fileUploadDlgId" widgetVar="fileuploadvar" resizable="false" width="500" responsive="true" closable="true" header="Document Sending..." modal="true" appendTo="@(body)" onShow="$('#spinner').hide()" onHide="document.getElementById('doRefresh').click();" position="20,center" style="max-width: 95%">
+                <h:form id="fileUploadVarForm" prependId="false" style="overflow:hidden;">
+                    <p:panel id="fileTitlePanel" rendered="#{!customerComponent.fileCaptionRenderer}" style="margin-top:13%;margin-bottom:13%;font-size: small">
+                        <p:panelGrid columns="3" styleClass="noBorders" >                                
+                            <h:outputLabel value="Document Title:" style="white-space: nowrap"/>
+                            <p:inputTextarea id="fileCaption" autoResize="false" value="#{customerComponent.docTitle}" placeholder="Document Title" required="true" label="Title" requiredMessage="Please enter document title" onchange="this.value = this.value.trim()" maxlength="120">
+                            </p:inputTextarea>       
+                            <p:commandButton value="Next" actionListener="#{customerComponent.setFileTitle(request)}" style="margin-left: 5px;" update=":fileUploadVarForm"/>                                
+                        </p:panelGrid>     
+                        <p:message for="fileCaption" id="messageFor" redisplay="false"/>
+                    </p:panel>
+
+                    <p:commandButton id="doRefresh" immediate="true" value="OK" style="display:none"  action="#{customerComponent.resetbuttons()}" ajax="true" update=":fileUploadVarForm"/>
+
+                    <p:panel id="fileUploadPanel" rendered="#{customerComponent.fileCaptionRenderer}">
+                        <p:panelGrid columns="1" columnClasses="ui-grid-col-12" layout="grid" style="margin-top: 10px;">
+                            <p:fileUpload id="fileuploadbutton" widgetVar="" fileUploadListener="#{customerComponent.fileUploadListener}" mode="advanced" dragDropSupport="false" multiple="false" fileLimit="1" fileLimitMessage="You can send only one file at a time" update="@this fileUploadMessages :burgeInForm" sizeLimit="20000000" allowTypes="/(\.|\/)(gif|jpg|jpeg|png|bmp|tiff|webp|rif|exif|txt|docx|doc|xls|xlsx|rtf|pdf|ppt|pptx)$/"  />
+                            <p:growl id="fileUploadMessages" showDetail="true" />
+                        </p:panelGrid>
+                        <p:panel id="imagePanel" rendered="#{customerComponent.multipleParticipant}">
+                            <p:dataTable id="imagePanelT" style="white-space: nowrap" var="callDtls" value="#{customerComponent.conferenceAgentsDtoListForParticipantCallDtls}" rows="5" paginator="true"  paginatorPosition="bottom"  selection="#{customerComponent.conferenceAgentsDtoListForParticipantCallDtlsSelection}" rowKey="#{callDtls.empId}" rowIndexVar="rfindex"  >                        
+                                <f:facet name="header">
+                                    Select Participants
+                                </f:facet>
+                                <p:ajax event="toggleSelect" update="@this"/>
+                                <p:ajax event="rowSelectCheckbox"  update="@this"></p:ajax>
+                                <p:ajax event="rowUnselectCheckbox" update="@this"></p:ajax>
+                                <p:column selectionMode="multiple" style="width:10%" />
+                                <p:column headerText="Name" sortBy="#{callDtls.empFirstName}" >
+                                    <h:outputText value="#{callDtls.empFirstName} #{callDtls.empMidName} #{callDtls.empLastName}"/>
+                                </p:column>
+                                <p:column headerText="Description">
+                                    <h:outputText value="#{callDtls.empTypeName}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </p:panel>
+                        <p:message for="fileuploadbutton" id="messageUp" redisplay="false"/>
+                    </p:panel>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog  id="agenthangs" widgetVar="agenthangup" resizable="false" responsive="true" closable="false" header=" Notification" modal="true" appendTo="@(body)" onShow="restoreVideoConfrnce();"  style="max-width: 98%" >
+                <h:form id="agenthangid" style="overflow:hidden;">
+                    <center>
+                        <br/>
+                        <h:outputText value="Your Call Ended" style="padding: 10px"/>
+                        <br/><br/>
+                    </center>
+                </h:form>
+            </p:dialog> 
+
+            <p:dialog  id="agentNotrec" widgetVar="agentNotReceived" resizable="false" responsive="true" closable="false" header=" Notification" modal="true" appendTo="@(body)" onShow="clearReceiveCheckRegistered();clearDialTime();"  style="max-width: 98%">
+                <h:form id="agentrecid" style="overflow:hidden;">
+                    <center>
+                        <br/>
+                        <h:outputText value="Sorry! Agent did not receive the call" style="padding: 10px" />
+                        <br/><br/>
+                    </center>
+                </h:form>
+            </p:dialog> 
+
+            <p:dialog  id="another" widgetVar="antotherLoggedIn" resizable="false" responsive="true" closable="false"  header=" Notification" modal="true" appendTo="@(body)" style="max-width: 98%">
+                <h:form id="anotherForm" style="overflow:hidden;">
+                    <center>
+                        <br/>
+                        <h:outputText value="Another Customer Logged in with same Credentials" style="padding: 10px" />
+                        <br/><br/>
+                    </center>
+                </h:form>
+            </p:dialog> 
+
+            <p:dialog id="scheduledCallDialogId"  widgetVar="scheduledCallDlg" responsive="true" resizable="false" closable="false"  header="Notification" style="overflow: hidden;height: 90px !important;max-width: 98%" onShow="showSpinner();playAudio();scheduleCallReceiveCheck();clearDialTime();" onHide="hideSpinner();stopAudio();">
+                <h:form style="overflow:hidden; height:90px">
+                    <center>
+                        <p:panel style="background: transparent;border: none;">
+                            <h5 style="color: red;" >Schedule call from Service Agent.</h5>
+                            <p:spacer/><br/>
+                            <p:panelGrid columns="2" style="background: transparent;border: none;" styleClass="noBorders"  >
+                                <p:commandButton id="schedulecall" value="Accept" onclick="PF('scheduledCallDlg').hide();disableCancelDia();clearScheduleCallReceiveCheck();" actionListener="#{customerComponent.refreshWhenCallStarts()}" oncomplete="joinConferenceOperationSchedule();"   ajax="true"  update=":imgIworksForm"/>
+                                <p:commandButton   value="Reject"  ajax="true"  onclick="PF('scheduledCallDlg').hide();clearScheduleCallReceiveCheck();" actionListener="#{customerComponent.rejectScheduledCall(request)}" />
+                            </p:panelGrid>
+                        </p:panel>
+                    </center>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog  id="joinretry" widgetVar="retryjoin" resizable="false" closable="true" responsive="true"  header="Try again"  style="max-width: 98%" >
+                <h:form id="customerretryform" style="overflow:hidden;">
+                    <center>
+                        <br></br>
+                        <h:outputText id="dialjointext" value="Conference join failed " /><br></br><br></br>
+                        <p:commandButton ajax="true"   value="Retry" style="margin-left: 5px;"  onclick="joinConferenceOperation();" />
+                        <p:commandButton ajax="true" value="Cancel" style="margin-left: 5px;"  onclick="PF('retryjoin').hide();document.getElementById('backBtn').click();" />
+                    </center>
+                </h:form>
+            </p:dialog>
+
+            <!-- service Panel Starts -->
+            <p:dialog id="serviceDialogId" responsive="true" header="Product" widgetVar="serviceDialog" style="overflow: auto;max-width: 98%" closable="false"  minimizable="false"  maximizable="false" resizable="false" position="center"   >
+                <h:form id="serviceDialogFormId" prependId="false" style="overflow:hidden;">
+                    <center>
+                        <p:panel style="background: transparent;border: none;">
+                            <p:panelGrid columns="2" style="background: transparent;border: none;margin-bottom: 10px;" styleClass="noBorders"  >
+                                <h:outputText value="What Product Are You Looking for?" style="font-weight: bold;"/>
+                                <p:selectOneMenu id="service"  value="#{customerComponent.selectedServiceName}" required="true" requiredMessage="Please Select Product"  label="Product">
+                                    <f:selectItem itemLabel="Select One" itemValue="" />
+                                    <f:selectItems value="#{customerComponent.loadServiceMstForExistingCust()}" var="ser" itemLabel="#{ser.serviceName}" itemValue="#{ser.id}" />
+                                </p:selectOneMenu>
+                                <h:outputText value="Select Mode of Communication ?" style="font-weight: bold;"/>
+                                <p:selectOneRadio id="calltype"  value="#{customerComponent.callType}" layout="grid"  columns="3" required="true" requiredMessage="Please Select Call Type"  label="Call Type"  >
+                                   <f:selectItem itemLabel="Video" itemValue="video" />
+                                   <f:selectItem itemLabel="Audio" itemValue="audio" />
+                                   <f:selectItem itemLabel="Chat" itemValue="chat" />
+                               </p:selectOneRadio>
+                            </p:panelGrid>
+                        </p:panel>
+                        <p:commandButton id="serviceSeleciInitiate" value="Connect" ajax="true"  style="margin-bottom: 5px" actionListener="#{customerComponent.submitCatagory()}"   update=":burgeInForm:roomurlTextId :burgeInForm:custNametextId :exitSysForm :vidyowebrtcform :downtimedialogidform :initialCallCancelDlgformidRM :initialCallCancelDlgformid"  /> 
+                        <p:commandButton id="serviceSelectBtnId" value="Connect" ajax="true"  style="display:none" actionListener="#{customerComponent.afterSelectingCategory(request)}"   update=":burgeInForm:roomurlTextId :burgeInForm:custNametextId :exitSysForm :vidyowebrtcform :downtimedialogidform :initialCallCancelDlgformidRM :initialCallCancelDlgformid"   /> 
+                        <p:commandButton id="ignoreService" type="reset" value="Cancel" onclick="PF('serviceDialog').hide();" ajax="true"  style="width:95px;margin-left: 10px;"  /> <br/><br/>
+                    </center>
+                </h:form>
+            </p:dialog>
+            <!-- service Panel Ends -->
+
+            <!-- direct Or Schedule Call Panel Starts -->
+            <p:dialog id="directOrScheduleCall" header="Call Option" responsive="true" widgetVar="directOrScheduleCallWid" style="overflow: auto;max-width: 98%" closable="false"  minimizable="false"  maximizable="false" resizable="false" position="center" >
+                <h:form id="directOrScheduleCallFormId" prependId="false" style="overflow:hidden;">
+                    <center>
+                       <p:panelGrid columns="1" style="background: transparent;border: none;margin-bottom: 5px; margin-top: 5px" styleClass="noBorders"  >
+                                 <h:selectOneRadio id="call_type_id"  value="#{customerComponent.selectedCallType}" layout="grid" valueChangeListener="#{customerComponent.onSelectCallType}" onclick="callTypeAssign(this.value);" required="true" requiredMessage="Please Select Call Type"  label="Call Type" class="cleck_call_type" >
+                                        <f:selectItem itemValue = "1" itemLabel = "Call Now"  /> 
+                                        <f:selectItem itemValue = "2" itemLabel = "Schedule an Appointment" />
+                                </h:selectOneRadio>
+                       </p:panelGrid>
+                        <p:commandButton id="callTypeSelectBtnId" value="Next" ajax="true"  style="width:95px;margin-bottom: 5px" actionListener="#{customerComponent.afterSelectingCallType(request)}" oncomplete="checkCallType();"  update=":serviceDialogFormId :schedulingForm"  /> 
+                        <p:commandButton id="ignoreCallTypeId" type="reset" value="Cancel" actionListener="#{customerComponent.onReturnDashBoard()}" onclick="PF('directOrScheduleCallWid').hide();" ajax="true"  style="width:95px;margin-left: 10px;"  /> 
+                    </center>
+                    <br/>
+                </h:form>
+            </p:dialog>
+            <!-- direct Or Schedule Call Panel Ends -->
+
+            <!-- 'Route to Agent On Schedule Call if RM Unavailable' panel -->
+            <p:dialog id="routeToAgentOnScheduleId" header="Information" responsive="true" widgetVar="routeToAgentOnScheduleWidget" style="overflow: auto;max-width: 98%" closable="false"  minimizable="false"  maximizable="false" resizable="false" position="center" >
+                <h:form id="routeToAgentOnScheduleFormId" prependId="false" style="overflow:hidden;">
+                    <center>
+                        <p:panelGrid columns="1" style="background: transparent;border: none;margin-bottom: 5px; margin-top: 5px" styleClass="noBorders"  >
+                            <h:outputText value="Relationship Manager currently Unavailable! Do you want to call an Agent?" />
+                        </p:panelGrid>
+                        <p:commandButton id="routeToAgentId" value="Yes" ajax="true"  style="width:95px;margin-bottom: 5px" actionListener="#{customerComponent.afterRoutingToAgentInScheduleCall(request)}" onclick="routeToAgentOnSchedule();"  update=":burgeInForm:roomurlTextId :burgeInForm:custNametextId :exitSysForm :vidyowebrtcform :downtimedialogidform :initialCallCancelDlgformid"  /> 
+                        <p:commandButton id="cancelRoutingToAgentId" value="No" onclick="PF('routeToAgentOnScheduleWidget').hide();" ajax="true"  style="width:95px;margin-left: 10px;"  /> 
+                    </center>
+                </h:form>
+            </p:dialog>
+
+            <!-- Feedback panel -->
+            <p:dialog id="feedbackDia" header="Please give your feedback" widgetVar="feedbackdialog" closable="false" closeOnEscape="false" draggable="true" resizable="false"  width="auto"  appendTo="@(body)" modal="true" position="center" onShow="PF('agenthangup').hide();PF('fileuploadvar').hide();restoreVideoConfrnce();document.getElementById('incallcontainer').style.display = 'none';removeObjectTag();setIcons();"  style="max-width: 768px;"  >
+                <h:form id="feedbackIdForm" prependId="false" style="overflow: hidden;">
+                    <p:growl id="messages" showDetail="false" />
+                    <div style="width:100%">
+                        <div id="messageDiv" style="width:36%;float:left;">
+                            <div id="messageHeading" style="background: linear-gradient(to right, #130066 , #2633);padding: 40px;">
+                                <table style="border:none;">
+                                    <tr>
+                                        <td><img src="#{request.contextPath}/resources/images/feedback.png"  alt="" title=""/></td>
+                                        <td style="color:#fff;font-size: x-large;padding-left: 20px;">Customer Feedback</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div id="messageContent" style="padding: 25px;">
+                                <h:outputText value="Dear Customer," style="font-weight: bold;" /><br/>
+					
+                                <h:outputText value="Thank you for using our Service channel." style="color:#848484;line-height: 1.5;" />
+                                <br/> <br/>
+                                <h:outputText value="Please spare a moment to tell us about your experience on this platform." style="color:#848484;line-height: 1.5;"/>
+									
+				<h:outputText value="Your feedback is very important to us." style="color:#848484;line-height: 1.5;"/>
+                            </div>            
+                         </div>    
+                          <div id="ratingDiv" style="float:right;background: #fff;padding: 40px; width: 53%;">
+                             <div style="width:100%">
+                                  <div style="float:left;width:100%;">
+                                    <table style="border: none;">
+                                        <tr>
+                                            <td style="vertical-align: top;padding-right: 10px;">
+                                               <h:outputText value="1." style="color:#848484;line-height: 1.5;" />
+                                             </td>
+                                            <td>
+                                               <h:outputText value="#{customerComponent.qualityQuery}" style="color:#5d5d5d;line-height: 1.5;"/><font color="red">*</font>
+                                             </td>
+                                        </tr>
+                                    </table>
+                                  </div>
+                                  <div style="float:left">
+                                        <table style="border: none;">
+                                            <tr>       
+                                              <td style="padding-left: 25px">
+                                                  <p:rating id="custrating" value="#{customerComponent.quality}" stars="5" cancel="false"  required="true" requiredMessage="Please rate first question"/>
+                                             </td>
+                                            </tr> 
+                                     </table>
+                                  </div>
+                                 <table style="border: none;width:100%;">
+                                     <tr>
+                                         <td>
+                                            <div style="background: #f0f0f0;height:3px;margin-top:10px;margin-bottom: 10px; "></div>
+                                         </td>
+                                     </tr>
+                                 </table>   
+                               </div>
+                              
+                              <div style="width:100%">
+                                   <div style="float:left;width:100%;">
+                                    <table style="border: none;">
+                                     <tr>
+                                        <td style="vertical-align: top;padding-right: 10px;">
+                                           <h:outputText value="2." style="color:#5d5d5d;line-height: 1.5;"/>
+                                         </td>
+                                        <td>
+                                           <h:outputText value="#{customerComponent.abilityQuery}" style="color:#848484;line-height: 1.5;"/><font color="red">*</font>
+                                        </td>
+                                     </tr>
+                                    </table>
+                                  </div>
+                                   <div style="float:left">
+                                        <table style="border: none;">
+                                            <tr>
+                                                 <td style="padding-left: 25px">
+                                                    <p:rating value="#{customerComponent.ability}" stars="5" cancel="false" required="true" requiredMessage="Please rate second question"/>
+                                                </td>
+                                            </tr> 
+                                        </table>
+                                   </div>
+                                   <table style="border: none;width:100%;">
+                                     <tr>
+                                         <td>
+                                            <div style="background: #f0f0f0;height:3px;margin-top:10px;margin-bottom: 10px; "></div>
+                                         </td>
+                                     </tr>
+                                 </table>
+                              </div>                                  
+                              <div style="width:100%">
+                                   <div style="float:left;width:100%;">
+                                        <table style="border: none;">
+                                           <tr>
+                                               <td style="vertical-align: top;padding-right: 10px;">
+                                                  <h:outputText value="3." style="color:#5d5d5d;line-height: 1.5;"/>
+                                                </td>
+                                               <td>
+                                                   <h:outputText value="#{customerComponent.recommendQuery}" style="color:#848484;line-height: 1.5;"/><font color="red">*</font>
+                                                </td>
+                                           </tr>
+                                        </table>
+                                  </div>
+                                   <div style="float:left">
+                                      <table>
+                                            <tr>
+                                                <td style="padding-left: 25px">
+                                                <p:rating value="#{customerComponent.recommend}" stars="5" cancel="false" required="true" requiredMessage="Please rate third question" />
+                                            </td>
+                                            </tr> 
+                                        </table>
+                                   </div>
+                                    <table style="border: none;width:100%;">
+                                     <tr>
+                                         <td>
+                                            <div style="background: #f0f0f0;height:3px;margin-top:10px;margin-bottom: 10px; "></div>
+                                         </td>
+                                     </tr>
+                                 </table>
+                                </div>
+                                
+                                <div style="width:100%">
+                                  <div style="float:left">   
+                                    <table style="border: none;">
+                                       <tr>
+                                            <td>
+                                               <h:panelGrid columns="1" id="feedbackSubmitPanelGrid" >
+                                                   <p:inputTextarea id="opinion_text" rows="3" autoResize="false"  maxlength="250" placeholder="Anything else,you would like to share?If yes please comment here...." value="#{customerComponent.feedback}" style="color:#848484;line-height: 1.5;font-weight: normal" />
+                                             </h:panelGrid>
+                                           </td>
+                                       </tr> 
+                                        <tr>
+                                            <td>
+                                                <h:panelGrid columns="2" id="feedbackend" style="margin-top: 4%;">
+                                                   <p:commandButton id="submitBtn"  ajax="true" value="Submit" style="margin-left: 15px;color: #fff;font-size: 20px;background: linear-gradient(to right, #130066 , #2633);;font-weight: normal;width:200px;padding:10px;" actionListener="#{customerComponent.giveFeedBackOfCall(request)}" />
+                                                   <p:commandButton id="skipbtn" style="color: #fff;font-size: 20px;background: linear-gradient(to right, #130066 , #2633);font-weight: normal;width:200px;padding:10px;" immediate="true" actionListener="#{customerComponent.resetDataRedirect()}" onclick="PF('feedbackdialog').hide();redirectHome()"  value="Skip" styleClass="btn-call" />
+                                                </h:panelGrid>
+                                            </td>
+                                       </tr>
+                                       </table>
+                                  </div>
+                               </div>                                 
+                        </div>               
+                    </div>		
+		</h:form>
+            </p:dialog>
+            <!-- End of Feedback panel -->
+
+            <p:dialog id="accountDlgId"  header="Select Form"  widgetVar="accountDlgWid" resizable="false"  closable="true" modal="true" appendTo="@(body)" onHide="document.getElementById('resetOptions').click()" responsive="true" style="max-width: 98%">
+                <center>
+                    <h:form id="accountDlgFrmId" prependId="false"  style="overflow:hidden;">          
+                        <h:panelGrid id="panelGridaccount" columns="1"  style="margin-top: 10px;margin-bottom: 5px;" >
+                            <p:selectOneRadio id="roll" value="#{customerComponent.docTobeOpen}" label="Select Form " layout="pageDirection" onclick="document.getElementById('openDocDtlId').click()" rendered="#{!vidyoAgent.existingCustomer}">       
+                                <f:selectItem itemLabel="CASA" itemValue="acc"  /> 
+                                <f:selectItem itemLabel="Loan" itemValue="loan"  /> 
+                                <f:selectItem itemLabel="Credit Card" itemValue="cc"  /> 
+                            </p:selectOneRadio>
+                            <p:selectOneRadio id="roll1" value="#{customerComponent.docTobeOpen}" label="Select Form " layout="pageDirection" onclick="document.getElementById('openDocDtlId').click()" rendered="#{vidyoAgent.existingCustomer}">       
+                                <f:selectItem itemLabel="Loan" itemValue="loan"  /> 
+                            </p:selectOneRadio>
+                        </h:panelGrid>
+                        <p:commandButton id="openDocDtlId"  ajax="true" action="#{customerComponent.openDocDtl(request)}"   value=" Open " style="width:100px;display: none"  oncomplete="PF('accountDlgWid').hide();"   />
+                        <p:commandButton id="resetOptions"  ajax="true" action="#{customerComponent.resetOptions()}"   value=" Reset " style="width:100px;display: none"  oncomplete="PF('accountDlgWid').hide();" update=":accountDlgFrmId"  />
+                    </h:form>
+                </center>
+            </p:dialog>
+            
+            <p:dialog id="rmcallDlgId"  header="Want to make a call to your RM?" responsive="true"  widgetVar="rmcallDlgWid" resizable="false"  closable="true" modal="true" appendTo="@(body)" onShow="document.getElementById('resetRmOptions').click()" style="max-width: 98%">
+                <center>
+                    <h:form id="rmcallDlgFrmId" prependId="false"  style="overflow:hidden;">          
+                        <h:panelGrid id="panelGridrm" columns="1"  style="margin-top: 10px;margin-bottom: 5px;" >
+                            <p:selectOneRadio id="rmop" value="#{customerComponent.rmOption}" label="Select Option "  onclick="document.getElementById('openoptionId').click()">       
+                                <f:selectItem itemLabel="Yes" itemValue="yes"  /> 
+                                <f:selectItem itemLabel="No" itemValue="no"  /> 
+                            </p:selectOneRadio>
+                        </h:panelGrid>
+                        <p:commandButton id="openoptionId"  ajax="true" action="#{customerComponent.openSelected(request)}"   value=" Open " style="width:100px;display: none"  oncomplete="PF('rmcallDlgWid').hide();"   />
+                        <p:commandButton id="resetRmOptions"  ajax="true" action="#{customerComponent.resetOptions()}"   value=" Reset " style="width:100px;display: none"  update=":rmcallDlgFrmId"  />
+                    </h:form>
+                </center>
+            </p:dialog>
+            
+             <p:dialog widgetVar="pscvar" header="Schedule Calendar" modal="true" appendTo="@(body)"  resizable="false" closable="true" responsive="true" position="center,top" style="max-width: 98%">  
+                    <h:form id="mainForm" prependId="false">
+                    <p:growl autoUpdate="true" showDetail="true" showSummary="false" />
+                    <p:panel id="npanel" header="Schedule Details" styleClass="no-header">
+                        <h:panelGrid columnClasses="value">
+                            <p:schedule id="schedule" value="#{customerComponent.eventModel}" widgetVar="myschedule"  clientTimeZone="local" resizable="false" aspectRatio="1.6" displayEventEnd="true">
+                                <p:ajax event="eventSelect" listener="#{customerComponent.onEventSelect}" update=":eventDialogForm" />
+                            </p:schedule>
+                        </h:panelGrid>
+                    </p:panel>
+                </h:form>
+             </p:dialog>
+
+        <p:dialog widgetVar="eventDialogVar" header="Event Details" modal="true" appendTo="@(body)" resizable="false" closable="true" responsive="true" width="70%">
+            <h:form id="eventDialogForm" style="overflow: hidden">
+                <p:growl autoUpdate="true" showDetail="true" showSummary="false" />
+                <p:panel>
+                    <p:panelGrid columns="1" columnClasses="ui-grid-col-12" layout="grid">
+                        <p:dataTable id="eventTbl" var="row" rowKey="#{row.id}" value="#{customerComponent.scheduledCallDtlDtoList}" rows="5" paginator="true" paginatorPosition="bottom">
+                            <f:facet name="header">
+                                Schedule Details
+                            </f:facet>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Relationship Manager" />
+                                </f:facet>
+                                <h:outputText value="#{row.empFirstName} #{row.empMidName} #{row.empLastName}" />
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Call Type" />
+                                </f:facet>
+                                <h:outputText value="#{row.callType}" />
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Product" />
+                                </f:facet>
+                                <h:outputText value="#{row.serviceName}" />
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Start Time" />
+                                </f:facet>
+                                <h:outputText value="#{row.scheduleStartDateTime}" >
+                                     <f:convertDateTime pattern="yyyy-MM-dd HH:mm" timeZone="#{customerLoginProcessesComponent.timeZone}"/>
+                                 </h:outputText>  
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="End Time" />
+                                </f:facet>
+                                <h:outputText value="#{row.scheduleEndDateTime}" >
+                                     <f:convertDateTime pattern="yyyy-MM-dd HH:mm" timeZone="#{customerLoginProcessesComponent.timeZone}"/>
+                                 </h:outputText>  
+                            </p:column>
+                        </p:dataTable>
+                    </p:panelGrid>
+                    <f:facet name="footer">
+                        <p:commandButton id="callBtn" value="Initiate Call" action="#{customerComponent.onDialScheduleCall()}" rendered="#{customerComponent.renderedCallBtn}" icon="ui-icon-squaresmall-plus" style="font-weight:bolder" ajax="false"/>
+                        <p:commandButton id="cancelSchdlBtn" value="Cancel Schedule Calll" action="#{customerComponent.onCancelScheduleCall(request)}" rendered="#{customerComponent.renderedCancelSchdlBtn}" icon="ui-icon-squaresmall-minus" style="font-weight:bolder" ajax="false"/>
+                    </f:facet>
+                </p:panel>
+            </h:form>
+        </p:dialog>
+            
+        <p:dialog widgetVar="rmscvar" header="Schedule Calendar" modal="true" appendTo="@(body)"  resizable="false" closable="true" responsive="true" position="center,top" style="max-width: 98%">  
+            <h:form id="mform" prependId="false">
+			<p:growl autoUpdate="true" showDetail="true" showSummary="false" />
+			<p:panel id="ncpanel" header="Schedule Details" styleClass="no-header">
+				<h:panelGrid columnClasses="value">
+                                    <p:schedule id="dschedule" value="#{customerComponent.eventModel}" widgetVar="sschedule" clientTimeZone="local" resizable="false" aspectRatio="1.9" displayEventEnd="true">
+						
+					</p:schedule>
+				</h:panelGrid>
+			</p:panel>
+	    </h:form>
+         </p:dialog>       
+
+            <div id="splash" class="container video_wrap" style="text-align: center;margin-top: 10%; overflow: hidden;display:none">
+                    <img src="${request.contextPath}/resources/images/logo-big.jpg"/>
+            </div> 
+           
+           <div id="incallcontainer" class="container video_wrap" style="display:none;">
+               <div class="row" style="margin-left: 15px;">
+                <div id="participantDiv" class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+			<div class="user_list" >
+                            <div class="user_head_wrap">
+                                <div class="user_head">
+                                    <div class="col-md-9 col-sm-9 col-xs-8">
+                                        <h2 class="private_chat">Click on participant name for private chat</h2>
+                                    </div>
+                                    <div class="col-md-2 col-sm-3 col-xs-4">
+                                       <div id="webcasting" title="Webcasting" class="toolbarButton" style="display:none"></div>
+                                       <div id="recorder" title="Record Status" class="toolbarButton"></div>  
+                                    </div>
+                                </div>
+                            </div>
+                            <div  id='participantList'>
+                                <div class="user_details" >
+                                    <h2></h2>
+                                </div>
+                            </div>
+                        </div>
+		    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-6 col-xs-12" style="max-height: 81vh;">
+			<div id="videoHead" class="video_head_wrap">
+			    <div class="video_head">
+				<div class="col-md-7 col-sm-7 col-xs-7">
+                                     <button class="listing_btn" id="endcallcust" onclick="document.getElementById('backBtn').click();" title="End call" >
+                                         <img src="#{request.contextPath}/resources/images/endcall.png" alt="" />
+                                     </button>
+                                    <button class="listing_btn" id="uploadFile" title="Upload File" onclick="$('#spinner').show();document.getElementById('fileUploadBtn').click();" >
+                                        <img src="#{request.contextPath}/resources/images/fileshare.jpg" alt="" />
+                                    </button>
+ 				    <button id="stopshareScreen" class="listing_btn" onclick="stopShare()" title="Stop Share" style="display: none;">
+					<img src="${request.contextPath}/resources/images/stopshare.png" alt="" />
+				    </button>
+                                    <button id="shareScreen" class="listing_btn" title="Share"  onclick="startShare()" >
+ 					<img src="${request.contextPath}/resources/images/sharescreen.png" alt="" />
+                                    </button>
+                                    <button class="listing_btn" style="display: none;">
+					<img src="${request.contextPath}/resources/images/stopshare.png" alt="" />
+				    </button>
+                                    <button class="listing_btn" id="fullscreenvid" onclick="makeFullScreen();" title="Full Screen">
+					<img src="${request.contextPath}/resources/images/fullscreen.png" alt="" />
+				    </button>
+                                    <button class="listing_btn" id="capture">
+                                        <img src="#{request.contextPath}/resources/images/snapshot.png" title="Snapshot" alt=""/>
+                                    </button>
+                                    <button class="listing_btn" id="setting1" onclick="PF('settingsDia').show();" title="Settings">
+                                        <img src="#{request.contextPath}/resources/images/settings.png" alt=""  />
+                                    </button>
+                                     <button class="listing_btn" id="cobrowseBtn" onclick="document.getElementById('accountOpenId').click();" title="Forms">
+                                         <img src="#{request.contextPath}/resources/images/cobrowse.png" alt="" />
+                                     </button>
+                   		</div>
+                                <div class="col-md-5 col-sm-5 col-xs-5" style="float:right">
+                                    <button class="video_icon_btn pull-right" id="mutemic" onclick="muteMic();" title="Mute/Un-Mute Microphone">
+					<img src="${request.contextPath}/resources/images/mute_mic.png" alt="" />
+                                    </button>
+                                    <button class="video_icon_btn pull-right" id="unmutemic" onclick="unmuteMic();" title="Mute/Un-Mute Microphone" style="display: none; background: red;">
+					<img src="${request.contextPath}/resources/images/unmute_mic.png" alt="" />
+                                    </button>
+                                    <button class="video_icon_btn pull-right" id="mutespeaker" onclick="muteSpeaker();" title="Mute/Un-Mute Speaker">
+                                        <img src="${request.contextPath}/resources/images/mute_speaker.png" alt="" />
+                                    </button>
+                                    <button class="video_icon_btn pull-right" id="unmutespeaker" onclick="unmuteSpeaker();" title="Mute/Un-Mute Speaker" style="display: none; background: red;">
+                                        <img src="${request.contextPath}/resources/images/unmute_speaker.png" alt="" />
+                                    </button>
+                                    <button class="video_icon_btn pull-right" id="mutevideo" onclick="muteVideo();" title="Show/Hide Video">
+                                        <img src="${request.contextPath}/resources/images/mute_video.png" alt="" />
+                                    </button>
+                                    <button class="video_icon_btn pull-right" id="unmutevideo" onclick="unmuteVideo();" title="Show/Hide Video" style="display: none;">
+                                        <img src="${request.contextPath}/resources/images/unmute_video.png" alt="" />
+                                    </button>
+                                   <div id="timer" style="color: red;float:right;font-size: small;padding-top: 10px"></div>
+                                    <a class="btn btn-inverse btn-block" href="#" title="Replace Video" id="inCallVideoReplaceButton" style="visibility: hidden;display:none" onclick="replaceVideoStrm();" ></a>
+                                    <a class="btn btn-inverse btn-block" href="#" title="new Video" id="inCallVideoReplaceButton1" style="visibility: hidden;display:none" onclick="showSpinner();" ></a>
+				</div>
+                	    </div>
+                       </div>
+                        <div id="videoHeadchat" style="width:40px">
+                            <button class="listing_btn" id="endcallcustchat" onclick="document.getElementById('backBtn').click();" title="End call">
+                                <img src="#{request.contextPath}/resources/images/endcall.png" alt="" />
+                            </button>
+                            <button class="listing_btn" id="uploadFilechat" title="Upload File" onclick="$('#spinner').show();document.getElementById('fileUploadBtn').click();"  >
+                                <img src="#{request.contextPath}/resources/images/fileshare.jpg" alt="" />
+                            </button>
+                            <button class="listing_btn" id="cobrowseBtnchat" onclick="document.getElementById('accountOpenId').click();" title="Forms">
+                                <img src="#{request.contextPath}/resources/images/cobrowse.png" alt="" />
+                            </button>
+                        </div>
+                        
+			<div id="vidyoConnector" style="height:60vh">
+                            <div id="inCallContainer">
+                                    <div id="parentRenderer" style="height:60vh">
+                                        <div id="renderer" class="pluginOverlay"></div>
+                                    </div>
+                                    <div id="toolbarLeft" class="toolbar">
+                                         <span id="participantStatus"></span>
+                                    </div>
+                                    <div id="toolbarRight" class="toolbar">
+                                        <span id="connectionStatus">Initializing</span>
+                                    </div>
+                                    <div id="toolbarCenter" class="toolbar" style="display:none" >
+                                        <div>
+                                            <button id="cameraButton" title="Camera Privacy" class="toolbarButton cameraOn"></button>
+                                            <button id="joinLeaveButton" title="Join Conference" class="toolbarButton callStart"></button>
+                                            <button id="microphoneButton" title="Microphone Privacy" class="toolbarButton microphoneOn"></button>
+                                            <button id="speakerButton" title="Speaker Privacy" class="toolbarButton speakerOn"></button>
+                                            <button id="chatButton" title="Toggle Chat" class="notification toolbarButton chaticon">
+                                                   <span class="badge hidden" id="new-message-notification"></span>
+                                            </button>
+                                        </div>
+	                            </div>
+                                </div>
+                       </div>
+					
+                        <div id="addstatictabdiv"> 
+                            <ul class="tabs" id="addstatictab" style="margin-top:5px">
+                                <li><button href="#collapse1" id="tbutton" class="nav-toggle" style="background:transparent"><img src='#{request.contextPath}/resources/images/top.png' height='20px' width='28px' style="margin-top: -2px;margin-left: 1px;"></img></button></li>
+                                <li class="selected" id="lieveryone"><a href="#Everyone" id="_Everyone" onclick="setEvery();">Everyone<span id="_Everyonespan" style="width:20px;border-radius: 13px;text-align:center;margin-left: 2px;padding: 2px;"></span></a></li>
+                            </ul>
+                            <div id="collapse1" style="display:none;margin-top: -3px;">
+                                <div class="tabcontents" id="participant">
+                                    <div id="Everyone" ></div>
+                                </div>
+                                <div id="contentWrap">
+                                    <h:form prependId="false" id="sendSection" style="margin-top: 5px;" >
+                                           <div id="chatWrap">
+                                            <p:inputText id="msgToSend" value="" style="width:75%" maxlength="250"/>   
+                                            <p:commandButton  type="button" id="send" value="Send"    onclick="sendMessage();document.getElementById('msgToSend').value='';" style="margin-left:5px;"/>
+                                        </div>
+                                    </h:form>
+                                 </div>
+                            </div>
+                    </div>
+                </div><!--col-lg-8-->
+             </div><!--row-->
+        </div><!--container-->
+
+            <div id="custIdWrap" style="display:none">
+                <h:form  prependId="false" id="setCustId" >
+                    <p:inputText id="agentId" value="#{customerComponent.customerSocket}" label="customer socket" />
+                    <p:commandButton  id="custsubmit" ajax="true" value="submit"  onclick="connected();" />
+                </h:form>
+               
+                 <h:form id="inCallChatFormData"   prependId="false" >
+                      <p:inputTextarea id="inCallChatTextArea" value="#{vidyoAgent.chatText}"  rows="2" style="visibility: hidden"    />
+                      <p:inputTextarea id="inCallChatTabsArea" value="#{vidyoAgent.chatText1}"  rows="2" style="visibility: hidden"    />
+                      <p:commandButton id="chatsave" action="#{vidyoAgent.saveChat()}" value="Save" style="visibility: hidden" />
+                 </h:form>
+            </div>
+
+       
+            <script>
+                 document.getElementById('call_type_id').value = "1";
+            </script>
+        </h:body>
+    </ui:define>
+    <ui:define name="right">
+
+    </ui:define> 
+</ui:composition>

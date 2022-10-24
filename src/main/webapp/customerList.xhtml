@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/templates/customerInviteHomeTemplate.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+      <ui:define name="title">
+        <h:outputText value="Customer Home" /> 
+     </ui:define> 
+    <ui:define name="content" id="customerContent">
+        <script  src="#{request.contextPath}/resources/js/bowser.min.js"></script>
+        <script type="text/javascript" src="#{request.contextPath}/resources/js/jstz-1.0.4.min.js"></script>
+        <script type="text/javascript" src="#{request.contextPath}/resources/js/moment.min.js"></script>
+        <script type="text/javascript" src="#{request.contextPath}/resources/js/moment-timezone.js"></script>
+        <script type="text/javascript" src="#{request.contextPath}/resources/js/moment-timezone-data.js"></script>
+             
+        <script>
+            function redirect() {
+               window.location="#{request.contextPath}/onboardingAccounts";
+            }
+            
+                
+          $(document).ready(function() {
+                
+                setTimeout(function() {
+                        document.getElementById("emp_id").value=document.getElementById("empid").innerHTML;
+                        document.getElementById("supervisorEntry").click();
+                        }, 100);
+
+            });
+            
+           
+           
+        </script>
+
+            <style>
+                .ui-dialog-titlebar{
+                    background: #1275B6 !important;
+                }
+                .noBorders tr, .noBorders td {
+                    background: none !important;
+                    border: none !important;
+                }
+                .fieldlabel{
+                  
+                    color:#1275b6;
+                }
+                .spinner {
+                    position: absolute;
+                    top: 0%;
+                    left: 0%;
+                    width: 100%;
+                    height: 100%;
+                    background-color: black;
+                    z-index: 988;
+                    -moz-opacity: 0.6;
+                    opacity:.60;
+                    filter: alpha(opacity=60);
+                }
+            </style>
+           <div id="spinnerReplace" class="off" style="-moz-opacity: 0.9; opacity:.90; filter: alpha(opacity=90); display: none;">
+                <center>
+                    <video id="spinnerReplacerVideo" class="fullscreen"  style="width:55vw;overflow: hidden; " loop="true" >
+                        <source src="#{request.contextPath}/promotional/promo.mp4" type="video/mp4" />
+                        Your browser does not support HTML5 video.
+
+                    </video>
+                </center>
+            </div>
+        <div id="parent">  
+            <h:outputText style="display: none" id="empid" value="#{param.id}" />
+            
+        <h:form id="custform" prependId="false" >
+            <p:inputText id="emp_id" value="#{employeeLoginComponent.employeeId}" maxlength="20" style="visibility: hidden;width: 155px;"  required="true" validatorMessage="First Name: Validation Error:Only characters allowed" label="First Name" />
+            
+            <p:commandButton id="supervisorEntry" ajax="true" actionListener="#{employeeLoginComponent.gotoCustomerList(request)}" style="visibility: hidden;height: 1px;width: 1px;"  /> 
+                                          
+        </h:form>
+        </div>   
+        <div id="notsuppoted" style="color:red; font-size: medium;margin-top: 10px;display:none">Browser not supported Use chrome &gt;30 or firefox &gt;36</div>
+                              
+ </ui:define>
+
+</ui:composition>

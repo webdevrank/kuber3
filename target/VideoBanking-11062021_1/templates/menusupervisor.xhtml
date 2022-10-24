@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:form>
+        <p:menubar autoDisplay="true" widgetVar="menuBar">
+
+            <p:submenu label="Agent" icon="ui-icon-cart">
+                <p:menuitem value="Agent Status" icon="ui-icon-plus" ajax="false" style="white-space: nowrap;width: 8.5em;" actionListener="#{currentAgentStatusComponent.agentStatusReportWithQuery()}" action="/pages/employee/currentAgentStatusReport.xhtml"/>
+            </p:submenu>
+            <p:submenu label="Schedule" icon="ui-icon-clock">
+                <p:menuitem value="Call Status"  icon="ui-icon-lightbulb" ajax="false" actionListener="#{callSchedulerComponent.currentSchedulCallStatus()}"  style="white-space: nowrap; width: 8.5em;" action="/pages/schedule/currentScheduleCallStatus.xhtml"  />
+            </p:submenu>
+            <p:submenu label="Call Records" icon="ui-icon-grip-dotted-vertical">
+                <p:menuitem value="List"  icon="ui-icon-document" ajax="false" style="white-space: nowrap; width: 8.5em;" actionListener="#{callRecordsComponent.newCallRecordsComponent()}"  action="/pages/supervisor/listCallRecords.xhtml"/>
+                <p:menuitem value="Barge In Calls"  icon="ui-icon-calculator" ajax="false" style="white-space: nowrap; width: 8.5em;" actionListener="#{bargeInCallComponent.bargeInCall()}"  action="/pages/agent/bargeInCallReport.xhtml"/>
+            </p:submenu>
+          
+        </p:menubar>
+    </h:form>
+</html>
+

@@ -1,0 +1,55 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="../../templates/layout.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:f="http://java.sun.com/jsf/core">
+    <ui:define name="title">
+        Add Language
+    </ui:define>
+    <ui:define name="menu">
+        <c:if test="#{employeeLoginComponent.adminmenuRenderer }">
+            <ui:include src="../../templates/menu.xhtml" />
+        </c:if>
+    </ui:define>
+    <ui:define name="content">
+
+
+        <c:if test="#{employeeLoginComponent.adminmenuRenderer }">    
+            <h:form prependId="false" id="mainform" style="padding:10px;margin-top: 45px" >
+                <p:panel header="Add Language" >
+                    <h:panelGrid id="detail" columns="2" styleClass="noBorders"   columnClasses="label,value" >
+                        <p:panel style="border: none !important;"><h:outputText value="Code:" /><font color='red'>*</font></p:panel>
+                        <p:inputText id="language_code" value="#{languageMasterComponent.languageMst.languageCd}" label="Code" required="true" maxlength="4" size="7" validator="#{languageMasterComponent.checkDuplicateLanguageCode}" >
+                            <p:ajax event="blur"  listener="#{languageMasterComponent.checkErrors()}" immediate="true"   partialSubmit="true"  async="true" update="@this" />
+                        </p:inputText>
+
+                        <p:panel style="border: none !important;"><h:outputText value="Name:" /><font color='red'>*</font></p:panel>
+                        <p:inputText id="language_name" value="#{languageMasterComponent.languageMst.languageName}" label="Name" required="true" maxlength="50"  validator="#{languageMasterComponent.checkDuplicateLanguageName}" style="width: 155px;">
+                            <p:ajax event="blur"  listener="#{languageMasterComponent.checkErrors()}" immediate="true"   partialSubmit="true"  async="true" update="@this" />
+                        </p:inputText>
+
+                        <p:panel style="border: none !important;"><h:outputText value="Description:" /></p:panel>
+                        <p:inputTextarea id="language_description" value="#{languageMasterComponent.languageMst.languageDesc}"  label="Description" validator="#{languageMasterComponent.checkDescription}" maxlength="150" style="height: 50px;width: 155px;" >
+                            <p:ajax event="blur"  listener="#{languageMasterComponent.checkErrors()}" immediate="true"   partialSubmit="true"  async="true" update="@this" />
+                        </p:inputTextarea>   
+
+                        <p:spacer width="4"></p:spacer>
+                        <p:spacer width="4"></p:spacer>
+
+                        <p:spacer/>
+                        <p:spacer/>
+                        <p:spacer/>
+
+                    </h:panelGrid>
+                    <h:panelGroup style="margin-left: 89px;" >
+                        <p:commandButton icon="ui-icon-disk"  action="${languageMasterComponent.save(request)}"  style="margin-right:20px;" value="Save" actionListener="#{languageMasterComponent.checkErrors()}" update=":mainform" />
+                        <p:commandButton icon="ui-icon-arrowreturn-1-w" immediate="true" ajax="false" action="${languageMasterComponent.back()}" style="margin-right:20px;" value="Back" />
+                    </h:panelGroup>
+
+                </p:panel>
+            </h:form>
+        </c:if>
+    </ui:define>
+</ui:composition>

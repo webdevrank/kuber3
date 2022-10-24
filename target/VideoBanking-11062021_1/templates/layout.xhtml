@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+
+    <f:view contentType="text/html">
+        <h:head>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <title><ui:insert name="title" /></title>
+            <link rel="stylesheet" type="text/css" href="${request.contextPath}/resources/css/global.css" />
+             
+            <style>
+                
+                .ui-button-icon-only .ui-button-text{
+                    padding:0px;
+                }
+                .noBorders tr, .noBorders td {
+                    background: none !important;
+                    border: none !important;
+                }
+                .req[role="columnheader"] :after {
+                    color: red;
+                    content: '*';
+                }
+                #top{
+                    padding:0 !important;
+                }
+                #bottom{
+                     padding:0 !important;
+                }
+                .ui-progressbar{
+                    display:none;
+                }
+              </style>
+        </h:head>
+        <h:body>
+            <p:layout  fullPage="true">
+                <div id="spinner" class="spinner" style="display:none;">
+                    <center>
+                        <img id="img-spinner" style="margin-top: 22%" src="${request.contextPath}/resources/images/loading.gif" alt="Loading"/>
+                    </center>
+                </div>
+                <ui:insert name="header">
+                     <ui:include src="header.xhtml" />
+                    <div style="position:absolute;width: 100%;top: 80px;z-index: 1000;">
+                        <ui:insert name="menu" >
+                        </ui:insert>  
+                    </div>
+                </ui:insert>
+                <p:layoutUnit id="center" position="center" size="250"  >
+                    <ui:include src="sessionCheck.xhtml" />
+                    
+                    <ui:insert name="content"></ui:insert>
+                </p:layoutUnit>
+                <ui:insert name="right">
+                </ui:insert>  
+                <ui:insert name="footer"  >
+                    <ui:include src="footer.xhtml" />
+                </ui:insert>
+            </p:layout>
+        </h:body>
+    </f:view>
+</html>

@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      >
+    
+    <f:view contentType="text/html" >
+        <h:head>
+            <meta charset="utf-8"></meta>
+            <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+            <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"></meta>   
+            <link rel="stylesheet" href="#{request.contextPath}/resources/css/landing.css" type="text/css" />
+            <link rel="icon" type="image/png" href="#{request.contextPath}/resources/images/favicon.png" sizes="16x16"/>
+            <script type="text/javascript" src="#{request.contextPath}/resources/js/aes.js"></script>
+            <script type="text/javascript" src="#{request.contextPath}/resources/js/pbkdf2.js"></script>
+            <script type="text/javascript">
+                function convertAndSubmit()
+                {
+                    var pass = document.getElementById('passwd').value;
+                    if (pass.trim() !== '') {
+                        var salt = CryptoJS.lib.WordArray.random(128 / 8);
+                        var iv = CryptoJS.lib.WordArray.random(128 / 8);
+                        var key128Bits100Iterations = CryptoJS.PBKDF2("#{request.getSession().id}", salt, {keySize: 128 / 32, iterations: 100});
+                        var encrypted = CryptoJS.AES.encrypt(document.getElementById('passwd').value, key128Bits100Iterations, {iv: iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7
+                        });
+                        document.getElementById('salt').value = salt;
+                        document.getElementById('iv').value = iv;
+                        document.getElementById('passwd').value = encrypted;
+                    }
+                    document.getElementById('signin').click();
+                }
+
+                $(document).ready(function() {
+                    $(window).keydown(function(event) {
+                        if (event.keyCode === 13) {
+                            document.getElementById('signin').click();
+                            event.preventDefault();
+                            return false;
+                        }
+                    });
+                });
+
+                function openInNewTab(url) {
+                    var win = window.open(url, '_blank');
+                    win.focus();
+                }
+
+            </script>
+            <style>
+                .spinner {
+                    position: absolute;
+                    top: 0%;
+                    left: 0%;
+                    width: 100%;
+                    height:100%;
+                    background-color: black;
+                    z-index:1001;
+                    -moz-opacity: 0.8;
+                    opacity:.80;
+                    filter: alpha(opacity=80);
+                }
+            </style>
+        </h:head>
+        <h:body style="background: #3c86c5">
+            <div id="spinner" class="spinner" style="display:none;">
+                <center>
+                    <img id="img-spinner" style="margin-top: 40vh" src="${request.contextPath}/resources/images/loading.gif" alt="Loading"/>
+                </center>
+            </div>
+
+            <p:growl id="growl" showDetail="false" sticky="false" autoUpdate="true" />
+            <ui:insert name="content" id="contentForm"/>
+        </h:body>
+    </f:view>
+</html>

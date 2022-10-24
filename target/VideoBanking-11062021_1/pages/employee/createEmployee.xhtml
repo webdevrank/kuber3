@@ -1,0 +1,128 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="../../templates/layout.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="title">
+        Add Employee
+    </ui:define>
+    <ui:define name="menu">
+        <c:if test="#{employeeLoginComponent.adminmenuRenderer }">
+            <ui:include src="../../templates/menu.xhtml" />
+        </c:if>
+        <style>
+            #employee_type{
+                min-width: 200px !important;
+            }
+            
+        </style>
+    </ui:define>
+    <ui:define name="content">        
+        
+        <c:if test="#{employeeLoginComponent.adminmenuRenderer }">
+            <h:form prependId="false" id="mainform" style="padding:10px;margin-top: 45px" >
+                <p:panel header="Add Employee" >
+                    <p:growl id="msg" sticky="false" showDetail="false"/> 
+                    <p:panelGrid id="detail" columns="4" styleClass="noBorders"   columnClasses="label,value">
+                        <p:panel style="border: none !important;"><h:outputText value="First Name:" /><font color='red'>*</font></p:panel>
+                        <p:inputText id="emp_fn" value="#{employeeMstComponent.employeeMst.firstName}" maxlength="20"  required="true" validatorMessage="First Name: Validation Error:Only characters allowed" label="First Name" >
+                            <p:ajax event="blur"  listener="#{employeeMstComponent.checkErrors()}" immediate="true"   partialSubmit="true"  async="true" update="@this" />
+                            <f:validateRegex pattern="^[a-zA-Z]+$" /> 
+                        </p:inputText>
+
+                        <p:panel style="border: none !important;"><h:outputText value="Middle Name:" /></p:panel>
+                        <p:inputText id="emp_mn" value="#{employeeMstComponent.employeeMst.midName}" maxlength="20"  validatorMessage="Middle Name: Validation Error:Only characters allowed"  >
+                            <p:ajax event="blur"  listener="#{employeeMstComponent.checkErrors()}" immediate="true"   partialSubmit="true"  async="true" update="@this" />
+                            <f:validateRegex pattern="^$|^[a-zA-Z]+$" />  
+                        </p:inputText>
+
+                        <p:panel style="border: none !important;"><h:outputText value="Last Name:" /><font color='red'>*</font></p:panel>
+                        <p:inputText id="emp_ln" value="#{employeeMstComponent.employeeMst.lastName}" maxlength="20" required="true" label="Last Name" validatorMessage="Last Name: Validation Error:Only characters allowed" >
+                            <p:ajax event="blur"  listener="#{employeeMstComponent.checkErrors()}" immediate="true"   partialSubmit="true"  async="true" update="@this" />
+                            <f:validateRegex pattern="^[a-zA-Z]+$" />  
+                        </p:inputText>
+
+                        <p:panel style="border: none !important;" ><h:outputText value="Employee Type:" /><font color='red'>*</font></p:panel>
+                        <p:selectOneMenu id="employee_type" value="#{employeeMstComponent.employeeTypeMst.id}" required="true" label="Employee Type" >
+                            <f:selectItem itemLabel="Select One" itemValue=""/>
+                            <f:selectItems value="#{employeeTypeMasterComponent.getAllEmployeeType()}" var="status" itemLabel="#{status.typeName}" itemValue="#{status.id}"/>
+                            <p:ajax event="change"  listener="#{employeeMstComponent.checkErrors()}" immediate="true"   partialSubmit="true"  async="true" update="@this" />
+                        </p:selectOneMenu>
+
+                        <p:panel style="border: none !important;"><h:outputText value="Password:" /><font color='red'>*</font></p:panel>
+                        <p:password id="usermaster_logipasswrd" value="#{employeeMstComponent.password}" autocomplete="off" required="true" redisplay="true" label="Password" maxlength="150"  />
+
+                        <p:panel style="border: none !important;"><h:outputText value="Login Id:" /><font color='red'>*</font></p:panel>
+                        <p:inputText id="usermaster_loginid" value="#{employeeMstComponent.employeeMst.loginId}" required="true" label="Login Id" maxlength="20"  validator="#{employeeMstComponent.checkDuplicateLogId}"   >
+                            <p:ajax event="blur"  listener="#{employeeMstComponent.checkErrors()}" immediate="true"  partialSubmit="true"  async="true" update="@this" />
+
+                        </p:inputText>
+
+                        <p:panel style="border: none !important;"><h:outputText value="Address 1:" /><font color='red'>*</font></p:panel>
+                        <p:inputText id="emp_add1" value="#{employeeMstComponent.employeeMst.addrsLine1}" required="true" label="Address 1" maxlength="150" validator="#{employeeMstComponent.checkAddress}"   >
+                            <p:ajax event="blur"  listener="#{employeeMstComponent.checkErrors()}" immediate="true"   partialSubmit="true"  async="true" update="@this" />
+                        </p:inputText>
+
+                        <p:panel style="border: none !important;"><h:outputText value="Address 2:" /></p:panel>
+                        <p:inputText id="address2" value="#{employeeMstComponent.employeeMst.addrsLine2}" maxlength="150" label="Address 2" validator="#{employeeMstComponent.checkAddress1}" >
+                            <p:ajax event="blur"  listener="#{employeeMstComponent.checkErrors()}" immediate="true"   partialSubmit="true"  async="true" update="@this" />
+                        </p:inputText>
+                        <p:panel style="border: none !important;"><h:outputText value="City:" /></p:panel>
+                        <p:inputText id="City" value="#{employeeMstComponent.employeeMst.city}" maxlength="50"  validator="#{employeeMstComponent.checkCity}" >
+                            <p:ajax event="blur"  listener="#{employeeMstComponent.checkErrors()}" immediate="true"   partialSubmit="true"  async="true" update="@this" />
+                        </p:inputText>
+
+                        <p:panel style="border: none !important;"><h:outputText value="State:" /></p:panel>
+                        <p:inputText id="State" value="#{employeeMstComponent.employeeMst.stateNm}" maxlength="50"  validator="#{employeeMstComponent.checkState}">
+                            <p:ajax event="blur"  listener="#{employeeMstComponent.checkErrors()}" immediate="true"   partialSubmit="true"  async="true" update="@this" />
+                        </p:inputText>
+
+                        <p:panel style="border: none !important;"><h:outputText value="Pin:" /></p:panel>
+                        <p:inputText id="Pin" value="#{employeeMstComponent.pin}"  maxlength="6" onkeypress="if (event.which &lt; 48 || event.which &gt; 57) return false;" validator="#{employeeMstComponent.checkPin}"  >
+                            <p:ajax event="blur"  listener="#{employeeMstComponent.checkErrors()}" immediate="true"   partialSubmit="true"  async="true" update="@this" />
+                        </p:inputText>
+
+                        <p:panel style="border: none !important;"><h:outputText value="Country:" /></p:panel>
+                        <p:inputText id="country" value="#{employeeMstComponent.employeeMst.country}" maxlength="50"  validator="#{employeeMstComponent.checkCountry}"  >
+                            <p:ajax event="blur"  listener="#{employeeMstComponent.checkErrors()}" immediate="true"   partialSubmit="true"  async="true" update="@this" />
+                        </p:inputText>
+
+                        <p:panel style="border: none !important;"><h:outputText value="Email:" /><font color='red'>*</font></p:panel>
+                        <p:inputText id="email" value="#{employeeMstComponent.employeeMst.email}"   maxlength="50"  required="true" label="Email"  validator="#{employeeMstComponent.checkDuplicateEmailId}" >
+                            <!--<f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />-->
+                            <p:ajax event="blur"  listener="#{employeeMstComponent.checkErrors()}" immediate="true"   partialSubmit="true"  async="true" update="@this" />
+                        </p:inputText>
+
+                        <p:panel style="border: none !important;"><h:outputText value="Office Phone:" /></p:panel>
+                        <p:inputText id="OfficePhone" value="#{employeeMstComponent.officePhone}"  maxlength="12" label="Office Phone" onkeypress="if (event.which &lt; 48 || event.which &gt; 57) return false;" validator="#{employeeMstComponent.checkOfficePhone}"   >
+                            <p:ajax event="blur"  listener="#{employeeMstComponent.checkErrors()}" immediate="true"   partialSubmit="true"  async="true" update="@this" />
+                        </p:inputText>
+
+                        <p:panel style="border: none !important;"><h:outputText value="Home Phone:" /></p:panel>
+                        <p:inputText id="HomePhone" value="#{employeeMstComponent.homePhone}" maxlength="12" label="Home Phone" onkeypress="if (event.which &lt; 48 || event.which &gt; 57) return false;" validator="#{employeeMstComponent.checkHomePhone}"  >
+                            <p:ajax event="blur"  listener="#{employeeMstComponent.checkErrors()}" immediate="true"   partialSubmit="true"  async="true" update="@this" />
+                        </p:inputText>
+
+                        <p:panel style="border: none !important;"><h:outputText value="Mobile Number:" /><font color='red'>*</font></p:panel>
+                        <p:inputText id="cell" value="#{employeeMstComponent.cell}"    maxlength="12" required="true" label="Mobile Number" onkeypress="if (event.which &lt; 48 || event.which &gt; 57) return false;" validator="#{employeeMstComponent.checkDuplicateMobileNo}">
+<!--                            <f:validateRegex pattern="^((\+[0-9]{0,2}|0)?\d{10,12})$" />-->
+                            <p:ajax event="blur"  listener="#{employeeMstComponent.checkErrors()}" immediate="true"   partialSubmit="true"  async="true" update="@this" />
+                        </p:inputText>
+                        <p:spacer/>
+                        <p:spacer/>
+                        <p:spacer/>
+                    </p:panelGrid>
+                    <h:panelGroup style="margin-left: 430px;" >
+                        <p:commandButton id="save_btn" icon="ui-icon-disk" action="#{employeeMstComponent.save(request)}"  style="margin-right:20px;" value="Save" actionListener="#{employeeMstComponent.checkErrors()}" update=":mainform" />
+                        <p:commandButton icon="ui-icon-arrowreturn-1-w" immediate="true" ajax="false" action="#{employeeMstComponent.back()}" style="margin-right:20px;" value="Back" />
+                    </h:panelGroup>
+                </p:panel>
+            </h:form>  
+        </c:if>
+    </ui:define>
+</ui:composition>

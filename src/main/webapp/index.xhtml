@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <f:view contentType="text/html">
+        <h:head>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+            <title><ui:insert name="title" />Video Banking</title>
+            <link rel="stylesheet" href="#{request.contextPath}/resources/css/landing.css" type="text/css" />
+            <link rel="icon" type="image/png" href="#{request.contextPath}/resources/images/favicon.png" sizes="16x16"/>
+
+        </h:head>
+        <h:body class="landing_body">
+            <div class="landing_wrap">
+                <div class="left_landing">
+                    <img src="#{request.contextPath}/resources/images/landing-img.png" alt="banner"/>                   
+                </div>
+                <!--left_landing-->
+
+                <div class="right_landing">
+                    <img src="#{request.contextPath}/resources/images/first-logo.png" alt="logo"/>
+                    <h1><span>Presents</span> Digital Customer Experience Platform</h1>
+
+                    <div class="landing_buttons">
+                        <a href="${request.contextPath}/customerHome">Guest Video Chat</a> 
+                        <a href="${request.contextPath}/loginCustomer" class="em_btn">Customer Login</a>
+                    </div>
+                    <!--landing_buttons-->
+                </div>
+                <!--right_landing-->
+            </div>
+            <!--landing_wrap-->
+            <br />
+           
+        </h:body>
+    </f:view>
+</html>

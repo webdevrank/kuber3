@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:h="http://java.sun.com/jsf/html"  style="width:800px" >
+
+
+    <iframe id="ifr" src="" 
+            height="450" width="700"> 
+    </iframe>
+    <script>
+        var one_hour_ago = new Date(Date.now() - (1 * 60 * 60 * 1000)).toISOString();
+        var user_id = '#{vidyoAgent.customerId}';
+        var token = '#{vidyoAgent.jwtToken}';
+//    document.getElementById("ifr").src ="https://cobrowse.io/dashboard?&amp;token=eyJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE1ODcxOTgzMjksInN1YiI6ImFwdXJiYS5tYWl0eUBnbWFpbC5jb20iLCJhdWQiOiJodHRwczovL2NvYnJvd3NlLmlvIiwiZXhwIjo2MTU3MDI2MTgwMCwiaXNzIjoiQ21fX016ZC1IcUJkaGciLCJkaXNwbGF5TmFtZSI6IkFwdXJiYSBNYWl0eSJ9.P2HRUgGy-7OtCHHqeRSqX6KFTaUIXrTQBdMT1apLFlcZ3XTe9HCG6cwL0c7UoVALsyNcfU77VVA7HQhc7UcnVu_0aXO4Rj0AkWgEOkQ4Yg0Qx0SJGdFuc8rUuiO9S9TJ85SyiWBX03HQCtiK8YPpk61BqUUSqRR6PYDcJ93bZwySwNvYubDmVFZP7OmJQPga6vevE6vO4nq1EgcLLy-3uxSXbQBdght1mHO95TF9kG6nVlka9sind3iGrc0zFCEEaFhEXLG-rL9L1-o5zKIUqW0zXcBE_3FqLGm3xrmCNA2uRTgzu0optPNRwM52CN5DCUx96yHL2_w9Rozmt94BEA&amp;nochrome=true&amp;end_action=none&amp;filter_user_id="+user_id+"&amp;seen_after="+one_hour_ago; 
+        document.getElementById("ifr").src = "https://cobrowse.io/dashboard?&amp;token=" + token + "&amp;nochrome=true&amp;end_action=none&amp;seen_after=" + one_hour_ago;
+//        alert(document.getElementById("ifr").src)
+    </script>
+
+</html>

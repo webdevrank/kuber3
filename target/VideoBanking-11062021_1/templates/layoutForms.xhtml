@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+
+    <f:view contentType="text/html">
+        <h:head>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <title><ui:insert name="title" /></title>
+            <link rel="stylesheet" type="text/css" href="${request.contextPath}/resources/css/global.css" />
+            
+            <style>
+                .ui-widget-content{
+                    border:none !important;
+                    padding:0 !important;
+                }
+               .ui-layout-unit .ui-layout-unit-content{
+                    padding:0 !important;
+                }
+                .ui-dialog .ui-dialog-content{
+                    padding:.5em 1em !important;
+                }
+                .ui-button-text-icon-left .ui-button-text{
+                    padding:.3em 1em 0.2em 2.1em !important;
+                }
+                .ui-button-text-only .ui-button-text{
+                    padding:.2em 1em !important;
+                }
+                #button{
+                    padding: 5px;
+                    border-radius: 18px;border: 1px solid;
+                }
+                .ui-dialog .ui-dialog-titlebar{
+                        background: #3c86c5 !important;
+                        color: #fff !important;
+                }
+                .ui-button{
+                    padding: 5px;
+                    border-radius: 18px;
+                    border: 1px solid;
+                }
+
+            </style>
+        </h:head>
+        <h:body>
+            <p:layout  fullPage="true">
+                <div id="spinner" class="spinner" style="display:none;">
+                    <center>
+                        <img id="img-spinner" style="margin-top: 22%" src="${request.contextPath}/resources/images/loading.gif" alt="Loading"/>
+                    </center>
+                </div>
+                <p:layoutUnit id="center" position="center" size="250"  >
+                    <ui:include src="sessionCheck.xhtml" />
+                    <ui:insert name="content"></ui:insert>
+                </p:layoutUnit>
+            </p:layout>
+        </h:body>
+    </f:view>
+</html>

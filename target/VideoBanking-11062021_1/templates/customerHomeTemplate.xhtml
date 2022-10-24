@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      >
+
+    <f:view contentType="text/html" >
+        <h:head>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />        
+            <title><ui:insert name="title" /></title>
+           
+            <link rel="stylesheet" href="#{request.contextPath}/resources/css/landing.css" type="text/css" />
+            <link rel="icon" type="image/png" href="#{request.contextPath}/resources/images/favicon.png" sizes="16x16"/>
+        </h:head>
+        <h:body>
+             <div id="spinner" class="spinner" style="display:none;">
+                    <center>
+                        <img id="img-spinner" style="margin-top: 22%" src="${request.contextPath}/resources/images/loading.gif" alt="Loading"/>
+                    </center>
+                </div>
+            <p:growl id="growl" showDetail="false" sticky="false" autoUpdate="true" />
+            <h:panelGroup layout="block" styleClass="content_cont" style="background-size: cover;">
+                   <ui:insert name="content" id="contentForm"/>
+            </h:panelGroup>
+        </h:body>
+    </f:view>
+    <script>
+                function openInNewTab(url) {
+                    var win = window.open(url, '_blank');
+                    win.focus();
+                }
+                 $( "#check_no" ).click(function() {
+                        $( ".sec_one" ).hide();
+                        $( ".sec_two" ).show();
+                });
+
+                $( "#back_one" ).click(function() {
+                        $( ".sec_two" ).hide();
+                        $( ".sec_one" ).show();
+
+                });
+
+                $( ".cleck_product" ).click(function() {
+                        $( ".sec_two" ).hide();
+                        $( ".sec_four" ).hide();
+                });
+
+                $( "#back_two" ).click(function() {
+                        $( ".sec_three" ).hide();
+                        $( ".sec_two" ).show();	
+                });
+
+                $( ".btn_nxt" ).click(function() {
+                        $( ".sec_three" ).hide();
+                        $( ".sec_two" ).hide();	
+                });
+
+                $( "#back_three" ).click(function() {
+                        $( ".sec_four" ).hide();
+                        $( ".sec_three" ).show();	
+                });
+
+            </script>
+</html>

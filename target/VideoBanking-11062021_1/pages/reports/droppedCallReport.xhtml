@@ -1,0 +1,154 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="../../templates/layout.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                >
+
+    <ui:define name="title">
+        Failed Call Report
+    </ui:define>
+    <ui:define name="menu">
+     
+         <c:if test="#{employeeLoginComponent.adminmenuRenderer }">
+            <ui:include src="../../templates/menu.xhtml" />
+        </c:if>
+
+        <c:if test="#{employeeLoginComponent.supervisormenuRenderer}">
+            <ui:include src="../../templates/menusupervisor.xhtml" />
+        </c:if>
+     
+    </ui:define>
+    <ui:define name="content">
+        
+        <script>
+            function setLoadRender1() {
+                document.getElementById('headerform:empLoadTable').style.display = "";
+                document.getElementById('headerform:empTable').style.display = "none";
+                document.getElementById('headerform:pscroll').style.display = "none";
+            }
+            function setLoadRender2() {
+                document.getElementById('headerform:empLoadTable').style.display = "none";
+                document.getElementById('headerform:empTable').style.display = "";
+                document.getElementById('headerform:pscroll').style.display = "";
+            }
+        </script>
+<c:if test="#{employeeLoginComponent.adminmenuRenderer }">
+        <h:form  id="mainform" style="margin-top: 45px">
+            <p:growl id="msg" sticky="false" showDetail="false"/> 
+            <p:panel header="Search Failed Call" style="margin:10px;" id="droppanel">
+                <p:panelGrid id="detail" columns="8" styleClass="noBorders"   columnClasses="label,value">
+
+                    <p:panel style="border: none !important"><h:outputText value="Start Date and Time:" /></p:panel>
+
+                    <p:calendar mode="popup" pattern ="dd.MM.yyyy HH:mm" value="#{callDroppedComponent.searchStartTime}" readonlyInput="true"  label="Start Date Time" style="width: 155px;"  maxdate="#{callDroppedComponent.presentDate}" /> 
+
+                    <p:panel style="border: none !important"><h:outputText value="End Date and Time:" /></p:panel>
+
+                    <p:calendar mode="popup" pattern ="dd.MM.yyyy HH:mm" value="#{callDroppedComponent.searchEndTime}" readonlyInput="true"  label="End Date Time" style="width: 155px;" maxdate="#{callDroppedComponent.presentDate}"/> 
+
+                    <p:panel style="border: none !important">
+                        <h:outputText value="Customer Mobile:" /></p:panel>
+
+                    <p:inputText id="custmob" value="${callDroppedComponent.mobileNo}" maxlength="12" style="width: 155px;" onkeypress="if((event.which &lt; 48 &amp;&amp; event.which !=8) || event.which &gt; 57 ) return false;"  validatorMessage="Invalid Mobile No" label="Customer Mobile" >
+                        <f:validateRegex pattern="^$|^((\+[0-9]{0,2}|0)?\d{10,12})$" />
+                         <p:ajax event="blur"  immediate="true"   partialSubmit="true"  async="true"  />
+                    </p:inputText>
+
+                    
+                    <p:commandButton icon="ui-icon-search"  value="Search" actionListener="#{callDroppedComponent.loadDroppedCalls(callDroppedComponent.searchStartTime,callDroppedComponent.searchEndTime,callDroppedComponent.custid,callDroppedComponent.mobileNo,callDroppedComponent.accountNo)}" onclick="setLoadRender1();" update=":headerform :mainform" />
+                    <p:commandButton icon="ui-icon-arrowreturn-1-w" ajax="true" immediate="true" update="droppanel :headerform" actionListener="#{callDroppedComponent.clear()}" style="margin-right:20px;" value="Clear" action="/pages/reports/droppedCallReport.xhtml" />
+                    <p:spacer/>
+                    <p:spacer/>
+                    <p:spacer/>
+                </p:panelGrid>
+
+            </p:panel>
+        </h:form>  
+
+        <h:form id="headerform"  >
+            <p:panel id="empLoadTable"  style="display:none;"  >
+                <center>
+                    <p:graphicImage url="/resources/images/loadingTable.gif"  height="30 px;" alt="" title=""/>  
+                </center>
+            </p:panel>
+
+            <p:scrollPanel  mode="native" id="pscroll" > 
+                <p:panel id="mainpanel" style="width: 202%;">
+                    <f:facet name="header" >
+                        Failed Call List<span style="float: right;">Record(s) Found : #{fn:length(callDroppedComponent.listDroppedCall) }</span>
+                    </f:facet>
+                    <p:dataTable id="empTable"  value="#{callDroppedComponent.listDroppedCall}"    var="current" rows="10" paginator="true" paginatorPosition="bottom" style="max-height: 375px;overflow: auto ">
+                        <f:facet name="header" >
+                            <h:outputText value="(Failed Call Report) #{callDroppedComponent.outputTextToExport}" style="visibility: hidden"/>
+                        </f:facet>
+
+                        <p:column sortBy="#{current.customerName}"> 
+                            <f:facet name="header">
+                                <h:outputText value="Customer Name" />
+                            </f:facet>
+                            <h:outputText value="#{current.customerName}"/>
+                        </p:column>
+
+                        <p:column sortBy="#{current.cellNo}"> 
+                            <f:facet name="header">
+                                <h:outputText value="Customer Mobile" />
+                            </f:facet>
+                            <h:outputText value="#{current.cellNo}"/>
+                        </p:column>
+                        <p:column sortBy="#{current.email}"> 
+                            <f:facet name="header">
+                                <h:outputText value="Customer Email" />
+                            </f:facet>
+                            <h:outputText value="#{current.email}"/>
+                        </p:column>
+                        <p:column sortBy="#{current.serviceName}"> 
+                            <f:facet name="header">
+                                <h:outputText value="Service" />
+                            </f:facet>
+                            <h:outputText value="#{current.serviceName}"/>
+                        </p:column>
+                       
+                        <p:column sortBy="#{current.callMedium}"> 
+                            <f:facet name="header">
+                                <h:outputText value="Call Medium" />
+                            </f:facet>
+                            <h:outputText value="#{current.callMedium}"/>
+                        </p:column>
+                        
+                        <p:column sortBy="#{current.droppedCallTime}" style="text-align: right"> 
+                            <f:facet name="header">
+                                <h:outputText value="Date Time" />
+                            </f:facet>
+                            <h:outputText value="#{current.droppedCallTime}" >
+                                <f:convertDateTime type="date" pattern="dd-MM-yyyy HH:mm:ss:SSS " />
+                            </h:outputText>
+                        </p:column>
+
+
+                    </p:dataTable>
+                </p:panel>
+            </p:scrollPanel>
+            <p:panel header="Export to PDF and Excel" rendered="#{callDroppedComponent.exportToCsvBtnStatus}">  
+                <p:commandLink id="pdf" ajax="false"  >  
+                    <p:graphicImage value="/resources/images/pdf.png" style="padding: 10px;"/> 
+                    <pe:exporter type="pdf" target="empTable" fileName="FailedCall" orientation="Landscape" datasetPadding="2" />  
+                </p:commandLink>  
+
+                <p:spacer width="20"/>  
+                <p:commandLink id="xls" ajax="false"  >  
+                    <p:graphicImage value="/resources/images/excel.png" style="padding: 10px;"/> 
+                    <pe:exporter type="xlsx" target="empTable" fileName="FailedCall" orientation="Landscape"/> 
+                </p:commandLink>  
+            </p:panel>  
+
+        </h:form>
+</c:if>
+    </ui:define>
+</ui:composition>

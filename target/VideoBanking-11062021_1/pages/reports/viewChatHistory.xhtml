@@ -1,0 +1,118 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="../../templates/layout.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="title">
+        View Chat
+    </ui:define>
+
+    <ui:define name="content">
+        <h:head>
+           <link type="text/css" rel="stylesheet" href="#{request.contextPath}/resources/css/tabs.css"></link>
+           <script type="text/javascript" src="#{request.contextPath}/resources/js/tdi.tabs.js"></script>
+         
+            
+  <script>
+   function setEvery() {
+   }
+
+    $(document).ready(function () {
+       $('a').parent().removeClass("selected");
+       $('a').removeAttr('style');
+       $('ul > li > a').each(function() {
+           $(this).removeAttr('style');
+           var str=$(this).text();
+               if (str.indexOf("Everyone") >= 0){
+                    $(this).text("Everyone");
+               }
+           });
+           $('ul > li > a > span').each(function() {
+           $(this).removeAttr('style');
+           $(this).css("display","none");
+        });
+      $(".tabcontents > div").css("display","none");
+      $("a").click(function(){
+
+           $(".tabcontents > div").css("display","none");
+           $('a').parent().removeClass("selected");
+           $(this).parent().addClass("selected");
+           var elem=$(this).attr('href').substring(1);
+
+           document.getElementById(elem).style.display='block';
+
+       });
+   });
+   </script> 
+            <style>
+                .nav-toggle{
+                    display:none !important;
+                }
+                .tabcontents{
+                    margin-left: 3px !important;
+                }
+                .tip {
+                    width: 0px;
+                    height: 0px;
+                    position: absolute;
+                    background: transparent;
+                    border: 10px solid #B3C0CB;
+                }
+
+                .tip-up {
+                    top: -21px;
+                    left: 2px;
+                    border-right-color: transparent;
+                    border-left-color: transparent;
+                    border-top-color: transparent;
+                }
+                .dialogbox .body {
+                    position: relative;
+                    width: auto;
+                    height: auto;
+                    margin: 10px 5px;
+                    padding: 3px;
+                    background-color: #b8d6c7;
+                    border-radius: 3px;
+                    border: 1px solid #B3C0CB;
+                    color:black;
+                    min-width: 15px;
+                }
+
+                .body .message {
+                  border-radius: 3px;
+                  font-family: Arial;
+                  font-size: 14px;
+                  color: black;
+                  min-width: 15px;
+                }
+                .dialogbox{
+                    min-width: 15px;
+                }
+                #participant{
+                    
+                    margin-top: 7px;
+                }
+            </style>
+        </h:head>
+
+        <h:body >     
+            <h:form>
+                <p:commandButton icon="ui-icon-arrowreturn-1-w" immediate="true" ajax="false" action="#{connectedCallsReportComponent.back()}" style="margin-bottom: 15px;" value="Back" />
+                <h:panelGroup layout="block"  id="addstatictabdiv" >
+                    <h:outputText value="#{connectedCallsReportComponent.chatHtml}" escape="false" />
+                </h:panelGroup>
+            </h:form>
+        </h:body>
+    </ui:define>
+    <script>
+        $('li').removeClass("selected");
+    </script>
+</ui:composition>

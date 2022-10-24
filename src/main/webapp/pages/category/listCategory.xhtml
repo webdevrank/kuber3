@@ -1,0 +1,187 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="../../templates/layout.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <ui:define name="title">
+        List Category
+    </ui:define>
+    <ui:define name="menu">
+        <c:if test="#{employeeLoginComponent.adminmenuRenderer }">
+            <ui:include src="../../templates/menu.xhtml" />
+        </c:if>
+    </ui:define>
+    <ui:define name="content">
+        <c:if test="#{employeeLoginComponent.adminmenuRenderer }">
+            <h:form id="mainform" >	
+                <p:outputPanel autoUpdate="true" style="text-align: right; margin-bottom: 3px; margin-right: 20px;" layout="block" >
+                    <p:commandButton icon="ui-icon-search" oncomplete="PF('catDialog').show()" update=":viewform:catviewdialog" title="View"  />
+                    <p:commandButton action="#{categoryMstComponent.checkEdit()}"  icon="ui-icon-pencil"  title="Edit"  />
+                    <p:spacer width="4"/>
+                    <p:commandButton  title="De-activate" icon="ui-icon-trash" oncomplete="PF('catDeleteDialog').show()" update=":catDeleteDialo" />
+                </p:outputPanel>
+
+                <p:panel id="mainpanel" >
+                    <f:facet name="header" >
+                        List Category<span style="float: right;" >Records Found : #{fn:length(categoryMstComponent.listCategory) }</span>
+                    </f:facet>
+                    <p:dataTable id="catTable" value="#{categoryMstComponent.listCategory}" selection="#{categoryMstComponent.selectCategory}" rowKey="${current.id}"   var="current" rows="10" paginator="true" paginatorPosition="bottom" >
+
+                        <p:column selectionMode="multiple" style="width:3%;vertical-align: middle;"  />
+
+                        <p:column sortBy="#{current.id}" filterBy="id"  filterMatchMode="contains"> 
+                            <f:facet name="header">
+                                <h:outputText value="ID" />
+                            </f:facet>
+                            <p:commandLink  style="font-weight: bold; color: #00498f;" ajax="true" action="#{categoryMstComponent.selectCategoryById(current.id)}" oncomplete="PF('singlegroupDialog').show()" update=":singleviewform:singlegroupviewdialog" >
+                                <h:outputText value="#{current.id}"/>
+                            </p:commandLink>
+                        </p:column>
+
+                        <p:column sortBy="#{current.catgCd}" filterBy="catgCd"  filterMatchMode="contains"> 
+                            <f:facet name="header">
+                                <h:outputText value="Code" />
+                            </f:facet>
+                            <h:outputText value="#{current.catgCd} "/>
+                        </p:column>
+
+                        <p:column sortBy="#{current.catgName}" filterBy="catgName"  filterMatchMode="contains"> 
+                            <f:facet name="header">
+                                <h:outputText value="Name" />
+                            </f:facet>
+                            <h:outputText value="#{current.catgName} "/>
+                        </p:column>
+
+                        <p:column sortBy="#{current.catgDesc}" filterBy="catgDesc"  filterMatchMode="contains"> 
+                            <f:facet name="header">
+                                <h:outputText value="Description" />
+                            </f:facet>
+                            <h:outputText value="#{current.catgDesc}"/>
+                        </p:column>
+
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+
+            <h:form  id="viewform" style="padding:12px 12px 12px 12px">
+
+                <p:dialog id="catviewdialog" appendTo="@(body)" modal="true" header="Category Detail" widgetVar="catDialog" resizable="false"   style="max-width: 800px;"> 
+
+                    <c:if test="#{categoryMstComponent.selectCategory.size()>1}">
+                        <p:scrollPanel mode="native" style="max-width: 800px;max-height: 380px;-ms-overflow-y:hidden;" >
+                            <p:dataTable var="cat" value="#{categoryMstComponent.selectCategory}" >           
+                                <p:column headerText="ID" sortBy="#{cat.id}" >
+                                    <h:outputText value="#{cat.id}" />
+                                </p:column>
+
+                                <p:column headerText="Code" sortBy="#{cat.catgCd}" >
+                                    <h:outputText value="#{cat.catgCd}" />
+                                </p:column>
+
+                                <p:column headerText="Name" sortBy="#{cat.catgName}" >
+                                    <h:outputText value="#{cat.catgName}" />
+                                </p:column>
+
+                                <p:column headerText="Description" sortBy="#{cat.catgDesc}" >
+                                    <h:outputText value="#{cat.catgDesc}" />
+                                </p:column>
+
+                            </p:dataTable> 
+                        </p:scrollPanel>
+                    </c:if>
+                    <c:if test="#{categoryMstComponent.selectCategory.size()== 1}">
+                        <h:panelGrid id="detail" columns="3" styleClass="noBorders"   columnClasses="label,value" cellspacing="5" cellpadding="30" style="max-width: 500px;">
+                            <h:outputText value="ID" style="font-size: small;font-weight: bold"/>
+                            <h:outputText value=":" />
+                            <h:outputText value="${categoryMstComponent.selectCategory.get(0).id}" style="font-size:small"/>
+                            <h:outputText value="Code" style="font-size: small;font-weight: bold"/>
+                            <h:outputText value=":" />
+                            <h:outputText value="${categoryMstComponent.selectCategory.get(0).catgCd}" style="font-size:small"/>
+                            <h:outputText value="Name" style="font-size: small;font-weight: bold"/>
+                            <h:outputText value=":" />
+                            <h:outputText value="${categoryMstComponent.selectCategory.get(0).catgName}" style="font-size:small"/>
+                            <h:outputText value="Description" style="font-size: small;font-weight: bold"/>
+                            <h:outputText value=":" />
+                            <h:outputText value="${categoryMstComponent.selectCategory.get(0).catgDesc}" style="font-size:small" />
+                            <p:spacer/>
+                            <p:spacer/>
+                            <p:spacer/>
+                        </h:panelGrid>
+                    </c:if>
+                    <c:if test="#{categoryMstComponent.selectCategory.size() == 0}">
+                        <p:spacer width="10"/><h:outputText value="#{commonprop['commons.norecord']}" style="position: inherit;font-weight: bold" /> <br/><br/> <p:spacer width="25"/>
+                    </c:if>
+                </p:dialog>
+            </h:form>
+
+            <h:form  id="singlecategoryviewform">
+
+                <p:dialog id="singlecategoryviewdialog" appendTo="@(body)" modal="true" header="#{categoryprop['listCategory.detail']}" widgetVar="singlecategoryDialog" resizable="false" style="max-width: 700px;"> 
+                    <h:panelGrid id="detail" columns="3" styleClass="noBorders"   columnClasses="label,value" cellspacing="5" cellpadding="30">
+                        <h:outputText value="ID" style="font-size: small;font-weight: bold"/>
+                        <h:outputText value=":" />
+                        <h:outputText value="${categoryMstComponent.categoryMst.id}" style="font-size:small"/> 
+                        <h:outputText value="Code" style="font-size: small;font-weight: bold"/>
+                        <h:outputText value=":" />
+                        <h:outputText value="${categoryMstComponent.categoryMst.catgCd}" style="font-size:small"/>   
+                        <h:outputText value="Name" style="font-size: small;font-weight: bold"/>
+                        <h:outputText value=":" />
+                        <h:outputText value="${categoryMstComponent.categoryMst.catgName}" style="font-size:small"/>
+                        <h:outputText value="Description" style="font-size: small;font-weight: bold"/>
+                        <h:outputText value=":" />
+                        <h:outputText value="${categoryMstComponent.categoryMst.catgDesc}" style="font-size:small"/>
+
+                        <p:spacer/>
+                        <p:spacer/>
+                        <p:spacer/>
+
+                    </h:panelGrid>
+                </p:dialog>
+            </h:form>
+
+            <p:dialog id="catDeleteDialo" appendTo="@(body)" modal="true" header="De-activate Category" widgetVar="catDeleteDialog" resizable="false" width="27%" > 
+                <h:form  id="deleteform" style="padding:12px 12px 12px 12px">
+                    <c:if test="#{categoryMstComponent.selectCategory.size() > 0}">
+                        <center>
+                            <h:outputText value="Do You Want To De-activate #{categoryMstComponent.selectCategory.size()} Item(s)?" style="position: inherit;font-weight: bold" /> <br/><br/> 
+                            <p:commandButton icon="ui-icon-check" ajax="false" action="#{categoryMstComponent.delete(request)}" value="#{commonprop['commons.yes']}" oncomplete="PF('catDeleteDialog').hide();"  /> <p:spacer width="5"/> 
+                            <p:commandButton value="#{commonprop['commons.no']}" type="button"  icon="ui-icon-close" onclick="PF('catDeleteDialog').hide()" />  
+                        </center> 
+                    </c:if>
+                    <c:if test="#{categoryMstComponent.selectCategory.size() == 0}">
+                        <center><h:outputText value="No Record to De-activate" style="position: inherit;font-weight: bold" /> <br/><br/></center>
+                    </c:if>
+                </h:form>
+            </p:dialog>
+            <p:dialog id="categoryNoeditDialog" appendTo="@(body)" modal="true" header="Edit Category" widgetVar="categoryNoeditViewDialog" resizable="false" > 
+                <h:form  id="categorynoeditform" style="padding:12px 12px 12px 12px">
+                    <center><h:outputText value="No record is selected" style="position: inherit;font-weight: bold" /> <br/><br/> </center>
+                </h:form>
+            </p:dialog>
+            <h:form  id="singleviewform">
+                <p:dialog id="singlegroupviewdialog" appendTo="@(body)" modal="true" header="Category Detail" widgetVar="singlegroupDialog" resizable="false" style="max-width: 500px;"> 
+                    <h:panelGrid id="detail" columns="3" styleClass="noBorders"   columnClasses="label,value" cellspacing="5" cellpadding="30">
+                        <h:outputText value="ID" style="font-size: small;font-weight: bold" />
+                        <h:outputText value=":" />
+                        <h:outputText value="${categoryMstComponent.categoryMst.id}" style="font-size:small"/>
+                        <h:outputText value="Code" style="font-size: small;font-weight: bold" />
+                        <h:outputText value=":" />
+                        <h:outputText value="${categoryMstComponent.categoryMst.catgCd}" style="font-size:small"/>
+                        <h:outputText value="Name" style="font-size: small;font-weight: bold"  />
+                        <h:outputText value=":" />
+                        <h:outputText value="${categoryMstComponent.categoryMst.catgName}" style="font-size:small"/>
+                        <h:outputText value="Description" style="font-size: small;font-weight: bold" />
+                        <h:outputText value=":" />
+                        <h:outputText value="${categoryMstComponent.categoryMst.catgDesc}" style="font-size:small"/>
+                        <p:spacer/>
+                        <p:spacer/>
+                        <p:spacer/>
+                    </h:panelGrid>
+                </p:dialog>
+            </h:form>
+        </c:if>
+    </ui:define>
+</ui:composition>

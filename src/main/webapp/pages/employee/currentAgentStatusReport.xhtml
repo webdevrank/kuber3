@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="../../templates/layout.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <ui:define name="title">
+        Current Status
+    </ui:define>
+    <ui:define name="menu">
+
+        <c:if test="#{employeeLoginComponent.adminmenuRenderer }">
+            <ui:include src="../../templates/menu.xhtml" />
+        </c:if>
+
+        <c:if test="#{employeeLoginComponent.supervisormenuRenderer}">
+            <ui:include src="../../templates/menusupervisor.xhtml" />
+        </c:if>
+
+    </ui:define>
+    <ui:define name="content">
+        <script>
+            $(document).ready(
+                    function () {
+                        document.getElementById('mainform:empTable').style.display = 'none';
+                        document.getElementById('mainform:empLoadTable').style.display = "";
+                        setInterval(function () {
+
+                            document.getElementById('mainform:checkbtn').click();
+                            document.getElementById('mainform:empTable').style.display = 'block';
+                            document.getElementById('mainform:empLoadTable').style.display = "none";
+                        }, 5000);
+                    });
+        </script>
+        <c:if test="#{employeeLoginComponent.adminmenuRenderer || employeeLoginComponent.supervisormenuRenderer }">
+            <h:form id="mainform" style="margin-top: 45px;padding:10px" >	
+                <p:panel id="mainpanel" >
+                    <f:facet name="header" >
+                        Current Status
+                    </f:facet>
+                    <p:panel id="empLoadTable"  style="display:none;"  >
+                        <center>
+                            <p:graphicImage url="/resources/images/loadingTable.gif"  height="30 px;" alt="" title=""/>  
+                        </center>
+                    </p:panel>
+                    <p:dataTable id="empTable"  value="#{currentAgentStatusComponent.listCurrentAgentStatusDto}"    var="current" rows="15" paginator="true" paginatorPosition="bottom" >
+
+                        <p:columnGroup type="header">  
+                            <p:row>  
+                                <p:column headerText="LogIn Id" />  
+                                <p:column headerText="Name" />  
+                                <p:column headerText="Current Status" />  
+                                <p:column headerText="Status Description" />  
+                                <p:column headerText="Time Duration" />  
+                            </p:row>  
+                        </p:columnGroup>  
+                        <p:column sortBy="#{current.agenyId}" style="width:15%" > 
+                            <h:outputText value="#{current.agenyId}"/>
+                        </p:column>
+                        <p:column sortBy="#{current.agentName}" style="width:25%" > 
+                            <h:outputText value="#{current.agentName}"/>
+                        </p:column>
+                        <p:column style="text-align: center;width:15%" rendered="#{current.statusBusy eq 1}" > 
+                            <p:commandButton value="BUSY"  style="width: 103px;background: #D20005;text-align: center;color:#000" rendered="#{current.statusBusy eq 1}" />
+                            <p:commandButton value="BUSY"  style="width: 103px;text-align: center;color:#000" rendered="#{current.statusBusy eq 0}" />
+                        </p:column>
+                        <p:column style="text-align: center;width:15%" rendered="#{current.statusAvailable eq 1}"> 
+                            <p:commandButton value="AVAILABLE"  style="width: 103px;background: lawngreen; text-align: center;color:#000" rendered="#{current.statusAvailable eq 1}"  />
+                            <p:commandButton value="AVAILABLE"  style="width: 103px; text-align: center;color:#000;color:#000" rendered="#{current.statusAvailable eq 0}" />
+                        </p:column>
+                        <p:column  style="text-align: center;width:15%" rendered="#{current.statusReady eq 0}"> 
+                            <p:commandButton value="NOT READY" rendered="#{current.statusReady eq 0}" style="background: yellow;width: 103px; text-align: center;color:#000" />
+                        </p:column>
+                        <p:column style="text-align: center;width:30%" >
+                            <h:outputText value="#{current.statusAgent}" />
+                        </p:column>
+                        <p:column style="text-align: center;width:10%" >
+                            <h:outputText value="#{current.statusTime}" />
+                        </p:column>
+                    </p:dataTable>
+                    <p:commandButton id="checkbtn" value="check" ajax="true"  action="#{currentAgentStatusComponent.agentStatusReportWithQuery()}" update=":mainform" style="visibility: hidden;height: 1px;width: 1px;" />
+                </p:panel>
+            </h:form>
+        </c:if>
+    </ui:define>
+</ui:composition>

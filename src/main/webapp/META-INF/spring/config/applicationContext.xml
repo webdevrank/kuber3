@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jee="http://www.springframework.org/schema/jee"
+       xmlns:lang="http://www.springframework.org/schema/lang"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xmlns:security="http://www.springframework.org/schema/security"
+       
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+          http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+          http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+          http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+          http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang.xsd
+          http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+          http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
+        http://www.springframework.org/schema/mvc  http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+        http://www.springframework.org/schema/security  http://www.springframework.org/schema/security/spring-security-3.0.3.xsd">
+    
+    <!-- Database Configuration -->
+    <import resource="../database/ccms-dao-context.xml"/>   
+  
+    <!-- Beans Declaration -->
+    <import resource="../beans/ccms-bean-context.xml"/>
+    
+    <task:annotation-driven />
+    <bean id="callScheduler" class="com.rank.ccms.util.CallScheduler"></bean> 	    
+    <bean id="ccmsCallRoutingConfigUtil" class="com.rank.ccms.config.ccmstablerelation.xmlconfig.CCMSCallRoutingConfigUtil" scope="singleton"></bean>
+    <bean id="vidyoConstants" class="com.rank.ccms.util.Constants" scope="singleton"></bean> 
+        
+    
+</beans>
+

@@ -1,0 +1,110 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+
+    <f:view contentType="text/html">
+        <h:head>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1"/>
+            <title><ui:insert name="title" /></title>
+          
+                      
+            <link rel="stylesheet" type="text/css" href="${request.contextPath}/resources/css/global.css" />
+            <script>
+                $(document).ready(function() {
+                            $("#page-title-cust").addClass("hide-components");
+                    });
+
+                    function showLoaderSpinner() {
+                        $("#spinner").css('display', 'block');
+                    }
+
+                    function hideLoaderSpinner() {
+                            $("#spinner").css('display', 'none');
+                    }
+
+                    function hideLeftSidebar(){
+                            $("#aside-fold").addClass('hidden-lg');
+                            $("#aside-toggle").removeClass('hidden-lg');
+                            $("#videoRowWrap").addClass('cust-width-fix');
+
+                            $("#leftSideBar").css('display', 'none');
+                            $("#top").css('width', 'auto').removeClass('custom-pull-left-top');
+                            $("#center").css('width', 'auto').css('left', '0px').removeClass('custom-pull-left');
+                            $("#bottom").css('width', 'auto').css('left', '0px').removeClass('custom-pull-left');
+                    }
+
+                    function showLeftSidebar(){
+                            $("#aside-fold").removeClass('hidden-lg');
+                            $("#aside-toggle").addClass('hidden-lg');
+                            $("#videoRowWrap").removeClass('cust-width-fix');
+
+                            $("#leftSideBar").css('display', 'block');
+                            $("#top").css('width', 'auto').addClass('custom-pull-left-top');
+                            $("#center").css('width', 'auto').addClass('custom-pull-left');
+                            $("#bottom").css('width', 'auto').addClass('custom-pull-left');
+                    }
+
+                    function showRightSidePanel(){
+                            $("#custInfoDiv").css('display', 'block');
+                            $("#showRightPanel").addClass('right-layout-hide');
+                            $("#hideRightPanel").removeClass('right-layout-hide').css('display', 'block');
+                            $("#right").removeClass('right-layout-hide').addClass('right-layout-show');
+                    }
+
+                    function hideRightSidePanel(){
+                            $("#showRightPanel").removeClass('right-layout-hide');
+                            $("#hideRightPanel").addClass('right-layout-hide');
+                            $("#right").removeClass('right-layout-show').addClass('right-layout-hide');
+                    }
+
+                    function showRightSidePanelCust(){
+                            $("#showRightPanelCust").addClass('right-layout-hide');
+                            $("#hideRightPanelCust").removeClass('right-layout-hide').css('display', 'block');
+                            $("#right").removeClass('right-layout-hide').addClass('right-layout-showcust');
+                    }
+
+                    function hideRightSidePanelCust(){
+                            $("#showRightPanelCust").removeClass('right-layout-hide');
+                            $("#hideRightPanelCust").addClass('right-layout-hide');
+                            $("#right").removeClass('right-layout-showcust').addClass('right-layout-hide');
+                    }
+            </script>
+            <style>
+                .ui-layout-unit{
+                    padding: 0 !important;
+                }
+            </style>
+        </h:head>
+        <h:body>
+            <p:layout  fullPage="true">
+                <div id="spinner" class="spinner" style="display:none;">
+                    <center>
+                        <img id="img-spinner" style="margin-top: 22%" src="${request.contextPath}/resources/images/loading.gif" alt="Loading"/>
+                    </center>
+                </div>
+                <ui:insert name="header">
+                   
+                    <ui:include src="headerCustomerDashboard.xhtml" />
+                </ui:insert>
+                <ui:insert name="rightSideBar">
+                    <ui:include src="rightSideBar.xhtml" />
+                </ui:insert>
+                <p:layoutUnit id="center" position="center" size="250"  styleClass="custom-layout-center" >
+                 
+                    <ui:insert name="content"></ui:insert>
+                </p:layoutUnit> 
+                <ui:insert name="footer"  >
+                    <ui:include src="footer.xhtml" />
+                </ui:insert>
+                
+            </p:layout>
+        </h:body>
+    </f:view>
+</html>

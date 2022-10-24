@@ -1,0 +1,105 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="../../templates/layout.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <ui:define name="title">
+        Employee Skill List
+    </ui:define>
+    <ui:define name="menu">
+        <c:if test="#{employeeLoginComponent.adminmenuRenderer }">
+            <ui:include src="../../templates/menu.xhtml" />
+        </c:if>
+    </ui:define>
+    <ui:define name="content">
+      
+        <c:if test="#{employeeLoginComponent.adminmenuRenderer }">
+            <h:form id="mainform" style="margin-top: 45px;padding:10px" >	
+                <p:outputPanel autoUpdate="true" style="text-align: right; margin-bottom: 3px; margin-right: 20px;" layout="block" >
+                    <p:commandButton title="Deactivate" icon="ui-icon-circle-close" oncomplete="PF('skillDeactiveDialog').show()" update=":DeactiveDialog"/>
+                </p:outputPanel>
+
+                <p:panel id="mainpanel" >
+                    <f:facet name="header" >
+                        Employee Skill List <span style="float: right;" >Records Found : #{fn:length(employeeProficiencyMapComponent.employeeProficienctMapDtolist) }</span>
+                    </f:facet>
+                    <p:dataTable id="skillTable" value="#{employeeProficiencyMapComponent.employeeProficienctMapDtolist}" selection="#{employeeProficiencyMapComponent.selectEmployeeProficiency}" rowKey="#{empProficiency.id}"  var="empProficiency" rows="10" paginator="true" paginatorPosition="bottom" filteredValue="#{employeeProficiencyMapComponent.filteredemployeeProficienctMapDtolist}">
+                        <p:column selectionMode="multiple" style="width:3%;vertical-align: middle;"  />
+                        <p:column sortBy="#{empProficiency.employeeMst.loginId}" filterBy="#{empProficiency.employeeMst.loginId}"  filterMatchMode="contains"> 
+                            <f:facet name="header">
+                                <h:outputText value="Login Id" />
+                            </f:facet>
+                            <h:outputText value="#{empProficiency.employeeMst.loginId}  "/>
+                        </p:column>
+
+                        <p:column sortBy="#{empProficiency.employeeMst.firstName}" filterBy="employeeMst.firstName"  filterMatchMode="contains"> 
+                            <f:facet name="header">
+                                <h:outputText value="First Name" />
+                            </f:facet>
+                            <h:outputText value="#{empProficiency.employeeMst.firstName}  "/>
+                        </p:column>
+                        <p:column sortBy="#{empProficiency.employeeMst.midName}" filterBy="employeeMst.midName"  filterMatchMode="contains"> 
+                            <f:facet name="header">
+                                <h:outputText value="Middle Name" />
+                            </f:facet>
+                            <h:outputText value="#{empProficiency.employeeMst.midName}"/>
+                        </p:column>
+                        <p:column sortBy="#{empProficiency.employeeMst.lastName}" filterBy="employeeMst.lastName"  filterMatchMode="contains"> 
+                            <f:facet name="header">
+                                <h:outputText value="Last Name" />
+                            </f:facet>
+                            <h:outputText value="#{empProficiency.employeeMst.lastName} "/>
+                        </p:column>
+
+                        <p:column sortBy="#{empProficiency.languageType}" filterBy="languageType"  filterMatchMode="contains"> 
+                            <f:facet name="header">
+                                <h:outputText value="Skill Type" />
+                            </f:facet>
+                            <h:outputText value="#{empProficiency.languageType} "/>
+                        </p:column>
+
+                        <p:column sortBy="#{empProficiency.languageName}" filterBy="languageName"  filterMatchMode="contains">  
+                            <f:facet name="header">
+                                <h:outputText value="Skill" />
+                            </f:facet>
+                            <h:outputText value="#{empProficiency.languageName}"/>
+
+                        </p:column>
+                        <p:column sortBy="#{empProficiency.primary}" filterBy="primary"  filterMatchMode="contains"> 
+                            <f:facet name="header">
+                                <h:outputText value="Primary Skill" />
+                            </f:facet>
+
+                            <h:outputText value="#{empProficiency.primary}"/>
+
+                        </p:column>
+                        <p:column sortBy="#{empProficiency.secondary}" filterBy="secondary"  filterMatchMode="contains"> 
+                            <f:facet name="header">
+                                <h:outputText value="Secondary Skill" />
+                            </f:facet>
+                            <h:outputText value="#{empProficiency.secondary}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+
+            <p:dialog id="DeactiveDialog" appendTo="@(body)" modal="true" header="De-activate Skill" widgetVar="skillDeactiveDialog" resizable="false" width="27%" > 
+                <h:form  id="deactiveform" style="padding:12px 12px 12px 12px">
+                    <c:if test="#{employeeProficiencyMapComponent.selectEmployeeProficiency.size() > 0}">
+                        <center>
+                            <h:outputText value="Do You Want To De-activate #{employeeProficiencyMapComponent.selectEmployeeProficiency.size()} Item(s)?" style="position: inherit;font-weight: bold" /> <br/><br/>
+                            <p:commandButton icon="ui-icon-check" ajax="false" action="#{employeeProficiencyMapComponent.deactivateSkill(request)}" value="Yes" oncomplete="PF('skillDeactiveDialog').hide();"  /> <p:spacer width="5"/> 
+                            <p:commandButton value="No" type="button"  icon="ui-icon-close" onclick="PF('skillDeactiveDialog').hide()" />  
+                        </center>
+                    </c:if>
+                    <c:if test="#{employeeProficiencyMapComponent.selectEmployeeProficiency.size() == 0}">
+                        <center><h:outputText value="No Records To Deactivate" /> <br/><br/> </center>
+                    </c:if>
+                </h:form>
+            </p:dialog>
+        </c:if>
+    </ui:define>
+</ui:composition>

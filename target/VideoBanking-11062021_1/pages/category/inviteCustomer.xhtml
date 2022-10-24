@@ -1,0 +1,111 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="../../templates/layout.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <ui:define name="title">
+        Invite Prospect Customer
+    </ui:define>
+    <ui:define name="menu">
+
+        <ui:include src="../../templates/menu.xhtml" />
+    </ui:define>
+    <ui:define name="content">
+        <script  type="text/javascript">
+            function openDocInTab(fileName) {
+                var hrefTest = '${request.contextPath}/ExampleDownloadServlet';
+                if (fileName !== "") {
+                    var popUp = window.open(hrefTest, '_blank');
+                    console.log('popUp=' + popUp);
+                    if (popUp === null || typeof (popUp) === 'undefined') {
+                        alert('Please disable your pop-up blocker and click the "Example" link again.');
+                    } else {
+                        popUp.focus();
+                    }
+                }
+            }
+        </script>
+        <style type="text/css" >
+         
+            .spinner {
+                position: absolute;
+                top: 0%;
+                left: 0%;
+                width: 100%;
+                height: 100%;
+                background-color: black;
+                z-index: 988;
+                -moz-opacity: 0.6;
+                opacity:.60;
+                filter: alpha(opacity=60);
+            }
+        </style>
+            <h:form prependId="false" id="mainform" style="margin-top: 45px;padding:10px" >
+            <p:panel header="Invite Prospect Customer">
+                <p:panelGrid id="detail" columns="2" styleClass="noBorders"   columnClasses="label,value">
+                    <p:panel style="border: none !important;"><h:outputText value="Name" /><font color="red">*</font></p:panel>
+                    <p:inputText id="VName" styleClass="inputclass"  required="true" value="#{customerInviteComponent.customerMst.firstName}" label="Name" title="Enter Name" requiredMessage="Name is required" validatorMessage="Name: Only characters allowed and in between spaces allowed" maxlength="100" placeholder="Name"  style="width:258px;margin-top: 5px;" >
+                        <f:validateRegex pattern="^[a-zA-Z]+( [a-zA-Z]+)*$" /> 
+                    </p:inputText>
+                    <p:panel style="border: none !important;"><h:outputText value="Email" /><font color="red">*</font></p:panel>
+                    <p:inputText id="Email" styleClass="inputclass"  required="true" value="#{customerInviteComponent.customerMst.email}" label="Email" validatorMessage="Email:Invalid email format" title="Enter Email" requiredMessage="Email is required" placeholder="Email" maxlength="100" style="width:258px;margin-top: 5px;" >
+                        <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+                    </p:inputText>
+                    <p:panel style="border: none !important;"><h:outputText value="Phone Number" /><font color="red">*</font></p:panel>
+                    <p:inputText id="txtMobId" styleClass="inputclass"  required="true" value="#{customerInviteComponent.customerPhone}" label="Phone" onkeypress="if (event.which &lt; 48 || event.which &gt; 57) return false;" title="Phone Number" requiredMessage="Phone Number is required" validatorMessage="Phone Number:Only numeric value with minimum 10 digits allowed" maxlength="12" placeholder="Phone Number"  style="width:258px;margin-top: 5px;" >
+                        <f:validateRegex pattern="^((\+[0-9]{0,2}|0)?\d{10,12})$" />
+                    </p:inputText>    
+                    <p:panel style="border: none !important;"><h:outputText value="Nationality" /><font color="red">*</font></p:panel>
+                    <p:inputText id="VNationality" styleClass="inputclass"  required="true" value="#{customerInviteComponent.nationality}" label="Nationality" title="Enter Nationality" requiredMessage="Nationality is required" validatorMessage="Nationality: Only characters allowed and in between spaces allowed" maxlength="100" placeholder="Nationality"  style="width:258px;margin-top: 5px;" >
+                        <f:validateRegex pattern="^[a-zA-Z]+( [a-zA-Z]+)*$" /> 
+                    </p:inputText>
+                    <p:panel style="border: none !important;"><h:outputText value="" /></p:panel>
+                    <p:commandButton icon="ui-icon-arrowreturnthick-1-w"  action="${customerInviteComponent.invite(request)}" onclick="$('#spinner').show();"  oncomplete="$('#spinner').hide();" style="float:right" value="Invite" update=":mainform" />
+                </p:panelGrid>
+
+            </p:panel>
+        </h:form>
+        <h:form prependId="false" id="main" enctype="multipart/form-data">
+
+            <p:panel header="Bulk Upload Prospect Customer Data for Invitation"  style="margin:10px;">
+                <p:growl id="messages" showSummary="true" showDetail="true" autoUpdate="false" />
+                <p:panelGrid id="detailaa" columns="2" styleClass="noBorders"   columnClasses="label,value">
+                    <p:fileUpload fileUploadListener="#{customerInviteComponent.customerFileUpload}" onstart="$('#spinner').show();" mode="advanced" auto="false" dragDropSupport="true"
+                                  required="true" update=":messagesform:basicDialog" sizeLimit="15000000" fileLimit="3" multiple="false"
+                                  allowTypes="/(\.|\/)(xlsx)$/" oncomplete="PF('dlg1').show();" immediate="true"  />
+
+                    <f:metadata />
+                    <p:commandButton value="Download Sample Excel" styleClass="uploadcandex" immediate="true" action="#{customerInviteComponent.exampleShow(request)}" onsuccess="openDocInTab('Example');" style="margin-top: 5px;"/>
+                </p:panelGrid>
+            </p:panel>
+
+        </h:form>
+        <h:form id="messagesform">
+
+            <p:dialog id="basicDialog"  modal="true"  header="Bulk Upload Prospect Customer" widgetVar="dlg1" closable="false" appendTo="@(body)">  
+                <c:if test="#{customerInviteComponent.exception.size() > 0}">
+                    <p:scrollPanel mode="native" >
+                        <p:dataTable var="error" value="#{customerInviteComponent.exception}" > 
+                            <p:column>
+                                <h:outputText value="#{error}"/>  
+                            </p:column>
+                        </p:dataTable>  
+
+                    </p:scrollPanel>
+                </c:if>
+                <c:if test="#{customerInviteComponent.successList.size()>0}">
+                    <p:scrollPanel mode="native" >
+                        <p:dataTable var="success" value="#{customerInviteComponent.successList}"> 
+                            <p:column>
+                                <h:outputText value="#{success}" />
+                            </p:column>
+                        </p:dataTable>  
+                    </p:scrollPanel>
+                </c:if>
+                <p:commandButton id="refreshPage" value="OK" onclick="PF('dlg1').hide();" style="margin: 10px 250px;"/>
+            </p:dialog>  
+        </h:form>
+    </ui:define>
+</ui:composition>

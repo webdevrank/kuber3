@@ -1,0 +1,174 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="../../templates/layout.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <ui:define name="title">
+        Promotional Video List
+    </ui:define>
+    <ui:define name="menu">
+        <div style="height:20px;"></div>
+         <c:if test="#{employeeLoginComponent.adminmenuRenderer }">
+            <ui:include src="../../templates/menu.xhtml" />
+        </c:if>
+
+        <c:if test="#{employeeLoginComponent.supervisormenuRenderer}">
+            <ui:include src="../../templates/menusupervisor.xhtml" />
+        </c:if>
+      </ui:define>
+    <ui:define name="content">
+        <style type="text/css" >
+  
+            .ui-carousel-viewport{
+                height: 310px !important;
+                width: 100% !important;
+            }
+            
+            .fontSizeAndweight{
+                font-size: medium !important;
+                font-weight: bold !important;
+            }
+
+            .ui-panelgrid td{
+                padding: 5px 2px !important;
+            }
+            .spinner {
+                position: absolute;
+                top: 0%;
+                left: 0%;
+                width: 100%;
+                height:134%;
+                background-color: black;
+                z-index:1001;
+                -moz-opacity: 0.8;
+                opacity:.80;
+                filter: alpha(opacity=80);
+            }
+            
+            .ui-dialog .ui-widget .ui-widget-content .ui-corner-all .ui-shadow .ui-hidden-container ui-draggable{
+                top: 120px !important;
+            }
+        </style> 
+        <c:if test="#{employeeLoginComponent.adminmenuRenderer }">
+            <h:form id="mainform" prependId="false" style="margin-top: 50px;padding:10px;">
+            <p:outputPanel autoUpdate="true" style="text-align: right; margin-bottom: 3px; margin-right: 20px;" layout="block" >
+                <p:commandButton title="Add" id="promoVideoAdd" icon="ui-icon-plus" action="#{promotionalVideoComponent.openDialog()}" oncomplete="PF('prompVideoUploadWid').show()" update=":prompVideoUploadDialog" />
+                <p:tooltip id="toolTipGrow" for="promoVideoAdd" value="Upload only .mp4 video file with 90mb maximum size limit."
+               showEffect="clip" hideEffect="explode"/>
+            </p:outputPanel>
+            <p:panel id="mainpanel" >
+                <f:facet name="header" >
+                    Promotional Video List 
+                </f:facet>
+            <p:dataTable id="promoTable" value="#{promotionalVideoComponent.listPromotionalVideoDto}" rowKey="${promo.promotionalVideoMstId}"  var="promo" rows="10" paginator="true" paginatorPosition="bottom" style="max-height: 375px;overflow: auto ">
+
+                    <p:column sortBy="#{promo.fileName}" filterBy="fileName"  filterMatchMode="contains"> 
+                        <f:facet name="header">
+                            <h:outputText value="File Name" />
+                        </f:facet>
+                        <h:outputText value="#{promo.fileName}"/>
+                    </p:column>
+
+                    <p:column sortBy="#{promo.caption}" filterBy="caption"  filterMatchMode="contains"> 
+                        <f:facet name="header">
+                            <h:outputText value="Caption" />
+                        </f:facet>
+                        <h:outputText value="#{promo.caption} "/>
+                    </p:column>
+
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Play" />
+                        </f:facet>
+                        <p:commandButton icon="ui-icon-play" ajax="true" style="background-color: red" value="Play" actionListener="#{promotionalVideoComponent.sPlayPromoVideoId(promo.promotionalVideoMstId)}" oncomplete="PF('promoVideoPlayDialog').show();" update=":playform"/>                   
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Select" />
+                        </f:facet>
+                        <p:commandButton icon="ui-icon-check" ajax="true" actionListener="#{promotionalVideoComponent.select(promo.promotionalVideoMstId)}" style="background-color: green" value="Select" rendered="#{!promo.selectFlag}" update=":mainform"/>   
+                        <p:commandButton ajax="true" style="background-color: transparent;color: #000;border: none;" value="Selected" rendered="#{promo.selectFlag}" />                   
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Delete" />
+                        </f:facet>
+                        <p:commandButton icon="ui-icon-trash" ajax="true" style="background-color: red" actionListener="#{promotionalVideoComponent.sDeletePromoVideoId(promo.promotionalVideoMstId)}" oncomplete="PF('promoVideoDeleteDialog').show();" value="Delete" update=":mainform"/>
+                    </p:column>
+                    
+                </p:dataTable>
+            
+
+                <f:facet name="footer">
+                    In total there are #{fn:length(promotionalVideoComponent.listPromotionalVideoDto)} Promotional Video(s).
+                </f:facet>
+            </p:panel>
+        </h:form>
+        
+            <p:dialog id="promoPlayDialog" appendTo="@(body)" modal="true" header="Promotional Video" widgetVar="promoVideoPlayDialog" resizable="false" closable="false" position="center,130"  > 
+                <h:form  id="playform" style="padding:10px 10px 10px 10px">                  
+                    <p:media value="#{promotionalVideoComponent.playFileUrl}" width="261" height="233" rendered="#{promotionalVideoComponent.promotionalVideoPlayRender}">
+                        <f:param name="autostart" value="false" />
+                    </p:media> 
+                    <center>
+                        <p:commandButton  ajax="true" immediate="true" value="Close" onclick="PF('promoVideoPlayDialog').hide();videoMute();" actionListener="#{promotionalVideoComponent.sStopPlayPromoVideoId()}" update=":playform"  style="margin-top: 10px;width:100px;" />
+                    </center>
+                </h:form>
+            </p:dialog>
+        
+        <p:dialog id="prompVideoUploadDialog" appendTo="@(body)" modal="true" dynamic="true" header="Upload Promotional Video" widgetVar="prompVideoUploadWid" resizable="false" closable="true" onHide="#{promotionalVideoComponent.reset()}">
+      
+               <h:form id="prompVideoUploadDigForm" enctype="multipart/form-data" prependId="false" style="padding:12px 12px 12px 12px;overflow: hidden;" >
+                   <h:panelGrid columns="2" cellpadding="5" styleClass="noBorders">
+                        <h:outputLabel value="Upload File" style="white-space: nowrap;" rendered="#{promotionalVideoComponent.promotionalVideoUploadRender}" />
+                        <p:fileUpload id="uploadform" validator="#{promotionalVideoComponent.checkDuplicateFileNameForPromoVideo}"
+                                      fileUploadListener="#{promotionalVideoComponent.uploadFile1}"
+                                      invalidFileMessage="Invalid File Type"
+                                      required="true" 
+                                      auto="false"
+                                      sizeLimit="95000000"
+                                      multiple="false"
+                                      allowTypes="/(\.|\/)(mp4)$/"
+                                      rendered="#{promotionalVideoComponent.promotionalVideoUploadRender}"
+                                      update=":prompVideoUploadDigForm"
+                                      >                                              
+                        </p:fileUpload>
+                        <h:outputLabel value="Provide Caption:" rendered="#{!promotionalVideoComponent.promotionalVideoUploadRender}"/>
+                        <p:inputTextarea id="portalCaption" validator="#{promotionalVideoComponent.checkDuplicateCaptionNameForPromoVideo}" value="#{promotionalVideoComponent.promotionalVideoDto.caption}" required="true" requiredMessage="Caption is required" label="Video Caption" onchange="this.value = this.value.trim()" maxlength="50" style="height: 50px; width: 97%;" rendered="#{!promotionalVideoComponent.promotionalVideoUploadRender}">
+                            <p:ajax event="blur"  listener="#{promotionalVideoComponent.checkErrors()}" immediate="true"   partialSubmit="true"  async="true" update="@this" />                       
+                        </p:inputTextarea> 
+
+                        <f:facet name="footer">
+                              <center>
+                                <p:commandButton  value="Save" ajax="true" actionListener="#{promotionalVideoComponent.addPromoVideo(request)}" rendered="#{!promotionalVideoComponent.promotionalVideoUploadRender}" style="margin-top: 10px;"/>
+                              </center>
+                        </f:facet> 
+
+                    </h:panelGrid>
+                </h:form>
+          
+        </p:dialog>
+        <p:dialog id="typeDeleteDialog" appendTo="@(body)" modal="true" header="Delete Promotional Video" widgetVar="promoVideoDeleteDialog" resizable="false" width="27%" > 
+            <h:form  id="deleteform" style="padding:10px 10px 10px 10px">                
+                    <center>
+                        <h:outputText value="Do You Want To Permanent Delete?" /> <br/><br/> 
+                        <p:commandButton icon="ui-icon-check" ajax="false" action="#{promotionalVideoComponent.delete()}" value="Yes" oncomplete="PF('promoVideoDeleteDialog').hide();" update=":mainform"  /> <p:spacer width="5"/> 
+                        <p:commandButton value="No" type="button"  icon="ui-icon-close" onclick="PF('promoVideoDeleteDialog').hide()" />  
+                    </center>     
+            </h:form>
+        </p:dialog>
+        <p:dialog id="infoupload" appendTo="@(body)" modal="true" header="Information" widgetVar="promoVideoSuccessDialog" resizable="false"  closable="false" > 
+             <h:form  id="sform" style="padding:10px 10px 10px 10px" prependId="false">                
+                    <center>
+                        <h:outputText value="#{promotionalVideoComponent.uploadMsg}" /> <br/><br/> 
+                        <p:commandButton  ajax="false" value="OK" onclick="PF('promoVideoSuccessDialog').hide();" update=":mainform"  /> <p:spacer width="5"/> 
+                    </center>  
+            </h:form>
+        </p:dialog>
+        
+        </c:if>
+    </ui:define>
+</ui:composition>

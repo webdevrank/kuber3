@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="../../templates/layout.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <ui:define name="title">
+        Add Service
+    </ui:define>
+    <ui:define name="menu">
+        <c:if test="#{employeeLoginComponent.adminmenuRenderer }">
+            <ui:include src="../../templates/menu.xhtml" />
+        </c:if>
+    </ui:define>
+    <ui:define name="content">
+       
+         <c:if test="#{employeeLoginComponent.adminmenuRenderer }">
+             <h:form prependId="false" id="mainform" style="padding:10px;" >
+            <p:panel header="Add Service" style=" margin-top: 45px">
+                <p:panelGrid id="detail" columns="2" styleClass="noBorders"   columnClasses="label,value">
+                    <p:panel style="border: none !important;"><h:outputText value="Code:" /><font color='red'>*</font></p:panel>
+                    <p:inputText id="service_code" value="${serviceMstComponent.servicesMst.serviceCd}" required="true" label="Service Code" maxlength="4" validator="#{serviceMstComponent.checkDuplicateServiceCode}" size="7">
+                        <p:ajax event="blur"  listener="#{serviceMstComponent.checkErrors()}" immediate="true"   partialSubmit="true"  async="true" update="@this" />
+                    </p:inputText>
+
+                    <p:panel style="border: none !important;"><h:outputText value="Name:" /><font color='red'>*</font></p:panel>
+                    <p:inputText id="service_name" value="${serviceMstComponent.servicesMst.serviceName}" required="true" label="Name" maxlength="50" validator="#{serviceMstComponent.checkDuplicateServiceName}" style="width: 155px;">
+                        <p:ajax event="blur"  listener="#{serviceMstComponent.checkErrors()}" immediate="true"   partialSubmit="true"  async="true" update="@this" />
+                    </p:inputText>
+
+                    <p:panel style="border: none !important;"><h:outputText value="Description:" /></p:panel>
+                    <p:inputTextarea rows="2" id="service_desc" value="${serviceMstComponent.servicesMst.serviceDesc}"  label="Description:" maxlength="150" validator="#{serviceMstComponent.checkDescription}"  style="height:50px;width: 155px;">
+                        <p:ajax event="blur"  listener="#{categoryMstComponent.checkErrors()}" immediate="true"   partialSubmit="true"  async="true" update="@this" />
+                    </p:inputTextarea>     
+                    
+                    <p:spacer/>
+                    <p:spacer/>
+                    <p:spacer/>
+
+                </p:panelGrid>
+                <h:panelGroup style="margin-left: 125px;" >
+                    <p:commandButton icon="ui-icon-disk"  action="${serviceMstComponent.save(request)}"  style="margin-right:20px;" value="Save" actionListener="#{serviceMstComponent.checkErrors()}" update=":mainform" />
+                    <p:commandButton icon="ui-icon-arrowreturn-1-w" immediate="true" ajax="false" action="${serviceMstComponent.back()}" style="margin-right:20px;" value="Back" />
+                </h:panelGroup>
+            </p:panel>
+        </h:form>
+         </c:if>
+    </ui:define>
+</ui:composition>

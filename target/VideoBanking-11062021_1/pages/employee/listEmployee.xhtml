@@ -1,0 +1,394 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="../../templates/layout.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <ui:define name="title">
+        List Employee 
+    </ui:define>
+    
+   
+    <ui:define name="menu">
+        
+         <c:if test="#{employeeLoginComponent.adminmenuRenderer }">
+            <ui:include src="../../templates/menu.xhtml" />
+        </c:if>
+
+        <c:if test="#{employeeLoginComponent.supervisormenuRenderer}">
+            <ui:include src="../../templates/menusupervisor.xhtml" />
+        </c:if>
+   
+    </ui:define>
+    <ui:define name="content">
+
+   
+       <c:if test="#{employeeLoginComponent.adminmenuRenderer }"> 
+        <h:form id="mainform" style="margin-top: 45px">	
+            
+            <p:outputPanel style="text-align: right; margin-bottom: 3px; margin-right: 20px;" layout="block" >
+                <p:commandButton title="View" icon="ui-icon-search" oncomplete="PF('empDialog').show()" update=":viewform:empviewdialog"   />
+                <p:commandButton title="Edit" action="#{employeeMstComponent.checkEdit()}"  icon="ui-icon-pencil"   />
+                <p:commandButton title="Delete" icon="ui-icon-trash" actionListener="#{employeeMstComponent.getSelectEmployees()}" oncomplete="PF('empDeleteViewDialog').show()" update=":empDeleteDialog"/>
+            </p:outputPanel>
+
+            <p:panel id="mainpanel" >
+                
+                <f:facet name="header" >
+                    Employee List <span style="float: right;">Found : #{fn:length(employeeMstComponent.listEmployee) }</span>
+                </f:facet>
+                <p:dataTable id="empTable"  value="#{employeeMstComponent.listEmployee}" selection="#{employeeMstComponent.selectEmployees}" rowKey="${current.id}"   var="current" rows="10" first="#{employeeMstComponent.first}" paginator="true" paginatorPosition="bottom" filteredValue="#{employeeMstComponent.filteredEmployee}">
+                    <p:ajax event="page"  listener="#{employeeMstComponent.onPageChange}" />
+                    <p:column selectionMode="multiple" style="width:3%;vertical-align: middle;"  />
+                    
+                    <p:column sortBy="#{current.id}" filterBy="#{current.id}"  filterMatchMode="startsWith"> 
+                        <f:facet name="header">
+                            <h:outputText value="ID" />
+                        </f:facet>
+                        <p:commandLink  style="font-weight: bold; color: #00498f;" ajax="true" action="#{employeeMstComponent.selectEmployeeById(current.id)}" oncomplete="PF('singleempDialog').show()" update=":singleempviewform:singleempviewdialog" >
+                            <h:outputText value="#{current.id}"/>
+                        </p:commandLink>
+                    </p:column>
+                     
+       
+                    
+                     <c:if test="${not empty current.midName}">
+                        <c:set var="midname" value="${fn:replace(current.midName, ' ', '')}" />
+                        <c:if test="${not empty midname}">
+                            <p:column sortBy="#{current.firstName}" filterBy="#{current.firstName} #{current.midName} #{current.lastName}"  filterMatchMode="contains"> 
+                                <f:facet name="header">
+                                    <h:outputText value="Name" />
+                                </f:facet>
+                                <h:outputText value="#{current.firstName} #{current.midName} #{current.lastName}"/>
+                            </p:column>
+                        </c:if>
+                        <c:if test="${empty midname}">
+                            <p:column sortBy="#{current.firstName}" filterBy="#{current.firstName} #{current.lastName}"  filterMatchMode="contains"> 
+                                <f:facet name="header">
+                                    <h:outputText value="Name" />
+                                </f:facet>
+                                <h:outputText value="#{current.firstName} #{current.lastName}"/>
+                            </p:column>
+                        </c:if>
+                    </c:if>
+                    <c:if test="${empty current.midName}">
+                        <p:column sortBy="#{current.firstName}" filterBy="#{current.firstName} #{current.lastName}"  filterMatchMode="contains"> 
+                            <f:facet name="header">
+                                <h:outputText value="Name" />
+                            </f:facet>
+                            <h:outputText value="#{current.firstName} #{current.lastName}"/>
+                        </p:column>
+                    </c:if>
+                    
+                    <p:column sortBy="#{current.loginId}" filterBy="#{current.loginId}"  filterMatchMode="contains"> 
+                        <f:facet name="header">
+                            <h:outputText value="Login Id" />
+                        </f:facet>
+                        <h:outputText value="#{current.loginId}"/>
+                    </p:column>
+                    
+                    <p:column sortBy="#{current.employeeType}" filterBy="#{current.employeeType}"  filterMatchMode="contains"> 
+                        <f:facet name="header">
+                            <h:outputText value="Employee Type" />
+                        </f:facet>
+                        <h:outputText value="#{current.employeeType}"/>
+                    </p:column>
+                   
+                    <p:column sortBy="#{current.email}" filterBy="#{current.email}"  filterMatchMode="contains"> 
+                        <f:facet name="header">
+                            <h:outputText value="Email" />
+                        </f:facet>
+                        <h:outputText value="#{current.email}"/>
+                    </p:column>
+                    
+                    <p:column sortBy="#{current.cellPhone}" filterBy="#{current.cellPhone}"  filterMatchMode="startsWith"> 
+                        <f:facet name="header">
+                            <h:outputText value="Mobile Number" />
+                        </f:facet>
+                        <h:outputText value="#{current.cellPhone}"/>
+                    </p:column>
+                    <p:column style="text-align: center"> 
+                        <f:facet name="header">
+                            <h:outputText value="Status" />
+                        </f:facet>
+                        <p:fragment>
+                           
+                            <p:commandButton title="Activate" rendered="#{current.deactiveFlg}" icon="ui-icon-locked" action="#{employeeMstComponent.selectEmployeeById(current.id)}" onclick="PF('empActivateDialog').show()" ></p:commandButton>
+                            <p:commandButton title="De-activate" rendered="#{!current.deactiveFlg}" action="#{employeeMstComponent.selectEmployeeById(current.id)}" icon="ui-icon-unlocked" onclick="PF('empDeactivateDialog').show()"> </p:commandButton>
+                       </p:fragment>
+                    </p:column>
+                
+                </p:dataTable>
+                  
+            </p:panel>
+           
+        </h:form>
+
+        <h:form  id="viewform">
+            <p:dialog id="empviewdialog" appendTo="@(body)" modal="true" header="Employee Detail" widgetVar="empDialog" resizable="false"  style="max-width: 800px;"  > 
+                <c:if test="#{employeeMstComponent.selectEmployees.size() > 1}">
+                    <p:scrollPanel mode="native" style="max-width: 800px;max-height: 380px;-ms-overflow-y:hidden;" >
+                        <p:dataTable var="emp" value="#{employeeMstComponent.selectEmployees}" style="width:200%" >           
+                           
+                            <p:column headerText="ID" sortBy="#{emp.id}" >
+                                <h:outputText value="#{emp.id}" />
+                            </p:column>
+                           
+                            <p:column headerText="Name" sortBy="#{emp.firstName} #{emp.midName} #{emp.lastName}" >
+                                <h:outputText value="#{emp.firstName} #{emp.midName}" />
+                            </p:column>
+             
+                            <p:column headerText="Login Id" sortBy="#{emp.loginId}" >
+                                <h:outputText value="#{emp.loginId}" />
+                            </p:column>
+                           
+                            <p:column headerText="Employee Type" sortBy="#{emp.employeeType}" >
+                                <h:outputText value="#{emp.employeeType}" />
+                            </p:column>
+                            
+                            <p:column headerText="Address1" sortBy="#{emp.addrsLine1}" >
+                                <h:outputText value="#{emp.addrsLine1}" />
+                            </p:column>
+                            
+                            <p:column headerText="Address2" sortBy="#{emp.addrsLine2}" >
+                                <h:outputText value="#{emp.addrsLine2}" />
+                            </p:column>
+                            
+                            <p:column headerText="City" sortBy="#{emp.city}" >
+                                <h:outputText value="#{emp.city}" />
+                            </p:column>
+                            
+                            <p:column headerText="State" sortBy="#{emp.stateNm}" >
+                                <h:outputText value="#{emp.stateNm}" />
+                            </p:column>
+                            
+                            <p:column headerText="Pin" sortBy="#{emp.pin}" >
+                                <h:outputText value="#{emp.pin}" rendered="#{emp.pin ne 0}" />
+                            </p:column>
+                            
+                            <p:column headerText="Country" sortBy="#{emp.country}" >
+                                <h:outputText value="#{emp.country}" />
+                            </p:column>
+                            
+                            <p:column headerText="Email" sortBy="#{emp.email}" >
+                                <h:outputText value="#{emp.email}" />
+                            </p:column>
+                           
+                            <p:column headerText="Office Phone" sortBy="#{emp.officePhone}" >
+                                <h:outputText value="#{emp.officePhone}" rendered="#{emp.officePhone ne 0}" />
+                            </p:column>
+                           
+                            <p:column headerText="Home Phone" sortBy="#{emp.homePhone}" >
+                                <h:outputText value="#{emp.homePhone}" rendered="#{emp.homePhone ne 0}" />
+                            </p:column>
+                            
+                            <p:column headerText="Mobile Number" sortBy="#{emp.cellPhone}" >
+                                <c:if test="#{emp.cellPhone == 0}">
+                                    <h:outputText value="" />
+                                </c:if>
+                                <c:if test="#{emp.cellPhone != 0}">
+                                    <h:outputText value="#{emp.cellPhone}" />
+                                </c:if>
+                            </p:column>
+                       
+                        </p:dataTable>  
+                    </p:scrollPanel>
+                </c:if>
+                <c:if test="#{employeeMstComponent.selectEmployees.size() == 1}">
+                    <h:panelGrid id="detail" columns="3" styleClass="noBorders"   columnClasses="label,value" cellspacing="5" cellpadding="30" style="max-width: 500px;">
+                        <h:outputText value="ID" style="font-size: small;font-weight: bold"/>
+                        <h:outputText value=":" />
+                        <h:outputText value="#{employeeMstComponent.selectEmployees.get(0).id}"  style="font-size:small"/>
+                        <h:outputText value="Name" style="font-size: small;font-weight: bold"/>
+                        <h:outputText value=":" />
+                        <h:outputText value="#{employeeMstComponent.selectEmployees.get(0).firstName} #{employeeMstComponent.selectEmployees.get(0).midName} #{employeeMstComponent.selectEmployees.get(0).lastName}"  style="font-size:small"/>
+                        <h:outputText value="Login Id" style="font-size: small;font-weight: bold"/>
+                        <h:outputText value=":" />
+                        <h:outputText value="#{employeeMstComponent.selectEmployees.get(0).loginId}"  style="font-size:small"/>
+                        <h:outputText value="Employee Type" style="font-size: small;font-weight: bold"/>
+                        <h:outputText value=":" />
+                        <h:outputText value="${employeeMstComponent.selectEmployees.get(0).employeeType}"  style="font-size:small"/>
+                        <h:outputText value="Address1" style="font-size: small;font-weight: bold"/>
+                        <h:outputText value=":" />
+                        <h:outputText value="#{employeeMstComponent.selectEmployees.get(0).addrsLine1}"  style="font-size:small"/>
+                        <h:outputText value="Address2" style="font-size: small;font-weight: bold"/>
+                        <h:outputText value=":" />
+                        <h:outputText value="#{employeeMstComponent.selectEmployees.get(0).addrsLine2}"  style="font-size:small"/>
+                        <h:outputText value="City" style="font-size: small;font-weight: bold"/>
+                        <h:outputText value=":" />
+                        <h:outputText value="#{employeeMstComponent.selectEmployees.get(0).city}"  style="font-size:small"/>
+                        <h:outputText value="State" style="font-size: small;font-weight: bold"/>
+                        <h:outputText value=":" />
+                        <h:outputText value="#{employeeMstComponent.selectEmployees.get(0).stateNm}"  style="font-size:small"/>
+                        <h:outputText value="Pin" style="font-size: small;font-weight: bold"/>
+                        <h:outputText value=":" />
+                        <c:if test="#{employeeMstComponent.selectEmployees.get(0).pin == 0}">
+                            <h:outputText value="" />
+                        </c:if>
+                        <c:if test="#{employeeMstComponent.selectEmployees.get(0).pin != 0}">
+                            <h:outputText value="#{employeeMstComponent.selectEmployees.get(0).pin}"  style="font-size:small"/>
+                        </c:if>
+                        <h:outputText value="Country" style="font-size: small;font-weight: bold"/>
+                        <h:outputText value=":" />
+                        <h:outputText value="#{employeeMstComponent.selectEmployees.get(0).country}"  style="font-size:small"/>
+                        <h:outputText value="Email" style="font-size: small;font-weight: bold"/>
+                        <h:outputText value=":" />
+                        <h:outputText value="#{employeeMstComponent.selectEmployees.get(0).email}"  style="font-size:small"/>
+                        <h:outputText value="Office Phone" style="font-size: small;font-weight: bold"/>
+                        <h:outputText value=":" />
+                        <c:if test="#{employeeMstComponent.selectEmployees.get(0).officePhone == 0}">
+                            <h:outputText value="" />
+                        </c:if>
+                        <c:if test="#{employeeMstComponent.selectEmployees.get(0).officePhone != 0}">
+                            <h:outputText value="#{employeeMstComponent.selectEmployees.get(0).officePhone}"  style="font-size:small" />
+                        </c:if>
+                        <h:outputText value="Home Phone" style="font-size: small;font-weight: bold"/>
+                        <h:outputText value=":" />
+                        <c:if test="#{employeeMstComponent.selectEmployees.get(0).homePhone == 0}">
+                            <h:outputText value="" />
+                        </c:if>
+                        <c:if test="#{employeeMstComponent.selectEmployees.get(0).homePhone != 0}">
+                            <h:outputText value="#{employeeMstComponent.selectEmployees.get(0).homePhone}"  style="font-size:small" />
+                        </c:if>
+                        <h:outputText value="Mobile Number" style="font-size: small;font-weight: bold"/>
+                        <h:outputText value=":" />
+                        <h:outputText value="#{employeeMstComponent.selectEmployees.get(0).cellPhone}"  style="font-size:small"/>
+                        <p:spacer/>
+                        <p:spacer/>
+                        <p:spacer/>
+                    </h:panelGrid>
+                </c:if>
+                <c:if test="#{employeeMstComponent.selectEmployees.size() == 0}">
+                    <p:spacer width="10"/><h:outputText value="No record is selected" style="position: inherit;font-weight: bold;" /> <br/><br/> <p:spacer width="25"/>
+                </c:if>
+            </p:dialog>
+        </h:form>
+
+        <h:form  id="singleempviewform">
+            <p:dialog id="singleempviewdialog" appendTo="@(body)" modal="true" header="Employee Detail" widgetVar="singleempDialog" resizable="false" style="max-width: 500px;"> 
+                <h:panelGrid id="detaila" columns="3" styleClass="noBorders"   columnClasses="label,value" cellspacing="5" cellpadding="30">
+                    <h:outputText value="ID" style="font-size: small;font-weight: bold"/>
+                    <h:outputText value=":" />
+                    <h:outputText value="${employeeMstComponent.employeeMst.id}" style="font-size:small"/>
+                    <h:outputText value="Name" style="font-size: small;font-weight: bold"/>
+                    <h:outputText value=":" />
+                    <h:outputText value="${employeeMstComponent.employeeMst.firstName} ${employeeMstComponent.employeeMst.midName} ${employeeMstComponent.employeeMst.lastName}" style="font-size:small" />
+                    <h:outputText value="Login Id" style="font-size: small;font-weight: bold" />
+                    <h:outputText value=":" />
+                    <h:outputText value="${employeeMstComponent.employeeMst.loginId}" style="font-size:small"/>
+                    <h:outputText value="Employee Type" style="font-size: small;font-weight: bold" />
+                    <h:outputText value=":" />
+                    <h:outputText value="#{employeeMstComponent.employeeTypeMst.typeName}" style="font-size:small"/>
+                    <h:outputText value="Address1" style="font-size: small;font-weight: bold"/>
+                    <h:outputText value=":" />
+                    <h:outputText value="${employeeMstComponent.employeeMst.addrsLine1}" style="font-size:small"/>
+                    <h:outputText value="Address2" style="font-size: small;font-weight: bold" />
+                    <h:outputText value=":" />
+                    <h:outputText value="${employeeMstComponent.employeeMst.addrsLine2}" style="font-size:small"/>
+                    <h:outputText value="City" style="font-size: small;font-weight: bold"/>
+                    <h:outputText value=":" />
+                    <h:outputText value="${employeeMstComponent.employeeMst.city}" style="font-size:small" />
+                    <h:outputText value="State" style="font-size: small;font-weight: bold" />
+                    <h:outputText value=":" />
+                    <h:outputText value="${employeeMstComponent.employeeMst.stateNm}" style="font-size:small"/>
+                    <h:outputText value="Pin" style="font-size: small;font-weight: bold"/>
+                    <h:outputText value=":" />
+                    <c:if test="#{employeeMstComponent.employeeMst.pin == 0}">
+                        <h:outputText value="" />
+                    </c:if>
+                    <c:if test="#{employeeMstComponent.employeeMst.pin != 0}">
+                        <h:outputText value="${employeeMstComponent.employeeMst.pin}" style="font-size:small"/>
+                    </c:if>
+                    <h:outputText value="Country"  style="font-size: small;font-weight: bold"/>
+                    <h:outputText value=":" />
+                    <h:outputText value="${employeeMstComponent.employeeMst.country}" style="font-size:small"/>
+                    <h:outputText value="Email"  style="font-size: small;font-weight: bold"/>
+                    <h:outputText value=":" />
+                    <h:outputText value="${employeeMstComponent.employeeMst.email}" style="font-size:small"/>
+                    <h:outputText value="Office Phone"  style="font-size: small;font-weight: bold"/>
+                    <h:outputText value=":" />
+                    <c:if test="#{employeeMstComponent.employeeMst.officePhone == 0}">
+                        <h:outputText value="" />
+                    </c:if>
+                    <c:if test="#{employeeMstComponent.employeeMst.officePhone != 0}">
+                        <h:outputText value="${employeeMstComponent.employeeMst.officePhone}"  style="font-size: small;" />
+                    </c:if>
+                    <h:outputText value="Home Phone"  style="font-size: small;font-weight: bold"/>
+                    <h:outputText value=":" />
+                    <c:if test="#{employeeMstComponent.employeeMst.homePhone == 0}">
+                        <h:outputText value="" />
+                    </c:if>
+                    <c:if test="#{employeeMstComponent.employeeMst.homePhone != 0}">
+                        <h:outputText value="${employeeMstComponent.employeeMst.homePhone}" style="font-size:small"/>
+                    </c:if>
+                    <h:outputText value="Mobile Number"  style="font-size: small;font-weight: bold"/>
+                    <h:outputText value=":" />
+                    <h:outputText value="${employeeMstComponent.employeeMst.cellPhone}" style="font-size:small"/>
+                    <p:spacer/>
+                    <p:spacer/>
+                    <p:spacer/>
+                </h:panelGrid>
+            </p:dialog>
+        </h:form>
+
+        <p:dialog id="empDeleteDialog" appendTo="@(body)" modal="true" header="Delete Employee" widgetVar="empDeleteViewDialog" resizable="false" width="27%" > 
+            <h:form  id="empdeleteform" style="padding:12px 12px 12px 12px">
+                <p:growl id="msgg" sticky="false" showDetail="false"/> 
+                <c:if test="#{employeeMstComponent.selectEmployees.size() > 1}">
+                    <center>
+                        <h:outputText value="Multiple deletion not allowed" style="position: inherit;font-weight: bold" /> <br/><br/> <p:spacer width="25"/>
+                    </center>
+                </c:if>
+                <c:if test="#{employeeMstComponent.selectEmployees.size() == 1}">
+                    <center>
+                        <h:outputText value="Do You Want To Delete this Employee?" style="position: inherit;font-weight: bold" /> <br/><br/> 
+                        <p:commandButton icon="ui-icon-check"   action="#{employeeMstComponent.delete(request)}" value="Yes" onclick="PF('empDeleteViewDialog').hide();"  update="msgg :mainform" /> <p:spacer width="5"/> 
+                        <p:commandButton value="No" type="button"  icon="ui-icon-close" onclick="PF('empDeleteViewDialog').hide()" update=":mainform" />  
+                    </center>
+                </c:if>
+                <c:if test="#{employeeMstComponent.selectEmployees.size() == 0}">
+                    <center>
+                        <h:outputText value="No Record to Delete!" style="position: inherit;font-weight: bold" /> <br/><br/> <p:spacer width="25"/>
+                    </center>
+                </c:if>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog id="empNoeditDialog" appendTo="@(body)" modal="true" header="Edit Employee " widgetVar="empNoeditViewDialog" resizable="false" width="27%"> 
+            <h:form  id="empnoeditform" style="padding:12px 12px 12px 12px">
+                <center>
+                    <h:outputText value="No record is selected" style="position: inherit;font-weight: bold" /> <br/><br/> <p:spacer width="25"/>
+                </center>
+            </h:form>
+        </p:dialog>
+        
+        <p:dialog id="empDectvateDia" appendTo="@(body)" modal="true" header="De-activate Employee" widgetVar="empDeactivateDialog" resizable="false" width="27%" > 
+            <h:form  id="empdeactform" style="padding:12px 12px 12px 12px">
+                <p:growl id="msge" sticky="false" showDetail="false"/> 
+                    <center>
+                        <h:outputText value="Do You Want To De-activate this Employee?" style="position: inherit;font-weight: bold" /> <br/><br/> 
+                        <p:commandButton icon="ui-icon-check"  action="#{employeeMstComponent.deactivateEmployee(request)}" value="Yes" onclick="PF('empDeactivateDialog').hide();" update="msge :mainform" /> <p:spacer width="5"/> 
+                        <p:commandButton value="No" type="button"  icon="ui-icon-close" onclick="PF('empDeactivateDialog').hide()" />  
+                    </center>
+           
+              </h:form>
+        </p:dialog>
+        <p:dialog id="empActivateDia" appendTo="@(body)" modal="true" header="Activate Employee" widgetVar="empActivateDialog" resizable="false" width="27%" > 
+            <h:form  id="empactform" style="padding:12px 12px 12px 12px">
+             <p:growl id="msg" sticky="false" showDetail="false"/> 
+                    <center>
+                        <h:outputText value="Do You Want To Activate this Employee?" style="position: inherit;font-weight: bold" /> <br/><br/> 
+                        <p:commandButton icon="ui-icon-check"  onclick="PF('empActivateDialog').hide();" action="#{employeeMstComponent.activateEmployee(request)}" value="Yes" update="msg :mainform" /> <p:spacer width="5"/> 
+                        <p:commandButton value="No" type="button"  icon="ui-icon-close" onclick="PF('empActivateDialog').hide()" />  
+                    </center>
+           
+              </h:form>
+        </p:dialog>
+       </c:if>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,242 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="../../templates/layoutForms.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="title">
+        Account Opening Form 
+    </ui:define>
+
+
+    <ui:define name="content">
+        <h:head>
+            <script>
+                (function (w, t, c, p, s, e) {
+                    p = new Promise(function (r) {
+                        w[c] = {client: function () {
+                                return p
+                            }};
+                        s = document.createElement(t);
+                        s.async = 1;
+                        s.src = '#{request.contextPath}/resources/js/CobrowseIO.js';
+                        e = document.getElementsByTagName(t)[0];
+                        e.parentNode.insertBefore(s, e);
+                        s.onload = function () {
+                            r(w[c]);
+                        };
+                    });
+                    return p;
+                })(window, 'script', 'CobrowseIO').then(function () {
+                    CobrowseIO.license = "Cm__Mzd-HqBdhg";
+                    CobrowseIO.start({allowIFrameStart: true});
+//                    CobrowseIO.start();
+                    CobrowseIO.customData = {
+                        user_id: '#{customerComponent.customerId}'
+                    }
+                });
+            </script>
+            <link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/css/bootstrap.css"/>
+           
+            <script>
+                $(document).ready(
+                        function () {
+                            var btn = document.getElementById("get_payload_btn");
+                            btn.click();
+
+                        });
+            </script>
+            <style>
+                .ui-widget-content{
+                    background: #c9c9c9 !important;
+                    text-align: right;
+                    margin-right: 5px;
+                }
+                .div{
+                    vertical-align: baseline;
+                }
+                .ui-datepicker{
+                    border: 1px solid !important;
+                }
+                #dobId_input{
+                    box-shadow: 1px 1px 1px 1px;
+                }
+
+            </style>
+        </h:head>
+
+        <h:body >     
+            <h:form prependId="false" id="mainform" >
+                <p:panel header="Main Account Holder" style="padding:10px;text-align: left;">
+                    <p:panel style="border: 1px solid !important;padding: 10px !important;margin-top: 5px;">
+                        <h:panelGrid id="detail" columns="1" styleClass="noBorders"  >
+                            <p:panel style="width:50%;margin-left: 105%"><h:outputText value="Customer Image" style="text-align: center;font-weight: bold" /><img width="100" id="uploadedimage" src="#{customerAccountComponent.snapImage}" style="border:5px solid;margin-left: 10px;margin-top: 10px;"/></p:panel>
+                        </h:panelGrid> 
+                    </p:panel>
+                    <p:panel style="border: 1px solid !important;padding: 10px !important;margin-top: 5px;">
+                        <h:panelGrid id="detail2a" columns="1" styleClass="noBorders" >
+                            <h:panelGrid id="detail1" columns="4" styleClass="noBorders" style="width:100%;margin-top:10px;"  >
+                                <p:panel><h:outputText value="Full Name:" style="font-weight: bold" /><font color='red'>*</font></p:panel>
+                                <p:inputText id="fNameId" value="#{customerAccountComponent.customerAccountDto.fullName}" label="Full Name" required="true" validatorMessage="Full Name Required" maxlength="60" style="box-shadow: 1px 1px 1px 1px;margin-right: 5px;" >
+                                    <p:ajax event="blur"  listener="#{customerAccountComponent.checkErrors()}" immediate="true"   partialSubmit="true"  async="true" update="@this" />
+                                </p:inputText>
+                                <p:panel><h:outputText value="DOB:" style="font-weight: bold"/><font color='red'>*</font></p:panel>
+                                <p:calendar id="dobId" mode="popup" locale="en" pattern="dd-MMM-yyyy" value="#{customerAccountComponent.customerAccountDto.dob}" required="true" yearRange="c-100:c" navigator="true" validatorMessage="DOB required" label="DOB"  maxdate="#{customerAccountComponent.presentDate}" readonly="false" style="box-shadow: 1px 1px 1px 1px;">
+                                    <p:ajax event="valueChange"  listener="#{customerAccountComponent.checkErrors()}" immediate="true"   partialSubmit="true"  async="true" update="@this" />
+                                </p:calendar>
+                                <p:panel><h:outputText value="PAN:" style="margin-top:10px;font-weight: bold" /><font color='red'>*</font></p:panel>
+                                <p:inputText id="pan" value="#{customerAccountComponent.customerAccountDto.panNumber}" required="true" validatorMessage="PAN Required" label="PAN" maxlength="50" style="margin-top:10px;box-shadow: 1px 1px 1px 1px;margin-right: 5px;">
+                                    <p:ajax event="blur"  listener="#{customerAccountComponent.checkErrors()}" immediate="true"   partialSubmit="true"  async="true" update="@this" />
+                                </p:inputText>
+                                <p:panel><h:outputText value="Father:" style="margin-top:10px;font-weight: bold" /><font color='red'>*</font></p:panel>
+                                <p:inputText id="father" value="#{customerAccountComponent.customerAccountDto.father}" required="true" validatorMessage="Father Name Required" label="Father" maxlength="50" style="margin-top:10px;box-shadow: 1px 1px 1px 1px;margin-right: 5px;">
+                                    <p:ajax event="blur"  listener="#{customerAccountComponent.checkErrors()}" immediate="true"   partialSubmit="true"  async="true" update="@this" />
+                                </p:inputText>
+                                
+
+                            </h:panelGrid>
+                            <h:panelGrid id="detail12" columns="2" styleClass="noBorders" style="width:100%;margin-top:10px;"  >
+                                <p:panel style="text-align: center;"><h:outputText value="Id Card" style="font-weight: bold" /><img width="100" id="uploadedidcard" src="#{customerAccountComponent.uploadedNationalId}" style="border:5px solid"/></p:panel>
+                                <p:panel style="text-align: center;"><h:outputText value="Signature" style="font-weight: bold" /><img width="100" id="uploadedidcard" src="#{customerAccountComponent.signFromPanCard}" style="border:5px solid"/></p:panel>
+                            </h:panelGrid>
+                        </h:panelGrid>
+                        <h:panelGrid id="detail2ab" columns="1" styleClass="noBorders" >
+                            <p:commandButton  id="ints" immediate="true" action="${customerAccountComponent.sendUploadIdRequest()}"  style="margin-right:20px;box-shadow: 1px 1px 1px 1px;" value="Initiate..." onclick="document.getElementById('ints').style.display = 'none';
+                                  document.getElementById('initt').style.display = 'block'" />
+                            <h:outputText id="initt" value="Initiated..." style="display:none;color:red"/>
+                            <h:outputText id="comp" value="Completed" style="display:none;color:green"/>
+                        </h:panelGrid> 
+                    </p:panel>
+                    <p:panel style="border: 1px solid !important;padding: 10px !important;margin-top: 5px;">
+                        <h:panelGrid id="detail3" columns="4" styleClass="noBorders" style="width:100%" >
+                            <p:panel><h:outputText value="Address:" style="font-weight: bold"/><font color='red'>*</font></p:panel>
+                            <p:inputTextarea id="addressId" value="#{customerAccountComponent.customerAccountDto.address}" label="Address" required="true" validatorMessage="Address is required" style="box-shadow: 1px 1px 1px 1px;"/>
+                            <p:panel><h:outputText value="Country:" style="margin-top:10px;font-weight: bold" /><font color='red'>*</font></p:panel>
+                                <p:inputText id="country" value="#{customerAccountComponent.customerAccountDto.nationality}" required="true" validatorMessage="Nationanlity Required" label="Nationality" maxlength="50" style="margin-top:10px;box-shadow: 1px 1px 1px 1px;margin-right: 5px;">
+                                    <p:ajax event="blur"  listener="#{customerAccountComponent.checkErrors()}" immediate="true"   partialSubmit="true"  async="true" update="@this" />
+                                </p:inputText>
+                            <p:panel><h:outputText value="Gender:" style="margin-top:10px;font-weight: bold"/><font color='red'>*</font></p:panel>
+                            <p:selectOneRadio id="gender" value="#{customerAccountComponent.customerAccountDto.gender}"  required="true" validatorMessage="Gender Is required" label="Gender" style="margin-top:10px;">
+                                <f:selectItem itemLabel="Male" itemValue="M"/>
+                                <f:selectItem itemLabel="Female" itemValue="F" />
+                                <p:ajax update="@this" event="valueChange" />
+                            </p:selectOneRadio>
+                        </h:panelGrid>
+                        
+                        <h:panelGrid id="addp" columns="1" styleClass="noBorders" >
+                            <p:commandButton  id="inta" immediate="true" action="${customerAccountComponent.sendUploadAddressProofRequest()}"  style="margin-right:20px;box-shadow: 1px 1px 1px 1px;" value="Initiate..." onclick="document.getElementById('inta').style.display = 'none';document.getElementById('inita').style.display = 'block'" />
+                            <h:outputText id="inita" value="Initiated..." style="display:none;color:red"/>
+                            <h:outputText id="compl" value="Completed" style="display:none;color:green"/>
+                        </h:panelGrid> 
+                    </p:panel> 
+                    <p:panel style="border: 1px solid !important;padding: 10px !important;margin-top: 5px;">
+                        <h:panelGrid id="detail4" columns="4" styleClass="noBorders" style="width:100%" >
+                            <p:panel><h:outputText value="Email:" style="font-weight: bold"/><font color='red'>*</font></p:panel>
+                            <p:inputText id="emailId" value="#{customerAccountComponent.customerAccountDto.email}" required="true" validatorMessage="Email: Validation Error:Invalid email format"  label="Email" maxlength="60" style="box-shadow: 1px 1px 1px 1px;" >
+                                <p:ajax event="blur"  listener="#{customerAccountComponent.checkErrors()}" immediate="true"   partialSubmit="true"  async="true" update="@this" />
+                                <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+                            </p:inputText>
+                            <p:panel><h:outputText value="Phone No:" style="font-weight: bold"/><font color='red'>*</font></p:panel>
+                            <p:inputText id="phoneId" value="#{customerAccountComponent.customerAccountDto.phone}" required="true" label="Phone No" validatorMessage="Phone: Validation Error:Only numeric value with minimum 10 digits allowed" maxlength="15"  style="box-shadow: 1px 1px 1px 1px;">
+                                <p:ajax event="blur"  listener="#{customerAccountComponent.checkErrors()}" immediate="true" partialSubmit="true" async="true" update="@this" />
+                                <f:validateRegex pattern="^((\+[0-9]{0,2}|0)?\d{10,12})$" />
+                            </p:inputText>
+                        </h:panelGrid>
+                    </p:panel>
+                    <p:panel style="border: 1px solid !important;padding: 10px !important;margin-top: 5px;">
+                        <h:panelGrid id="detail5" columns="4" styleClass="noBorders" style="width:100%" >
+                            <p:panel><h:outputText value="Maritial Status:" style="font-weight: bold"/><font color='red'>*</font></p:panel>
+                            <p:selectOneRadio  id="maritialStatusId" value="#{customerAccountComponent.customerAccountDto.maritialStatus}" requiredMessage="Maritial Status required" required="true" validatorMessage="Maritial Status Required!!" label="Maritial Status" styleClass="customDropDown">
+                                <f:selectItem itemLabel="Single" itemValue="single"/>
+                                <f:selectItem itemLabel="Married" itemValue="married"/> 
+                                <p:ajax event="change"  listener="#{customerAccountComponent.checkErrors()}" immediate="true"   partialSubmit="true"  async="true" update="@this" />
+                            </p:selectOneRadio>
+
+
+                            <p:panel ><h:outputText value="Occupation:" style="font-weight: bold"/><font color='red'>*</font></p:panel>
+                            <p:inputText id="occId" value="#{customerAccountComponent.customerAccountDto.occupation}" required="true" label="Occupation" maxlength="60"  style="box-shadow: 1px 1px 1px 1px;">
+                                <p:ajax event="blur"  listener="#{customerAccountComponent.checkErrors()}" immediate="true" partialSubmit="true"  async="true" update="@this" />
+                            </p:inputText>
+
+                            <p:panel><h:outputText value="Annual Income:" style="font-weight: bold"/></p:panel>
+                            <p:inputText id="salId" value="#{customerAccountComponent.customerAccountDto.salary}" label="Annual Income" maxlength="20" style="box-shadow: 1px 1px 1px 1px;">
+                                <p:ajax event="blur"  listener="#{customerAccountComponent.checkErrors()}" immediate="true" partialSubmit="true" async="true" update="@this" />
+                            </p:inputText>
+
+                            <p:panel style="margin-top: 5px"><h:outputText value="Education:" style="font-weight: bold"/></p:panel>
+                            <p:inputTextarea id="educId" value="#{customerAccountComponent.customerAccountDto.education}" label="Education"   maxlength="100"  style="margin-top: 5px;box-shadow:1px 1px 1px 1px"/>
+
+                            <p:spacer width="4"></p:spacer>
+                            <p:spacer width="4"></p:spacer>
+
+
+                        </h:panelGrid>
+                    </p:panel>
+                    <p:panel style="border: 1px solid !important;padding: 10px !important;margin-top: 5px;">
+                        <h3>Matching Result</h3>
+                        <div class="box_wrap">                                                    
+                            <div class="matchbox">
+                                <div class="match_img">
+                                    <img id="fetchedface" src="#{customerAccountComponent.faceFromPanCard}" />
+                                </div>                                                
+                            </div>
+                            <h4><h:outputText id="imgper" value="#{customerAccountComponent.matchresult}" style="color:red"/></h4>
+                        </div>
+                        <p:commandButton styleClass="btn_initiate" id="mbtn" immediate="true" action="${vidyoAgent.handleFaceVerifyFromPan()}" update=":mainform" value="Verify Image" oncomplete="window.location.reload();" onclick="document.getElementById('mbtn').style.display='none';" />
+                    </p:panel>
+                    <p:spacer/>
+                    <p:spacer/>
+                    <p:panel style="margin-top: 5px;" >
+                        <p:commandButton icon="ui-icon-disk"  action="${customerAccountComponent.saveAccFrm(request)}"  style="margin-right:20px;box-shadow: 1px 1px 1px 1px" value="Save" update=":mainform" />
+                        <p:commandButton icon="ui-icon-arrowreturn-1-w" immediate="true" ajax="false" onclick="self.close();" style="margin-right:20px;box-shadow: 1px 1px 1px 1px" value="Close" />
+                    </p:panel>
+
+                </p:panel>
+            </h:form>
+            <h:form id="form1" prependId="false"  style="overflow:hidden;">
+                <p:commandButton id="get_payload_btn" icon="ui-icon-disk" action="${customerAccountComponent.getCustomerAccountDetailsbyId(request)}"  style="margin-right:20px;display:none;" value="Click" update=":mainform" />
+            </h:form>
+            <script>
+                setTimeout(function () {
+                    if (document.getElementById('fNameId').value !== '') {
+                        if (document.getElementById('nationalityId').value !== '') {
+                            document.getElementById('ints').style.display = 'block';
+                            document.getElementById('initt').style.display = 'none';
+                            document.getElementById('comp').style.display = 'block';
+                        } else {
+                            document.getElementById('ints').style.display = 'block';
+                            document.getElementById('initt').style.display = 'none';
+                            document.getElementById('comp').style.display = 'none';
+                        }
+                    } else
+                    {
+                        document.getElementById('ints').style.display = 'block';
+                        document.getElementById('initt').style.display = 'none';
+                        document.getElementById('comp').style.display = 'none';
+                    }
+                    if (document.getElementById('addressId').innerHTML !== '') {
+                        document.getElementById('inta').style.display = 'none';
+                        document.getElementById('inita').style.display = 'none';
+                        document.getElementById('compl').style.display = 'block';
+                    } else {
+                        document.getElementById('inta').style.display = 'block';
+                        document.getElementById('inita').style.display = 'none';
+                        document.getElementById('compl').style.display = 'none';
+                    }
+
+
+                }, 2000);
+
+
+
+            </script>
+        </h:body>
+    </ui:define>
+
+</ui:composition>

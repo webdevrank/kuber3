@@ -1,0 +1,167 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <f:view contentType="text/html">
+        <h:head>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+            <title><ui:insert name="title" />Guest</title>
+            <link rel="stylesheet" href="#{request.contextPath}/resources/css/landing.css" type="text/css" />
+            <script src="${request.contextPath}/resources/js/DetectRTC.js"></script>
+            <script>
+                var contextUrl = "#{request.contextPath}";
+                var cust_uin;
+                var isFullScreen = !1;
+                $(document).ready(function () {
+
+                    $("#page-title-emp").addClass("hide-components");
+                    $("#page-title-cust").addClass("hide-components");
+                    $("#page-title-cust").addClass("hide-components");
+
+                    var url = window.location.href;
+                    checkUrl(url);
+                    if (cust_uin !== "") {
+                        handleComplete();
+                        document.getElementById('urlLink').value = url;
+                    } else {
+                        document.getElementById('invalidUrlBtn').click();
+                    }
+
+
+                });
+
+
+                function checkUrl(url) {
+                    try {
+                        if (url.includes("=")) {
+                            cust_uin = url.substring(url.lastIndexOf('param=') + 6);
+                        } else {
+                            cust_uin = "";
+                        }
+                    } catch (e) {
+                        console.error(e);
+                    }
+                }
+
+                function redirectToGuestCall() {
+                    document.getElementById("redirectToGuestId").click();
+                }
+
+                function handleComplete() {
+                    checkWebRTC();
+                }
+
+                function checkWebRTC(){
+                    DetectRTC.load(function () {
+                           PF('hardwarecheck').show(),  DetectRTC.load(onDetectRTCLoaded), DetectRTC.MediaDevices[0] &amp;&amp; "Please invoke getUserMedia once." === DetectRTC.MediaDevices[0].label &amp;&amp; navigator.mediaDevices.getUserMedia({
+                               audio: !0,
+                               video: !0
+                           }).then().catch(reloadDetectRTC)
+                       })
+
+                }
+
+                function reloadDetectRTC() {
+                    setTimeout(function () {
+                        DetectRTC.load(onDetectRTCLoaded);
+                    }, 10000);
+                }
+
+                function onDetectRTCLoaded() {
+                    if (DetectRTC.hasWebcam === false || DetectRTC.hasMicrophone === false) {
+                        PF('hardwarecheck').hide();
+                        PF('hardwarefail').show();
+                    } else {
+                        PF('hardwarecheck').hide();
+                        PF('hardwaresuccess').show();
+                        setTimeout(function () {
+                            PF('hardwaresuccess').hide();
+
+                            document.getElementById('setUrlValBtnId').click();
+                        }, 5000);
+                    }
+                }
+
+            </script>
+        </h:head>
+        
+        <h:body class="landing_body">
+            <h:form id="hdnFrmId" prependId="false" style="display: none;">
+                <p:inputText id="urlLink" value="#{customerComponent.urlLink}"/>
+                <p:commandButton id="invalidUrlBtn" actionListener="#{customerComponent.showInvalidUrl()}"/>
+                <p:commandButton id="setUrlValBtnId" actionListener="#{customerComponent.setUrlForCustomerHome()}" update=":redirectToCallIdForm"/>
+                <p:commandButton id="redirectToGuestId" actionListener="#{customerComponent.redirectToGuestCall()}"/>
+            </h:form>
+
+            <p:dialog id="invalidUrlLinkDialog" widgetVar="invalidUrlLinkDialogVar" resizable="false" closable="false" header=" Notification" modal="true" appendTo="@(body)" responsive="true" style="max-width: 98%">
+                <h:form id="invalidUrlLinkDialogForm" prependId="false" style="overflow: hidden;">
+                    <center>
+                         <br/><br/>
+                        <h:outputText value="Invalid URL Link...!! Please Proceed With Correct URL Link." style="color: red; font-weight: bold;"/>
+                        <br/><br/>
+                        <p:commandButton id="invalidUrlLinkBtn" value="OK" action="#{customerComponent.newCustomerComponent()}" onclick="PF('invalidUrlLinkDialogVar').hide();" style="padding-right: 10px" />
+                        <p:commandButton id="closeCallBtnId2" value="Close"  onclick="PF('invalidUrlLinkDialogVar').hide();"/>
+                    </center>
+                </h:form>
+            </p:dialog>
+            
+            <p:dialog id="redirectToCallId" widgetVar="redirectToCallIdVar" resizable="false" closable="false" header=" Notification" modal="true" appendTo="@(body)" responsive="true" style="max-width: 98%">
+                <h:form id="redirectToCallIdForm" prependId="false" style="overflow: hidden;">
+                    <p:growl id="msg" sticky="false" showDetail="false"/>  
+                    <center>
+                        <h:panelGrid id="panelGrid3" columns="2"  style="margin-top: 10px;margin-bottom: 5px;" >
+                            <h:outputText value="Please Enter Your Name: " />
+                            <p:inputText id="cust_name" value="#{customerComponent.customerName}" label="Customer Name"  maxlength="30" style="margin-left: 5px;" required="true" requiredMessage="Pleas Enter Your Name"/>
+                        </h:panelGrid>
+                      
+                        <p:commandButton id="redirectToCallBtnId" value="OK" action="#{customerComponent.redirectToGuestCall()}"  style="margin-right: 10px" update=":redirectToCallIdForm" />
+                        <p:commandButton id="closeCallBtnId" value="Close"  onclick="PF('redirectToCallIdVar').hide();"/>
+                    </center>
+                </h:form>
+            </p:dialog>
+            
+            <p:dialog id="hardware"  widgetVar="hardwarecheck" responsive="true"  resizable="false" closable="false" maximizable="false" position="center,center"  header="Hardware Check"  style=" border: none;;box-shadow: none;max-width: 95%;" modal="false">
+                 <h:form id="hardwarecheckform" prependId="false" style="overflow:hidden;" >
+                       <center>
+                           <h:outputText value="Checking Your Devices are suitable for Video Call or not..."  style="color: white;font-size: 24px;font-weight: bold;color:#000"/>
+                        </center>
+                </h:form>
+            </p:dialog>
+            
+            <p:dialog id="hardwares"  widgetVar="hardwaresuccess" responsive="true"   resizable="false" closable="false" maximizable="false" position="center,center"  header="Hardware Success"  style=" border: none;box-shadow: none;max-width: 98%;" modal="false">
+                <h:form id="hardwaresuccessform" prependId="false" style="overflow:hidden;" >
+                       <center>
+                           <h:outputText value="Device checking was successful..."  style="color: white;font-size: 24px;font-weight: bold;color:#000"/>
+                        </center>
+                </h:form>
+            </p:dialog>
+        
+            <p:dialog id="hardwaref"  widgetVar="hardwarefail" responsive="true"  resizable="false" closable="false" maximizable="false" position="center,center"  header="Hardware Fail"  style=" border: none;box-shadow: none;max-width: 98%;" modal="false">
+                <h:form id="hardwarefailform" prependId="false" style="overflow:hidden;" >
+                       <center>
+                           <h:outputText value="Hardware checking failed..."  style="color: red;font-size: large;font-weight: bold;"/><br/><br/><br/>
+                           <p:commandButton onclick="PF('hardwarefail').hide();handleComplete()"  ajax="true" value="Recheck" style="font-size: 12px;"/>    
+                       </center>
+                </h:form>
+            </p:dialog>
+            
+            <div>
+                <div class="left_landing">
+                    <img src="#{request.contextPath}/resources/images/landing-img.png" alt="banner"/>                   
+                </div>
+                 <div class="right_landing">
+                    <img src="#{request.contextPath}/resources/images/first-logo.png" alt="logo"/>
+                    <h1><span>Presents</span> Digital Customer Experience Platform</h1>
+                        <div class="landing_buttons">
+                        </div>
+                 </div>
+              </div>
+         </h:body>
+        
+    </f:view>
+</html>

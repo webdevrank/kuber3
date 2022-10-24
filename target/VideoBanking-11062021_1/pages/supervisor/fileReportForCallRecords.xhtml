@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="../../templates/layout.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                >
+
+    <ui:define name="title">
+        File List
+    </ui:define>
+
+    <ui:define name="content">
+        <style type="text/css" >
+            label{
+                width: 130px !important;
+            }
+            .noBorders tr, .noBorders td {
+                background: none !important;
+                border: none !important;
+            }
+            .ui-datatable .ui-datatable-header, .ui-datatable .ui-datatable-footer {
+                text-align: center;
+                padding: 0px 10px !important;
+            }
+        </style>
+        <script type="text/javascript">
+            
+            function openDocInTab(fileName) {
+                var hrefTest = '${request.contextPath}/FileDownloadReportServlet?fileName=' + fileName;
+                console.log("href tets val is :" + hrefTest);
+                if (fileName !== "") {
+                    var popUp = window.open(hrefTest, '_blank', 'width=1,height=1,toolbar=0,menubar=0,location=0,status=0,scrollbars=0,resizable=1,left=10,top=10,visible=none');
+                    if (popUp === null || typeof (popUp) === 'undefined') {
+                        
+                        alert('Please disable your pop-up blocker and click the "Download File" link again.');
+                    } else {
+                        setTimeout(function () {
+                            popUp.close();
+                        }, 3000);
+                        popUp.focus();
+                    }
+                }
+            }
+        </script>
+        <h:form id="headerform" >
+            <p:scrollPanel  mode="native" id="pscroll"> 
+                <p:panel id="mainpanel" style="width: 100%;margin-top: 15px">
+                    <f:facet name="header" >
+                        File List<span style="float: right;">Record(s) Found : #{fn:length(callRecordsComponent.fileReportDtoList) }</span>
+                    </f:facet>
+                    <p:dataTable id="fileTable"  value="#{callRecordsComponent.fileReportDtoList}" var="current" rows="10" paginator="true" paginatorPosition="bottom">
+                        <p:column sortBy="#{current.fileName}" width="23%"> 
+                            <f:facet name="header">
+                                <h:outputText value="File Name" />
+                            </f:facet>
+                            <p:commandLink id="downloadFileListId" 
+                                           value="#{current.fileName}" ajax="true" 
+                                           action="#{callRecordsComponent.doOpenFile(current.fileName)}"
+                                           onsuccess="openDocInTab('#{current.actualFilePath}');" 
+                                           style="font-weight: bold; color: #00498f;">
+                                <h:outputText value="#{current.fileName}" style="font-weight: bold; color: #00498f;"/>
+                            </p:commandLink>
+                        </p:column>
+                      
+                        <p:column sortBy="#{current.fileCaption}" width="23%"> 
+                            <f:facet name="header">
+                                <h:outputText value="File Caption" />
+                            </f:facet>
+                            <h:outputText value="#{current.fileCaption}"/>
+                        </p:column>
+                        <p:column sortBy="#{current.fileSendByType}" width="10%"> 
+                            <f:facet name="header">
+                                <h:outputText value="Send From User" />
+                            </f:facet>
+                            <h:outputText value="#{current.fileSendByType}"/>
+                        </p:column>
+                        <p:column sortBy="#{current.fileSendBy}" width="10%"> 
+                            <f:facet name="header">
+                                <h:outputText value="Send From" />
+                            </f:facet>
+                            <h:outputText value="#{current.fileSendBy}"/>
+                        </p:column>
+                        <p:column sortBy="#{current.fileSendToType}" width="10%"> 
+                            <f:facet name="header">
+                                <h:outputText value="Send To User" />
+                            </f:facet>
+                            <h:outputText value="#{current.fileSendToType}"/>
+                        </p:column>
+                        <p:column sortBy="#{current.fileSendTo}" width="10%"> 
+                            <f:facet name="header">
+                                <h:outputText value="Send To" />
+                            </f:facet>
+                            <h:outputText value="#{current.fileSendTo}"/>
+                        </p:column>
+                        <p:column sortBy="#{current.uploadTime}" width="13%"> 
+                            <f:facet name="header">
+                                <h:outputText value="File Upload Time" />
+                            </f:facet>
+                            <h:outputText value="#{current.uploadTime}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+            </p:scrollPanel>
+            <p:panel header="Export to PDF and Excel" rendered="#{callRecordsComponent.exportPdfOrXlsForFileDetails}">  
+                <p:commandLink id="pdf" ajax="false"  >  
+                    <p:graphicImage value="/resources/images/pdf.png" style="padding: 5px"/> 
+                    <pe:exporter type="pdf" target="fileTable" fileName="File Details" orientation="Landscape" datasetPadding="4" />  
+                </p:commandLink>  
+
+                <p:spacer width="20"/>  
+                <p:commandLink id="xls" ajax="false"  >  
+                    <p:graphicImage value="/resources/images/excel.png" style="padding: 5px"/> 
+                    <pe:exporter type="xlsx" target="fileTable" fileName="File Details" orientation="Landscape"/> 
+                </p:commandLink>  
+            </p:panel>  
+            <h:panelGroup style="margin-left: 10px;margin-top: 5px;" >
+                <p:panelGrid id="detail" columns="3" styleClass="noBorders" columnClasses="label,value"> 
+                    <p:commandButton icon="ui-icon-arrowreturn-1-w" immediate="true" ajax="false" action="${callRecordsComponent.back()}" style="margin-top: 5px;" value="Back" />
+                </p:panelGrid>
+            </h:panelGroup>
+        </h:form>
+    </ui:define>
+</ui:composition>
+
+

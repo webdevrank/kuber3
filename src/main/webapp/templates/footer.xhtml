@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <p:layoutUnit id="bottom" position="south"  size="70" >
+       
+            <h:panelGroup layout="block" styleClass="bottom1">
+                <h:panelGroup layout="block" styleClass="footerlogin">
+                    <h:panelGroup layout="block" styleClass="wrapper">
+                        <h:panelGroup layout="block" styleClass="footer_statement imgg" style="visibility: hidden"><p>© Powered by
+                            <h:panelGroup layout="block" styleClass="footer_logo_area">
+                                <p:graphicImage url="/resources/images/logo.png" onclick="openInNewTab('http://ranktechsolutions.com/');" style="cursor: pointer"/>
+                            </h:panelGroup></p>
+                    </h:panelGroup>
+                    <h:panelGroup layout="block" style="clear: both;"></h:panelGroup>
+                </h:panelGroup>  
+                </h:panelGroup>
+            </h:panelGroup>
+      
+        <script>
+            function openInNewTab(url) {
+                var win = window.open(url, '_blank');
+                win.focus();
+            }
+        </script>
+    </p:layoutUnit>
+    
+</html>
+

@@ -1,0 +1,31 @@
+.custmenu{
+    display: none;
+}
+.empmenu{
+    display: none;
+}
+.user_list{
+        margin-right: 10px;
+    }
+
+@media screen and (max-width: 790px) {
+    #custMenu{display: block;}
+    #backBtncall{display: none;}
+    #fileUploadBtn{display: none;}
+    #makeVidyocall{display: none;}
+    #logout{display: none;}
+    #kycUploadBtn{display: none;}
+    #scheduleDtl{display: none;}
+    #accountOpenId{display: none;}
+    .user_list{
+        margin-right: 0px;
+    }
+}
+
+@media screen and (max-width: 790px) {
+    #empMenu{display: block;}
+    #panel1{display: none;}
+    .user_list{
+        margin-right: 0px;
+    }
+}

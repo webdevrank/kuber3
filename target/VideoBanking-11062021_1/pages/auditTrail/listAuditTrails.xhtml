@@ -1,0 +1,326 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="../../templates/layout.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <ui:define name="title">
+        List Audit Trail
+    </ui:define>
+    <ui:define name="menu">
+        <c:if test="#{employeeLoginComponent.adminmenuRenderer }">
+            <ui:include src="../../templates/menu.xhtml" />
+        </c:if>
+    </ui:define>
+    <ui:define name="content">
+       
+        <script>
+            function setLoadRender1() {
+                document.getElementById('headerform:empLoadTable').style.display = "";
+                document.getElementById('headerform:empTable').style.display = "none";
+                document.getElementById('headerform:pscroll').style.display = "none";
+            }
+            function setLoadRender2() {
+                document.getElementById('headerform:empLoadTable').style.display = "none";
+                document.getElementById('headerform:empTable').style.display = "";
+                document.getElementById('headerform:pscroll').style.display = "";
+            }
+        </script>
+        <c:if test="#{employeeLoginComponent.adminmenuRenderer }">
+            <h:form  id="mainform" prependId="false" >
+                <p:growl id="msg" sticky="false" showDetail="false"/> 
+                <p:panel header="Search Audit Trails" style="margin-top: 45px;padding:10px" id="auditpanel">
+                    <p:panelGrid id="details" columns="8" styleClass="noBorders"   columnClasses="label,value">
+                        <p:panel style="border: none !important">
+                            <h:outputText value="Select Start Date:" /><font color="red">*</font>
+                        </p:panel>
+                        <p:calendar mode="popup" pattern ="dd.MM.yyyy" value="#{auditTrailComponent.startTime}"  required="true" requiredMessage="Start Date required" label="Start Date" maxdate="#{auditTrailComponent.presentDate}" readonlyInput="true" style="width: 155px;"/> 
+
+                        <p:panel style="border: none !important">
+                            <h:outputText value="Select End Date:" /><font color="red">*</font>
+                        </p:panel>
+                        <p:calendar mode="popup" pattern ="dd.MM.yyyy" value="#{auditTrailComponent.endTime}"  label="End Date" required="true" requiredMessage="End Date required" maxdate="#{auditTrailComponent.presentDate}" readonlyInput="true" style="width: 155px;"/> 
+
+                        <p:commandButton icon="ui-icon-search" style="margin-right:27px;margin-left: 15px;" value="Search" actionListener="#{auditTrailComponent.loadAuditTrailRecordsInitialze(auditTrailComponent.selectTable,auditTrailComponent.selectCreatedBy,auditTrailComponent.selectUpdatedBy,auditTrailComponent.selectDisabledBy,auditTrailComponent.startTime,auditTrailComponent.endTime)}" update=":headerform :mainform" />
+                        <p:commandButton icon="ui-icon-search" id="search" style="display:none" value="Search" actionListener="#{auditTrailComponent.loadAuditTrailRecords(auditTrailComponent.selectTable,auditTrailComponent.selectCreatedBy,auditTrailComponent.selectUpdatedBy,auditTrailComponent.selectDisabledBy,auditTrailComponent.startTime,auditTrailComponent.endTime)}" update=":headerform :mainform"  />
+                        <p:commandButton icon="ui-icon-arrowreturn-1-w" immediate="true" update="auditpanel :headerform" ajax="true" actionListener="#{auditTrailComponent.clear()}" style="margin-right:18px;" value="Clear" action="/pages/auditTrail/listAuditTrails.xhtml" />
+                    </p:panelGrid>
+                </p:panel>
+            </h:form> 
+
+            <h:form id="headerform" >
+                <p:panel id="empLoadTable"  style="display:none;"  >
+                    <center>
+                        <p:graphicImage url="/resources/images/loadingTable.gif"  height="30 px;" alt="" title=""/>  
+                    </center>
+                </p:panel>
+                <p:scrollPanel  mode="native" id="pscroll" >   
+                    <p:panel id="mainpanel"  >
+                        <f:facet name="header" >
+                            Audit Trail List <span style="float: right;" >Record(s) Found : #{fn:length(auditTrailComponent.selectAuditTrailDto) }</span>
+                        </f:facet>
+                        <p:dataTable id="empTable" value="#{auditTrailComponent.selectAuditTrailDto}" selection="#{auditTrailComponent.listAuditTrailDto}" rowKey="#{current.id}"   var="current" rows="10"  lazy="true" paginator="true" paginatorPosition="bottom" >
+                            <p:column > 
+                                <f:facet name="header">
+                                    <h:outputText value="ID" />
+                                </f:facet>
+                                <p:commandLink  style="font-weight: bold; color: #00498f;" ajax="true" action="#{auditTrailComponent.selectAuditTrailById(current.id)}" oncomplete="PF('singleserviceDialog').show()" update=":singleviewform:singleserviceviewdialog" >
+                                    <h:outputText value="#{current.id}"/>
+                                </p:commandLink>
+                            </p:column> 
+                            <p:column > 
+                                <f:facet name="header">
+                                    <h:outputText value="Table Name" />
+                                </f:facet>
+                                <h:outputText value="#{current.tableName}"/>
+                            </p:column>
+                            <p:column > 
+                                <f:facet name="header">
+                                    <h:outputText value="Primary Key Id" />
+                                </f:facet>
+                                <h:outputText value="#{current.tableKey1}"/>
+                            </p:column>
+                            <p:column > 
+                                <f:facet name="header">
+                                    <h:outputText value="Created By" />
+                                </f:facet>
+                                <h:outputText value="#{current.createdById}"/>
+                            </p:column>
+                            <p:column  style="text-align: right"> 
+                                <f:facet name="header">
+                                    <h:outputText value="Created On" />
+                                </f:facet>
+                                <h:outputText value="#{current.createdOn}" >
+                                    <f:convertDateTime type="date" pattern="dd-MM-yyyy HH:mm:ss:SSS " />
+                                </h:outputText>
+                            </p:column>
+                            <p:column > 
+                                <f:facet name="header">
+                                    <h:outputText value="Updated By" />
+                                </f:facet>
+                                <h:outputText value="#{current.updatedById}"/>
+                            </p:column>
+                            <p:column  style="text-align: right"> 
+                                <f:facet name="header">
+                                    <h:outputText value="Updated On" />
+                                </f:facet>
+                                <h:outputText value="#{current.updatedOn}" >
+                                    <f:convertDateTime type="date" pattern="dd-MM-yyyy HH:mm:ss:SSS " />
+                                </h:outputText>
+                            </p:column>
+                            <p:column > 
+                                <f:facet name="header">
+                                    <h:outputText value="De-activated By" />
+                                </f:facet>
+                                <h:outputText value="#{current.disabledById}"/>
+                            </p:column>
+                            <p:column style="text-align: right"> 
+                                <f:facet name="header">
+                                    <h:outputText value="De-activated On" />
+                                </f:facet>
+                                <h:outputText value="#{current.disabledOn}" >
+                                    <f:convertDateTime type="date" pattern="dd-MM-yyyy HH:mm:ss:SSS " />
+                                </h:outputText>
+                            </p:column>
+                            <p:column > 
+                                <f:facet name="header">
+                                    <h:outputText value="Deleted By" />
+                                </f:facet>
+                                <h:outputText value="#{current.deletedById}"/>
+                            </p:column>
+                            <p:column style="text-align: right"> 
+                                <f:facet name="header">
+                                    <h:outputText value="Deleted On" />
+                                </f:facet>
+                                <h:outputText value="#{current.deletedOn}" >
+                                    <f:convertDateTime type="date" pattern="dd-MM-yyyy HH:mm:ss:SSS " />
+                                </h:outputText>
+                            </p:column>
+                            <p:column > 
+                                <f:facet name="header">
+                                    <h:outputText value="Reason" />
+                                </f:facet>
+                                <h:outputText value="#{current.reason}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                </p:scrollPanel>
+                <p:panel header="Export to PDF and Excel" rendered="${fn:length(auditTrailComponent.selectAuditTrail) gt 0}" >  
+                    <p:commandLink id="pdf" ajax="false"  >  
+                        <p:graphicImage value="/resources/images/pdf.png" style="padding:5px !important"/> 
+                        <pe:exporter type="pdf" target="empTable" fileName="auditTrails" orientation="Landscape" datasetPadding="4" />  
+                    </p:commandLink>  
+
+                    <p:spacer width="20"/>  
+                    <p:commandLink id="xls" ajax="false"  >  
+                        <p:graphicImage value="/resources/images/excel.png" style="padding:5px !important"/>
+                        <pe:exporter type="xlsx" target="empTable" fileName="auditTrails" orientation="Landscape"/>  
+                    </p:commandLink>  
+                </p:panel>
+            </h:form>
+
+            <h:form  id="viewform" >
+
+                <p:dialog id="serviceviewdialog" appendTo="@(body)" modal="true" header="Audit Trail Detail" widgetVar="serviceDialog" resizable="false"  style="max-width: 800px;"> 
+                    <c:if test="#{auditTrailComponent.selectAuditTrail.size() > 1}">
+                        <p:scrollPanel mode="native" style="max-width: 800px;max-height: 300px;" >
+                            <p:dataTable var="current" value="#{auditTrailComponent.selectAuditTrail}" >         
+                                <p:column > 
+                                    <f:facet name="header">
+                                        <h:outputText value="ID" />
+                                    </f:facet>
+                                    <p:commandLink  style="font-weight: bold; color: #00498f;" ajax="true" action="#{auditTrailComponent.selectAuditTrailById(current.id)}" oncomplete="PF('singleserviceDialog').show()" update=":singleviewform:singleserviceviewdialog" >
+                                        <h:outputText value="#{current.id}"/>
+                                    </p:commandLink>
+                                </p:column> 
+                                <p:column > 
+                                    <f:facet name="header">
+                                        <h:outputText value="Table Name" />
+                                    </f:facet>
+                                    <h:outputText value="#{current.tableName}"/>
+                                </p:column>
+                                <p:column > 
+                                    <f:facet name="header">
+                                        <h:outputText value="Primary Key Id" />
+                                    </f:facet>
+                                    <h:outputText value="#{current.tableKey1}"/>
+                                </p:column>
+                                <p:column > 
+                                    <f:facet name="header">
+                                        <h:outputText value="Created By" />
+                                    </f:facet>
+                                    <h:outputText value="#{auditTrailComponent.getEmployeeName(current.createdById)}"/>
+                                </p:column>
+                                <p:column > 
+                                    <f:facet name="header">
+                                        <h:outputText value="Created On" />
+                                    </f:facet>
+                                    <h:outputText value="#{current.createdOn}"/>
+                                </p:column>
+                                <p:column > 
+                                    <f:facet name="header">
+                                        <h:outputText value="Updated By" />
+                                    </f:facet>
+                                    <h:outputText value="#{auditTrailComponent.getEmployeeName(current.updatedById)}"/>
+                                </p:column>
+                                <p:column > 
+                                    <f:facet name="header">
+                                        <h:outputText value="Updated On" />
+                                    </f:facet>
+                                    <h:outputText value="#{current.updatedOn}"/>
+                                </p:column>
+
+                                <p:column > 
+                                    <f:facet name="header">
+                                        <h:outputText value="De-activated By" />
+                                    </f:facet>
+                                    <h:outputText value="#{auditTrailComponent.getEmployeeName(current.disabledById)}"/>
+                                </p:column>
+                                <p:column > 
+                                    <f:facet name="header">
+                                        <h:outputText value="De-activated On" />
+                                    </f:facet>
+                                    <h:outputText value="#{current.disabledOn}"/>
+                                </p:column>   
+                                <p:column > 
+                                    <f:facet name="header">
+                                        <h:outputText value="Reason" />
+                                    </f:facet>
+                                    <h:outputText value="#{current.reason}"/>
+                                </p:column>
+                            </p:dataTable> 
+                        </p:scrollPanel>
+                    </c:if>
+
+                    <c:if test="#{auditTrailComponent.selectAuditTrail.size() == 1}">
+                        <h:panelGrid id="detail1" columns="3" styleClass="noBorders"   columnClasses="label,value" cellspacing="5" cellpadding="30" style="max-width: 800px;">
+                            <h:outputText value="ID" style="font-size: small;font-weight: bold"/>
+                            <h:outputText value=":" />
+                            <h:outputText value="#{auditTrailComponent.selectAuditTrail.get(0).id}" style="font-size:small"/> 
+                            <h:outputText value="Table Name" style="font-size: small;font-weight: bold"/>
+                            <h:outputText value=":" />
+                            <h:outputText value="#{auditTrailComponent.selectAuditTrail.get(0).tableName}" style="font-size:small"/>
+                            <h:outputText value="Primary Key Id" style="font-size: small;font-weight: bold"/>
+                            <h:outputText value=":" />
+                            <h:outputText value="#{auditTrailComponent.selectAuditTrail.get(0).tableKey1}" style="font-size:small"/>
+                            <h:outputText value="Created By" style="font-size: small;font-weight: bold"/>
+                            <h:outputText value=":" />
+                            <h:outputText value="#{auditTrailComponent.getEmployeeName(auditTrailComponent.selectAuditTrail.get(0).createdById)}" style="font-size:small"/>
+                            <h:outputText value="Created On" style="font-size: small;font-weight: bold"/>
+                            <h:outputText value=":" />
+                            <h:outputText value="#{auditTrailComponent.selectAuditTrail.get(0).createdOn}" style="font-size:small"/>
+                            <h:outputText value="Updated By" style="font-size: small;font-weight: bold"/>
+                            <h:outputText value=":" />
+                            <h:outputText value="#{auditTrailComponent.getEmployeeName(auditTrailComponent.selectAuditTrail.get(0).updatedById)}" style="font-size:small"/>
+                            <h:outputText value="Updated On" style="font-size: small;font-weight: bold"/>
+                            <h:outputText value=":" />
+                            <h:outputText value="#{auditTrailComponent.selectAuditTrail.get(0).updatedOn}" style="font-size:small"/>
+                            <h:outputText value="De-activated By" style="font-size: small;font-weight: bold"/>
+                            <h:outputText value=":" />
+                            <h:outputText value="#{auditTrailComponent.getEmployeeName(auditTrailComponent.selectAuditTrail.get(0).disabledById)}" style="font-size:small"/>
+                            <h:outputText value="De-activated On" style="font-size: small;font-weight: bold"/>
+                            <h:outputText value=":" />
+                            <h:outputText value="#{auditTrailComponent.selectAuditTrail.get(0).disabledOn}" style="font-size:small"/>
+                            <h:outputText value="Reason" style="font-size: small;font-weight: bold"/>
+                            <h:outputText value=":" />
+                            <h:outputText value="#{auditTrailComponent.selectAuditTrail.get(0).reason}" style="font-size:small"/>
+                            <p:spacer/>
+                            <p:spacer/>
+                            <p:spacer/>
+                        </h:panelGrid>
+                    </c:if>
+                    <c:if test="#{auditTrailComponent.selectAuditTrail.size() == 0}">
+                        <p:spacer width="10"/><h:outputText value="No record is selected" style="position: inherit;font-weight: bold" /> <br/><br/> <p:spacer width="25"/>
+                    </c:if>
+                </p:dialog>
+            </h:form>
+            <h:form  id="singleviewform">
+
+                <p:dialog id="singleserviceviewdialog" appendTo="@(body)" modal="true" header="Audit Trail Detail" widgetVar="singleserviceDialog" resizable="false"  style="max-width: 500px;"> 
+                    <h:panelGrid id="detail" columns="3" styleClass="noBorders"   columnClasses="label,value" cellspacing="5" cellpadding="30">
+                        <h:outputText value="ID" style="font-size: small;font-weight: bold"/>
+                        <h:outputText value=":" />
+                        <h:outputText value="#{auditTrailComponent.auditTrail.id}" style="font-size:small"/>
+                        <h:outputText value="Table Name" style="font-size: small;font-weight: bold" />
+                        <h:outputText value=":" />
+                        <h:outputText value="#{auditTrailComponent.auditTrail.tableName}" style="font-size:small"/>
+                        <h:outputText value="Primary Key Id" style="font-size: small;font-weight: bold" />
+                        <h:outputText value=":" />
+                        <h:outputText value="#{auditTrailComponent.auditTrail.tableKey1}" style="font-size:small"/>
+                        <h:outputText value="Created By" style="font-size: small;font-weight: bold"/>
+                        <h:outputText value=":" />
+                        <h:outputText value="#{auditTrailComponent.getEmployeeName(auditTrailComponent.auditTrail.createdById)}" style="font-size:small"/>
+                        <h:outputText value="Created On" style="font-size: small;font-weight: bold"/>
+                        <h:outputText value=":" />
+                        <h:outputText value="#{auditTrailComponent.auditTrail.createdOn}" />
+                        <h:outputText value="Updated By" style="font-size: small;font-weight: bold"/>
+                        <h:outputText value=":" />
+                        <h:outputText value="#{auditTrailComponent.getEmployeeName(auditTrailComponent.auditTrail.updatedById)}" style="font-size:small"/>
+                        <h:outputText value="Updated On" style="font-size: small;font-weight: bold" />
+                        <h:outputText value=":" />
+                        <h:outputText value="#{auditTrailComponent.auditTrail.updatedOn}" />
+                        <h:outputText value="De-activated By" style="font-size: small;font-weight: bold"/>
+                        <h:outputText value=":" />
+                        <h:outputText value="#{auditTrailComponent.getEmployeeName(auditTrailComponent.auditTrail.disabledById)}" style="font-size:small" />
+                        <h:outputText value="De-activated On" style="font-size: small;font-weight: bold"/>
+                        <h:outputText value=":" />
+                        <h:outputText value="#{auditTrailComponent.auditTrail.disabledOn}" style="font-size:small"/>
+                        <h:outputText value="Reason" style="font-size: small;font-weight: bold"/>
+                        <h:outputText value=":" />
+                        <h:outputText value="#{auditTrailComponent.auditTrail.reason}" style="font-size:small"/>
+
+                        <p:spacer/>
+                        <p:spacer/>
+                        <p:spacer/>
+                    </h:panelGrid>
+                </p:dialog>
+            </h:form>
+        </c:if>
+    </ui:define>
+</ui:composition>

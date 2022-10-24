@@ -1,0 +1,56 @@
+
+
+/* Small devices (less than 768px) */
+@media (max-width: 767px) {
+    #messageDiv{
+        width:100% !important;
+        min-width: 200px !important;
+    }
+    #messageHeading{
+        padding: 5px !important;
+    }
+    #messageContent{
+        padding: 5px !important;
+    }
+    #ratingDiv{
+        padding:5px !important;
+        float:left!important;
+        width:100% !important;
+        min-width: 200px !important;
+    }
+    div{
+        font-size: small;
+        line-height: 1.25 !important;
+    }
+
+    span{
+        font-size: small;
+        line-height: 1.25 !important; 
+    }
+    #opinion_text{
+        font-size: small;
+        line-height: 1.25 !important; 
+    }
+    .ui-rating-star{
+        padding-top: 0px !important;
+    }
+    div.ui-rating-star a, div.ui-rating-cancel a {
+
+        padding-top:30px !important;
+    }
+    #ratingDiv{
+        height:400px;
+        overflow-y: scroll;
+    }
+
+}
+
+/* Medium devices (less than 1200px) */
+@media (max-height: 550px) {
+
+    #scp{
+        overflow-y: scroll;
+        height:375px;
+    }
+
+}

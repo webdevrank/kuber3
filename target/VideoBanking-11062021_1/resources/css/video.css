@@ -1,0 +1,301 @@
+@CHARSET "ISO-8859-1";
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.video_wrap {
+    /*padding:15px;*/
+}
+
+.user_list {
+    margin: 0;
+    padding: 0;
+    border: 1px solid #d2d2d2;
+    background: #f5f5f5;
+    margin-right: 10px;
+}
+
+.user_head_wrap {
+    border-bottom: 1px solid #d2d2d2;
+}
+
+.video_head_wrap {
+    border: 1px solid #d2d2d2; 
+}
+
+.user_head, .video_head {
+    margin: 0;
+    padding: 2px 0;
+    background: #FCFCFC;
+    overflow: hidden;
+    margin-left: 10px;
+}
+
+.private_chat {
+    font-size: 10px;
+    color: #08367b;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 400;
+    margin: 0;
+    padding: 0;
+    line-height: 24px;
+    white-space: nowrap;
+}
+
+.off_btn {
+    background: url(../images/video_icon_btn_bg.jpg) left top repeat-x #c12821;
+    border: none;
+    height: 24px;
+    line-height: 24px;
+    cursor: pointer;
+    transition: all 300ms ease-in-out;
+    -o-transition: all 300ms ease-in-out;
+    -ms-transition: all 300ms ease-in-out;
+    -moz-transition: all 300ms ease-in-out;
+    -webkit-transition: all 300ms ease-in-out;
+}
+
+.off_btn img {
+    display: inline-block;
+    vertical-align: inherit;
+}
+
+.off_btn:hover {
+    background: #369a31;
+    transition: all 300ms ease-in-out;
+    -o-transition: all 300ms ease-in-out;
+    -ms-transition: all 300ms ease-in-out;
+    -moz-transition: all 300ms ease-in-out;
+    -webkit-transition: all 300ms ease-in-out;
+}
+
+.video_frame {
+    background: black;
+    height: 56vh;
+    text-align: center;
+    overflow: hidden;
+    box-shadow: 5px 10px 38px grey;
+}
+
+.video_frame1 {
+    background: #000;
+    height: 320px;
+    /*line-height:480px;
+min-height: 350px;*/
+    text-align: center;
+    z-index: 1000;
+    overflow: auto;
+    padding: 1.5em;
+    max-height: 350px;
+}
+
+.video_frame a:hover {
+    opacity: 0.85;
+    transition: all 300ms ease-in-out;
+    -o-transition: all 300ms ease-in-out;
+    -ms-transition: all 300ms ease-in-out;
+    -moz-transition: all 300ms ease-in-out;
+    -webkit-transition: all 300ms ease-in-out;
+}
+
+.video_frame img {
+    display: inline-block;
+}
+
+.user_details {
+    margin: 0 15px 15px 15px;
+    padding: 10px 0;
+    border-bottom: 1px dashed #b0b0b0;
+    font-size: small;
+}
+
+.user_details:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.user_details h2, .user_details h3 {
+    font-size: 14px;
+    color: #000;
+    margin: 0 0 5px 0;
+    padding: 0;
+    line-height: 12px;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.user_details h3 {
+    font-size: 10px;
+    color: #383838;
+    margin: 0;
+}
+
+.user_detailssupervisor {
+    height: 0px !important;
+    display: none;
+    margin: 0 0 0 0 !important;
+    padding: 0 0 !important;
+    border-bottom: none !important;
+}
+
+.user_detailssupervisor h2, .user_detailssupervisor h3 {
+    font-size: 0px;
+    color: #000;
+    margin: 0 0 0 0;
+    padding: 0;
+    line-height: 0px;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.user_details h3 {
+    font-size: 10px;
+    color: #383838;
+    margin: 0;
+}
+
+.listing_btn, .video_icon_btn {
+    /* background: url(../images/listing_btn_bg.jpg) left top repeat-x #252525; */
+    background: none !important;
+    border-radius: 3px;
+    -o-border-radius: 3px;
+    -ms-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    /*min-width: 42px;*/
+    border: none;
+    height: 6vh;
+    /*line-height: 26px;*/
+    cursor: pointer;
+    transition: all 300ms ease-in-out;
+    -o-transition: all 300ms ease-in-out;
+    -ms-transition: all 300ms ease-in-out;
+    -moz-transition: all 300ms ease-in-out;
+    -webkit-transition: all 300ms ease-in-out;
+    float: left;
+    margin: 0 7px 0 0;
+}
+
+.listing_btn:hover, .video_icon_btn:hover {
+    background: none !important;
+    transition: all 300ms ease-in-out;
+    -o-transition: all 300ms ease-in-out;
+    -ms-transition: all 300ms ease-in-out;
+    -moz-transition: all 300ms ease-in-out;
+    -webkit-transition: all 300ms ease-in-out;
+}
+
+.listing_btn  img, .video_icon_btn img {
+    display: inline-block;
+    vertical-align: inherit;
+    height: 5vh;
+}
+
+.video_icon_btn {
+    /* background: url(../images/video_icon_btn_bg.jpg) left top repeat-x #252525; */
+    background: none !important;	
+    margin: 0 0 0 7px;
+}
+
+select {
+    border: 1px solid #cccccc;
+    background-color: #ffffff;
+}
+
+.addStaticTabDivCustom{
+    background: #FCFCFC;
+    margin-top: 3px;
+    box-shadow: 5px 10px 38px grey;
+}
+
+.nav-toggle{
+    background: transparent;
+    border: 0px;
+}
+
+.participantListCustom{
+    box-shadow: 1px 10px 38px grey;
+    background: #FCFCFC;
+}
+
+.videoContainer .frame .label .audioContainer .level{
+    height:11px !important;
+}
+
+ui-layout-resizer-south-dragging,
+.ui-layout-resizer-south-hover {
+    background: none;
+}
+
+ui-layout-resizer-north-dragging,
+.ui-layout-resizer-north-hover {
+    background: none;
+}
+
+ui-layout-resizer-east-dragging,
+.ui-layout-resizer-east-hover {
+    background: none;
+}
+#south{
+    border-radius: 0px;
+    height:68px !important;
+}
+
+.noBorders tr, .noBorders td {
+    background: none !important;
+    border: none !important;
+}
+.spinner {
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    width: 100%;
+    height:134%;
+    background-color: black;
+    z-index:1001;
+    -moz-opacity: 0.8;
+    opacity:.80;
+    filter: alpha(opacity=80);
+}
+
+.tip {
+    width: 0px;
+    height: 0px;
+    position: absolute;
+    background: transparent;
+    border: 10px solid #B3C0CB;
+}
+
+.tip-up {
+    top: -21px; /* Same as body margin top + bordere */
+    left: 2px;
+    border-right-color: transparent;
+    border-left-color: transparent;
+    border-top-color: transparent;
+}
+.dialogbox .body {
+    position: relative;
+    width: auto;
+    height: auto;
+    margin: 10px 5px;
+    padding: 3px;
+    background-color: #b8d6c7;
+    border-radius: 3px;
+    border: 1px solid #B3C0CB;
+    color:black;
+    min-width: 15px;
+}
+
+.body .message {
+    border-radius: 3px;
+    font-family: Arial;
+    font-size: 14px;
+    color: black;
+    min-width: 15px;
+}
+.dialogbox{
+    min-width: 15px;
+}
+#panel1_content{
+    padding:2px !important;
+}

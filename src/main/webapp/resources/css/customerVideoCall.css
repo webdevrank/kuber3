@@ -1,0 +1,360 @@
+.ui-state-error .ui-icon,.ui-state-error-text .ui-icon{
+    background-image:none!important;
+    margin-top:-1px!important;
+    margin-left:-0.5px!important
+}
+.ui-selectmanycheckbox label,.ui-selectoneradio label{
+    margin-top:2px!important
+}
+.ui-icon-bullet{
+    background-position:-81px -145px!important
+}
+.ui-rating{
+    color:#003bb3!important
+}
+.icon-facetime-video{
+    color:white!important
+}
+.caret{
+    color:white!important
+}
+.noBorders tr,.noBorders td{
+    background:none!important;
+    border:none!important
+}
+.spinner{
+    position:absolute;
+    top:0%;
+    left:0%;
+    width:100%;
+    height:134%;
+    background-color:black;
+    z-index:988;
+    -moz-opacity:.6;
+    opacity:.60;
+    filter:alpha(opacity=60)
+}
+
+.hasDatePicker{
+    margin-top:7px;
+    margin-right:2px
+}
+#inCallButtonMuteSpeaker{
+    display:none!important
+}
+#inCallButtonShare{
+    display:none!important
+}
+#inlineSchDateTime_input{
+    margin-top:8px
+}
+.ui-datatable tbody td{
+    border-color:#a6c9e2!important
+}
+video::-webkit-media-controls-play-button{
+    display:none
+}
+video::-webkit-media-controls-timeline{
+    display:none
+}
+video::-webkit-media-controls-current-time-display{
+    display:none
+}
+video::-webkit-media-controls-time-remaining-display{
+    display:none
+}
+video::-webkit-media-controls-mute-button{
+    display:none
+}
+video::-webkit-media-controls-toggle-closed-captions-button{
+    display:none
+}
+video::-webkit-media-controls-volume-slider{
+    display:none
+}
+.tip{
+    width:0;
+    height:0;
+    position:absolute;
+    background:transparent;
+    border:10px solid #B3C0CB
+}
+.tip-up{
+    top:-21px;
+    left:2px;
+    border-right-color:transparent;
+    border-left-color:transparent;
+    border-top-color:transparent
+}
+.dialogbox .body{
+    position:relative;
+    width:auto;
+    height:auto;
+    margin:10px 5px;
+    padding:3px;
+    background-color:#b8d6c7;
+    border-radius:3px;
+    border:1px solid #B3C0CB;
+    color:black;
+    min-width:15px
+}
+.body .message{
+    border-radius:3px;
+    font-family:Arial;
+    font-size:14px;
+    color:black;
+    min-width:15px
+}
+.dialogbox{
+    min-width:15px
+}
+.ui-progressbar{
+    display:none!important
+}
+
+.ui-layout-unit-content{
+    padding:0px!important
+}
+.ui-widget-content{
+    border:none!important
+}
+.aux{
+    margin-bottom:0px!important
+}
+#spinnerReplace{
+    z-index:1003;
+    -moz-opacity:.9;
+    opacity:.90;
+    filter:alpha(opacity=90);
+    width:98%;
+    height:99%;
+    display:none
+}
+#spinnerReplacerVideo{
+    width:75%;
+    height:84%;
+    overflow:hidden;
+    margin-top:2%
+}
+
+#exitSysDiag{
+    max-height:640px;
+    overflow:hidden;
+    border:none;
+    margin-top:-14px
+}
+#forceexitSysDiag{
+    max-height:640px;
+    overflow:hidden;
+    border:none;
+    margin-top:-14px
+}
+#doCancelDia{
+    max-height:640px;
+    overflow:auto;
+    border:none;
+    margin-top:-14px
+}
+#agentmiss{
+    max-height:640px;
+    overflow:auto;
+    border:none;
+    margin-top:-14px
+}
+#backBtn{
+    width:110px;
+    margin-left:10px;
+    margin-top:-10px;
+    visibility:hidden
+}
+#_Everyonespan{
+    width:20px;
+    border-radius:13px;
+    text-align:center;
+    margin-left:2px;
+    padding:2px
+}
+#filepanel{
+    text-align:center;
+    margin:0;
+    padding:0;
+    border:none;
+    margin-bottom:7px
+}
+#holdmsg{
+    color:red;
+    visibility:hidden;
+    display:none!important
+}
+#restoreVideoBtn{
+    visibility:hidden;
+    width:120px;
+    margin-left:10px
+}
+#restoreVideoBtn1{
+    visibility:hidden;
+    width:120px;
+    margin-left:10px
+}
+#showSpinnerbutn{
+    visibility:hidden;
+    width:120px;
+    margin-left:10px
+}
+#joincall{
+    visibility:hidden;
+    width:120px;
+    margin-left:10px
+}
+#holdBtn{
+    display:none;
+    width:1px
+}
+#unholdBtn{
+    display:none;
+    width:1px
+}
+#agentFoundClickOk{
+    visibility:hidden;
+    width:120px;
+    margin-left:10px
+}
+#endBtn{
+    visibility:hidden;
+    width:120px;
+    margin-left:10px
+}
+#optionsParameters{
+    display:none;
+    padding:10px;
+    border:1px solid;
+    border-radius:5px
+}
+#recording{
+    display:none;
+    background:red;
+    width:20px;
+    height:20px
+}
+
+#downloadFileIdLbl{
+    font-weight:700;
+    color:red;
+    font-size:small
+}
+#downloadFileId{
+    margin-right:20px;
+    padding:3px
+}
+#filedialog{
+    overflow:hidden;
+    height:225px!important;
+    z-index:99999!important
+}
+#upimage{
+    width:425px;
+    margin-left:45px
+}
+#updoc{
+    width:425px;
+    margin-left:45px
+}
+#filePanelPanelGrid{
+    background:transparent;
+    border:none;
+    margin-left:-45px;
+    height:85px
+}
+#filePanel{
+    border:none;
+    /*    visibility:hidden*/
+}
+#camera{
+    color:red;
+    display:none!important
+}
+#topBanner{
+    width:650px;
+    height:300px
+}
+#ratingPanelGrid{
+    text-align:center;
+    width:100%
+}
+#quality{
+    margin-left:12px;
+    width:150%
+}
+#ability{
+    margin-left:12px;
+    width:150%
+}
+#recommend{
+    margin-left:12px;
+    width:150%;
+    color:red
+}
+#opinion_text{
+    /*    margin-left:12px;*/
+    height:75px;
+    width:88%
+}
+#submitBtn{
+    width:40%;
+    margin-left:12px
+}
+#feedbackSubmitPanelGrid{
+    width:100%;
+    text-align:center
+}
+
+#feedbackDia.ui-dialog .ui-dialog-titlebar{
+    display: none !important;
+}
+.MyDialog.ui-dialog .ui-dialog-content {
+    padding: 0px !important;
+}
+.ui-rating-star{
+    padding-top: 5px;
+}
+.ui-scrollpanel-hbar{
+    display: none !important;
+}
+
+.ui-dialog-content{
+    padding:0 !important;
+}
+iframe{
+    width: 1000px !important;
+    height: 520px !important;
+}
+
+div.ui-rating-star a, div.ui-rating-cancel a {
+    background-image: url("#{request.contextPath}/resources/images/rating.png") ; 
+    background-position: 0 -145px;
+    padding:28px;
+}
+
+.right-layout-hide{
+    display:none!important;
+}
+.right-layout-showcust{
+    position: absolute;
+    height:536px !important;
+    margin : 21px;
+    left : auto;
+    top:88px !important;
+    right : -41px;
+    display:block !important;
+    z-index:9999 !important;
+    filter:alpha(opacity=50);
+    -moz-box-shadow:-3px -5px 15px #536675;
+    -webkit-box-shadow:-3px -5px 15px #536675;
+    box-shadow:1px 3px 8px #536675
+}
+.custom-layout-center{
+    width:auto!important;
+    right:0px!important;
+    z-index: 1 !important;
+}
+

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CCMSTablesRelation>
+	<CCMSTables>
+		<ParentTable>
+			<ParentTableName daoClassName="com.rank.ccms.dao.CustomerMstDao">CUSTOMER_MST</ParentTableName>
+			<ChildTableName hasChild="Y" daoClassName="com.rank.ccms.dao.CallMstDao">CALL_MST</ChildTableName>
+			<ChildTableName hasChild="N" daoClassName="com.rank.ccms.dao.CallSchedulerDao">SCHEDULE_CALL</ChildTableName>
+		</ParentTable>
+		<ParentTable>
+			<ParentTableName daoClassName="com.rank.ccms.dao.CallSchedulerDao">SCHEDULE_CALL</ParentTableName>
+		</ParentTable>
+		<ParentTable>
+			<ParentTableName daoClassName="com.rank.ccms.dao.ReasonMstDao">REASON_MST</ParentTableName>
+		</ParentTable>
+		<ParentTable>
+			<ParentTableName daoClassName="com.rank.ccms.dao.CategoryMstDao">CATEGORY_MST</ParentTableName>
+			<ChildTableName hasChild="N" daoClassName="com.rank.ccms.dao.EmployeeProficiencyMapDao">EMPLOYEE_PROFICIENCY_MAP</ChildTableName>
+		</ParentTable>
+		<ParentTable>
+			<ParentTableName daoClassName="com.rank.ccms.dao.ServiceMstDao">SERVICE_MST</ParentTableName>
+			<ChildTableName hasChild="N" daoClassName="com.rank.ccms.dao.EmployeeProficiencyMapDao">EMPLOYEE_PROFICIENCY_MAP</ChildTableName>
+			<ChildTableName hasChild="N" daoClassName="com.rank.ccms.dao.PsServiceMapDao">PS_SERVICE_MAP</ChildTableName>
+		</ParentTable>
+		<ParentTable>
+			<ParentTableName daoClassName="com.rank.ccms.dao.LanguageMstDao">LANGUAGE_MST</ParentTableName>
+			<ChildTableName hasChild="N" daoClassName="com.rank.ccms.dao.EmployeeProficiencyMapDao">EMPLOYEE_PROFICIENCY_MAP</ChildTableName>
+		</ParentTable>
+		<ParentTable>
+			<ParentTableName daoClassName="com.rank.ccms.dao.EmployeeTypeMstDao">EMPLOYEE_TYPE_MST</ParentTableName>
+			<ChildTableName hasChild="Y" daoClassName="com.rank.ccms.dao.EmployeeMstDao">EMPLOYEE_MST</ChildTableName>
+		</ParentTable>
+		<ParentTable>
+			<ParentTableName daoClassName="com.rank.ccms.dao.EmployeeMstDao">EMPLOYEE_MST</ParentTableName>
+			<ChildTableName hasChild="N" daoClassName="com.rank.ccms.dao.ServiceMstDao">SERVICE_MST</ChildTableName>
+			<ChildTableName hasChild="N" daoClassName="com.rank.ccms.dao.EmployeeProficiencyMapDao">EMPLOYEE_PROFICIENCY_MAP</ChildTableName>
+			<ChildTableName hasChild="N" daoClassName="com.rank.ccms.dao.PsServiceMapDao">PS_SERVICE_MAP</ChildTableName>
+		</ParentTable>
+		<ParentTable>
+			<ParentTableName daoClassName="com.rank.ccms.dao.FeedbackDtlDao">FEEDBACK_DTL</ParentTableName>
+		</ParentTable>
+		<ParentTable>
+			<ParentTableName daoClassName="com.rank.ccms.dao.EmployeeProficiencyMapDao">EMPLOYEE_PROFICIENCY_MAP</ParentTableName>
+		</ParentTable>
+		<ParentTable>
+			<ParentTableName daoClassName="com.rank.ccms.dao.PsServiceMapDao">PS_SERVICE_MAP</ParentTableName>
+		</ParentTable>
+		<ParentTable>
+			<ParentTableName daoClassName="com.rank.ccms.dao.CallMstDao">CALL_MST</ParentTableName>
+			<ChildTableName hasChild="N" daoClassName="com.rank.ccms.dao.CallDtlDao">CALL_DTL</ChildTableName>
+		</ParentTable>
+		<ParentTable>
+			<ParentTableName daoClassName="com.rank.ccms.dao.CallDtlDao">CALL_DTL</ParentTableName>
+		</ParentTable>
+		<ParentTable>
+			<ParentTableName daoClassName="com.rank.ccms.dao.VIccmsDownInfoDao">VICcms_Down_Info</ParentTableName>
+		</ParentTable>
+	</CCMSTables>
+</CCMSTablesRelation>

@@ -1,0 +1,203 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="../../templates/layout.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                >
+
+    <ui:define name="title">
+        Connected Call Report
+    </ui:define>
+    <ui:define name="menu">
+      
+         <c:if test="#{employeeLoginComponent.adminmenuRenderer }">
+            <ui:include src="../../templates/menu.xhtml" />
+        </c:if>
+
+        <c:if test="#{employeeLoginComponent.supervisormenuRenderer}">
+            <ui:include src="../../templates/menusupervisor.xhtml" />
+        </c:if>
+      
+    </ui:define>
+    <ui:define name="content">
+       
+        <script type="text/javascript">
+            function openCSV() {
+                document.getElementById('headerform:downloadCSV').click();
+            }
+
+            function setLoadRender1() {
+                document.getElementById('headerform:empLoadTable').style.display = "";
+                document.getElementById('headerform:empTable').style.display = "none";
+                document.getElementById('headerform:pscroll').style.display = "none";
+            }
+            function setLoadRender2() {
+                document.getElementById('headerform:empLoadTable').style.display = "none";
+                document.getElementById('headerform:empTable').style.display = "";
+                document.getElementById('headerform:pscroll').style.display = "";
+            }
+        </script>
+<c:if test="#{employeeLoginComponent.adminmenuRenderer }">
+        <h:form  id="mainform" style="margin-top: 45px">
+            <p:growl id="msg" sticky="false" showDetail="false"/> 
+            <p:panel header="Search Connected Call" style="margin:10px;" id="feedbacklistpanel">
+                <p:panelGrid id="detail" columns="8" styleClass="noBorders"  columnClasses="label,value">
+                    <p:panel style="border: none !important">
+                        <h:outputText value="Start Date and Time:" /></p:panel>
+                    <p:calendar mode="popup" pattern ="dd.MM.yyyy HH:mm" value="#{connectedCallsReportComponent.startTime}" readonlyInput="true"  label="Start Time" style="width: 155px;" maxdate="#{connectedCallsReportComponent.presentDate}"/> 
+                    <p:panel style="border: none !important">
+                        <h:outputText value="End Date and Time:" /></p:panel>
+                    <p:calendar mode="popup" pattern ="dd.MM.yyyy HH:mm" value="#{connectedCallsReportComponent.endTime}" readonlyInput="true" label="End Time" style="width: 155px;" maxdate="#{connectedCallsReportComponent.presentDate}"/> 
+
+                    <p:panel style="border: none !important">
+                        <h:outputText value="Customer Mobile:" />
+                    </p:panel>
+
+                    <p:inputText id="custmob" value="${connectedCallsReportComponent.mobileNo}" maxlength="12" style="width: 155px;" onkeypress="if((event.which &lt; 48 &amp;&amp; event.which !=8) || event.which &gt; 57 ) return false;" label="Customer Mobile" validatorMessage="Invalid Mobile No" >
+                         <f:validateRegex pattern="^$|^((\+[0-9]{0,2}|0)?\d{10,12})$" />
+                         <p:ajax event="blur"  immediate="true"   partialSubmit="true"  async="true"  />
+                    </p:inputText>
+
+                    <p:commandButton icon="ui-icon-search"  actionListener="#{connectedCallsReportComponent.loadConnectedCallsReportBySearch(connectedCallsReportComponent.startTime, connectedCallsReportComponent.endTime,connectedCallsReportComponent.custid,connectedCallsReportComponent.mobileNo,connectedCallsReportComponent.accountNo)}" value="Search" onclick="setLoadRender1();" update=":headerform" style="width:100px;"/>
+                    <p:commandButton icon="ui-icon-arrowreturn-1-w" ajax="true" update="feedbacklistpanel :headerform" immediate="true" actionListener="#{connectedCallsReportComponent.clear()}" style="margin-right:20px;width:100px;" value="Clear" action="/pages/reports/connectedCallsReport.xhtml"  />
+                </p:panelGrid>
+
+            </p:panel>
+
+        </h:form> 
+
+
+        <h:form id="headerform" >	
+            <p:panel id="empLoadTable"  style="display:none;"  >
+                <center>
+                    <p:graphicImage url="/resources/images/loadingTable.gif"  height="30 px;" alt="" title=""/>  
+                </center>
+            </p:panel>
+
+            <p:scrollPanel  mode="native" id="pscroll" > 
+                <p:panel id="mainpanel" style="width: 202%;">
+                    <f:facet name="header" >
+                        Connected Call List<span style="float: right;">Record(s) Found : #{fn:length(connectedCallsReportComponent.listConnectedCallsReport) }</span>
+                    </f:facet>
+
+                    <p:dataTable id="empTable"  value="#{connectedCallsReportComponent.listConnectedCallsReport}"    var="current" rows="10" paginator="true" paginatorPosition="bottom" style="max-height: 375px;overflow: auto ">
+                         <f:facet name="header" >
+                            <h:outputText value="(Connected Call Report) #{connectedCallsReportComponent.outputTextToExport}" style="visibility: hidden"/>
+                        </f:facet>
+                        
+                        <p:column sortBy="#{current.customerName}"> 
+                            <f:facet name="header">
+                                <h:outputText value="Customer Name" />
+                            </f:facet>
+                            <h:outputText value="#{current.customerName} "/>
+                        </p:column>
+                        <p:column sortBy="#{current.customerMobile}"> 
+                            <f:facet name="header">
+                                <h:outputText value="Customer Mobile" />
+                            </f:facet>
+                            <h:outputText value="#{current.customerMobile} "/>
+                        </p:column>
+                        <p:column sortBy="#{current.customerEmail}"> 
+                            <f:facet name="header">
+                                <h:outputText value="Customer Email" />
+                            </f:facet>
+                            <h:outputText value="#{current.customerEmail} "/>
+                        </p:column>
+                        <p:column sortBy="#{current.callType}" style="text-align: right"> 
+                            <f:facet name="header">
+                                <h:outputText value="Call Type" />
+                            </f:facet>
+                            <h:outputText value="#{current.callType} "/>
+                        </p:column>
+                        <p:column sortBy="#{current.callStartTime}" style="text-align: right"> 
+                            <f:facet name="header">
+                                <h:outputText value="Call Start Time" />
+                            </f:facet>
+                            <h:outputText value="#{current.callStartTime} "/>
+                        </p:column>
+                        <p:column sortBy="#{current.callEndTime}" style="text-align: right"> 
+                            <f:facet name="header">
+                                <h:outputText value="Call End Time" />
+                            </f:facet>
+                            <h:outputText value="#{current.callEndTime} "/>
+                        </p:column>
+                        <p:column sortBy="#{current.callDuration}" style="text-align: right"> 
+                            <f:facet name="header">
+                                <h:outputText value="Call Duration" />
+                            </f:facet>
+                            <h:outputText value="#{current.callDuration} "/>
+                        </p:column>
+                      
+                        <p:column sortBy="#{current.serviceType}"> 
+                            <f:facet name="header">
+                                <h:outputText value="Service" />
+                            </f:facet>
+                            <h:outputText value="#{current.serviceType} "/>
+                        </p:column>
+                        <p:column sortBy="#{current.medium}"> 
+                            <f:facet name="header">
+                                <h:outputText value="Call Medium" />
+                            </f:facet>
+                            <h:outputText value="#{current.medium} "/>
+                        </p:column>
+                        <p:column sortBy="#{current.agentECN}"> 
+                            <f:facet name="header">
+                                <h:outputText value="Receiver ID" />
+                            </f:facet>
+                            <h:outputText value="#{current.agentECN} "/>
+                        </p:column>
+                        <p:column sortBy="#{current.agentName}"> 
+                            <f:facet name="header">
+                                <h:outputText value="Receiver Name" />
+                            </f:facet>
+                            <h:outputText value="#{current.agentName} "/>
+                        </p:column>
+                        <p:column exportable="false"> 
+                            <f:facet name="header">
+                                <h:outputText value="View Chat" style="white-space: nowrap;" />
+                            </f:facet>
+                            <p:commandLink action="#{connectedCallsReportComponent.goToChatView(current.chatText)}" target="_blank"  >
+                                <h:outputText value="View Chat" rendered="#{current.chatText ne ''}" style="color: blue;text-decoration: underline" />
+                            </p:commandLink>
+                            <h:outputText value="No Chat Occured" rendered="#{current.chatText eq ''}"  />
+                        </p:column>
+                        <p:column exportable="false"> 
+                            <f:facet name="header">
+                                <h:outputText value="View Files" style="white-space: nowrap;" />
+                            </f:facet>
+                            <p:commandLink action="#{callRecordsComponent.goToFileView(current.callId,'ConnectedCall')}" ajax="false" >
+                                <h:outputText value="View Files" rendered="#{current.fileDetails ne ''}" style="color: blue;text-decoration: underline" />
+                            </p:commandLink>
+                            <h:outputText value="No File Transferred" rendered="#{current.fileDetails eq ''}"  />
+                        </p:column>
+
+                    </p:dataTable>
+                </p:panel>
+            </p:scrollPanel>
+            <p:panel header="Export to PDF and Excel" rendered="#{connectedCallsReportComponent.exportToCsvBtnStatus}" >  
+                <p:commandLink id="pdf" ajax="false"  >  
+                    <p:graphicImage value="/resources/images/pdf.png" style="padding:5px !important"/> 
+                    <pe:exporter type="pdf" target="empTable" fileName="connectedCalls" orientation="Landscape" datasetPadding="4" />  
+                </p:commandLink>  
+
+                <p:spacer width="20"/>  
+                <p:commandLink id="xls" ajax="false"  >  
+                    <p:graphicImage value="/resources/images/excel.png" style="padding:5px !important"/>
+                    <pe:exporter type="xlsx" target="empTable" fileName="connectedCalls" orientation="Landscape"/>  
+                </p:commandLink>  
+            </p:panel>  
+
+        </h:form>
+</c:if>
+    </ui:define>
+</ui:composition>
+
+
+
+

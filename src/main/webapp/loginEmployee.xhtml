@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/templates/logintemplate.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="title">
+        <h:outputText value=" Video Banking | Login" />
+        
+    </ui:define> 
+    <ui:define name="content" id="employeeContent">
+        <script  src="#{request.contextPath}/resources/js/bowser.min.js"></script>
+        <script type="text/javascript" src="#{request.contextPath}/resources/js/jstz-1.0.4.min.js"></script>
+        <script type="text/javascript" src="#{request.contextPath}/resources/js/moment.min.js"></script>
+        <script type="text/javascript" src="#{request.contextPath}/resources/js/moment-timezone.js"></script>
+        <script type="text/javascript" src="#{request.contextPath}/resources/js/moment-timezone-data.js"></script>
+        <script>
+            var browser = 0;
+            $(document).ready(function() {
+                var tz = jstz.determine();
+                var timezone = tz.name();
+                document.getElementById('timeZone').value = timezone;
+            });
+       
+
+        </script>
+        <h:form id="employeeLoginForm" prependId="false">
+            <body class="login_body">
+                <div class="login_wrap">
+                    <div class="left_login">
+                        <img src="#{request.contextPath}/resources/images/first-logo.png" alt="logo"/>
+                            <h1>Digital Customer Experience Platform</h1>                  
+                    </div>
+                    <!--left_login-->
+
+                    <div class="right_login">
+                        <div class="login_panel">
+                            <h2>Employee Login</h2>
+                            <div class="form_input">
+                                <p:inputText id="userid"  required="true" value="#{employeeLoginComponent.userLoginId}" label="User ID" title="Enter User ID" requiredMessage="User ID Required!" placeholder="User Id"/>
+                            </div>
+                            <div class="form_input">
+                                <p:password id="passwd"  value="#{employeeLoginComponent.userPassword}" required="true" label="Password" title="Enter Password" requiredMessage="Password Required!" placeholder="Password"/>
+                            </div>
+                            <div class="form_button">
+                                <p:commandButton  value="Log In" type="button"  id="signin_1" styleClass="btn_login" ajax="true" onclick="convertAndSubmit()"   />    
+                                <p:commandButton  value="Log In" id="signin" styleClass="btn_login" ajax="true" action="#{employeeLoginComponent.handleLogin(request)}"  onclick="document.getElementById('spinner').style.display = 'block';" oncomplete="document.getElementById('spinner').style.display='none';" style="display:none;" />
+                            </div>
+                        </div>
+
+                    </div>
+                    <!--right_login-->
+                </div>
+                <!--login_wrap-->
+            </body>
+            <h:inputHidden id="timeZone" value="#{employeeLoginComponent.timeZone}"  />
+            <h:inputHidden id="salt"   value="#{employeeLoginComponent.salt}"/>
+            <h:inputHidden id="iv" value="#{employeeLoginComponent.four}"/>
+        </h:form>     
+
+    </ui:define>
+</ui:composition>
